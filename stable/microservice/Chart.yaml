@@ -1,6 +1,6 @@
 apiVersion: v2
 name: microservice
-description: Generic helm chart for all kind of services
+description: Generic helm chart for all kind of services!
 version: 1.0.0
 keywords:
   - node
