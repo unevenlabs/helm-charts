@@ -1,1 +1,1 @@
-Helm chart registry branch
+Helm chart registry branch.
