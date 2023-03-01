@@ -2,7 +2,7 @@ name: release yopass
 on: 
   push:
     branches:
-      - master
+      - main
     paths:
       - 'stable/yopass/**'
   release:

@@ -2,7 +2,7 @@ name: release microservice
 on: 
   push:
     branches:
-      - master
+      - main
     paths:
       - 'stable/microservice/**'
   release:
