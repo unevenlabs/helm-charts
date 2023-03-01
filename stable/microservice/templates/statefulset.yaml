@@ -1,0 +1,170 @@
+{{- if .Values.statefulSet }}
+{{- if .Values.statefulSet.enabled }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+{{ include "application.labels.unevenlabs" . | indent 4 }}
+{{ include "application.labels.chart" . | indent 4 }}
+{{- if .Values.statefulSet.additionalLabels }}
+{{ toYaml .Values.statefulSet.additionalLabels | indent 4 }}
+{{- end }}
+{{- if .Values.statefulSet.annotations }}
+  annotations:
+{{- end }}
+{{- if .Values.statefulSet.annotations }}
+{{ toYaml .Values.statefulSet.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "application.name" . }}
+  namespace: {{ template "application.namespace" . }}
+spec:
+  serviceName: {{ template "application.name" . }}
+  replicas: {{ .Values.statefulSet.replicas }}
+  selector:
+    matchLabels:
+{{ include "application.labels.selector" . | indent 6 }}
+  template:
+    metadata:
+      labels:
+{{ include "application.labels.selector" . | indent 8 }}
+{{- if .Values.statefulSet.podLabels }}
+{{ toYaml .Values.statefulSet.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.opa.enabled }}
+        opa-injection: "enabled"
+{{- end }}
+{{- if or (.Values.vault.enabled) (.Values.statefulSet.additionalPodAnnotations) }}
+      annotations:
+{{- end }}
+{{- if .Values.vault.enabled }}
+{{ include "vault.annotations" (list . .Values.vault) | indent 8 }}
+{{- end }}
+{{- with .Values.statefulSet.additionalPodAnnotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      hostNetwork: {{ .Values.statefulSet.hostNetwork | default false}}
+      {{- if .Values.statefulSet.initContainers }}
+      initContainers:
+{{ toYaml .Values.statefulSet.initContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.statefulSet.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.statefulSet.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.statefulSet.tolerations }}
+      tolerations:
+{{ toYaml .Values.statefulSet.tolerations | indent 8 -}}
+      {{- end }}
+      {{- if .Values.statefulSet.affinity }}
+      affinity:
+{{ toYaml .Values.statefulSet.affinity | indent 8 -}}
+      {{- end }}
+      {{- if .Values.statefulSet.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.statefulSet.imagePullSecrets }}
+      {{- end }}
+      containers:
+      - name: {{ template "application.name" . }}
+        image: "{{ .Values.statefulSet.image.repository }}:{{ .Values.statefulSet.image.tag }}"
+        imagePullPolicy: {{ .Values.statefulSet.image.pullPolicy }}
+      {{- if .Values.statefulSet.command }}
+        command: {{- include "application.tplvalues.render" (dict "value" .Values.statefulSet.command "context" $) | nindent 12 }}
+      {{- end }}
+      {{- if .Values.statefulSet.args }}
+        args: {{- include "application.tplvalues.render" (dict "value" .Values.statefulSet.args "context" $) | nindent 12 }}
+      {{- end }}
+      {{- if .Values.statefulSet.ports }}
+        ports:
+{{ toYaml .Values.statefulSet.ports | indent 10 }}
+      {{- end }}
+      {{- if .Values.statefulSet.envFrom }}
+        envFrom:
+      {{- range .Values.statefulSet.envFrom }}
+      {{- if (eq .type "configmap") }}
+          - configMapRef:
+          {{- if .name }}
+              name: {{ .name }}
+          {{- else if .nameSuffix }}
+              name: {{ template "application.name" $ }}-{{ .nameSuffix }}
+          {{- else }}
+              name: {{ template "application.name" $ }}
+          {{- end }}
+      {{- end }}
+      {{- if (eq .type "secret") }}
+          - secretRef:
+          {{- if .name }}
+              name: {{ .name }}
+          {{- else if .nameSuffix }}
+              name: {{ template "application.name" $ }}-{{ .nameSuffix }}
+          {{- else }}
+              name: {{ template "application.name" $ }}
+          {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.statefulSet.env }}
+        env:
+{{ toYaml .Values.statefulSet.env | indent 10 }}
+      {{- end }}
+      {{- if .Values.statefulSet.probes.livenessProbe }}
+        livenessProbe:
+{{ toYaml .Values.statefulSet.probes.livenessProbe | indent 10 }}
+      {{- end }}
+      {{- if .Values.statefulSet.probes.readinessProbe }}
+        readinessProbe:
+{{ toYaml .Values.statefulSet.probes.readinessProbe | indent 10 }}
+      {{- end }}
+      {{- if .Values.statefulSet.volumeMounts }}
+        volumeMounts:
+        {{- range .Values.statefulSet.volumeMounts }}
+        - mountPath: {{ .mountPath }}
+          name: {{ .name }}
+        {{- end }}
+      {{- end }}
+        resources:
+          limits:
+            memory: {{ .Values.statefulSet.resources.limits.memory }}
+            cpu: {{ .Values.statefulSet.resources.limits.cpu }}
+          requests:
+            memory: {{ .Values.statefulSet.resources.requests.memory }}
+            cpu: {{ .Values.statefulSet.resources.requests.cpu }}
+      {{- if .Values.statefulSet.additionalContainers }}
+{{ toYaml .Values.statefulSet.additionalContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.statefulSet.securityContext }}
+      securityContext:
+{{ toYaml .Values.statefulSet.securityContext | indent 8 }}
+          {{- end }}
+      {{- if and .Values.rbac.statefulSet.enabled .Values.rbac.serviceAccount.enabled }}
+      {{- if .Values.rbac.serviceAccount.name }}
+      serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
+        {{- else }}
+      serviceAccountName: {{ template "application.name" . }}
+      {{- end }}
+      {{- end }}
+  {{- if .Values.statefulSet.volumeClaimTemplates }}
+  volumeClaimTemplates:
+    {{- range .Values.statefulSet.volumeClaimTemplates }}
+    - metadata:
+        name:  {{ .metadata.name }}
+      spec:
+        {{- if .spec.accessModes }}
+        accessModes:
+          {{- range .spec.accessModes }}
+          - {{ . }}
+          {{- end }}
+        {{- else }}
+        accessModes:
+          - ReadWriteOnce
+        {{- end }}
+        {{- if .spec.storageClassName }}
+        storageClassName: {{ .spec.storageClassName }}
+        {{- end}}
+        resources:
+          requests:
+            storage: {{ .spec.resources.requests.storage }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

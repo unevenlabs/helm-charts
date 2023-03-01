@@ -1,0 +1,14 @@
+{{- if and .Values.keda.enabled .Values.keda.triggerAuthentications}}
+{{- range .Values.keda.triggerAuthentications }}
+apiVersion: keda.sh/v1alpha1
+kind: {{ .kind | default "TriggerAuthentication"}}
+metadata:
+  name: {{ .name }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart"   $ | indent 4 }}
+spec:
+  {{- toYaml .spec | nindent 2}}
+---
+{{- end }}
+{{- end }}

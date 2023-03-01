@@ -1,0 +1,195 @@
+{{- if .Values.argoRollouts.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: {{ template "application.name" . }}
+spec:
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    canary:
+      canaryService: {{ template "application.name" . }}-canary
+      stableService: {{ template "application.name" . }}
+      trafficRouting:
+        istio:
+          virtualServices:
+{{- range $index, $virtualService := .Values.virtualService }}
+            - name: {{ template "application.name" $ }}-{{ $index }}-virtual-svc
+              routes:
+                - primary
+{{- end }} {{/* range $index, $virtualService := .Values.virtualService */}}
+      analysis:
+        templates:
+          - templateName: {{ template "application.name" . }}
+        startingStep: {{ .Values.argoRollouts.strategy.canary.analysis.startingStep }}
+      steps:
+      {{- if .Values.argoRollouts.strategy.canary.steps }}
+{{ toYaml .Values.argoRollouts.strategy.canary.steps | indent 8 }}
+      {{- else }}
+        - setCanaryScale:
+            replicas: 4
+        - setWeight: 5
+        - pause: { duration: 20s }
+        - setWeight: 10
+        - pause: { duration: 20s }
+        - setWeight: 15
+        - pause: { duration: 20s }
+        - setWeight: 20
+        - pause: { duration: 20s }
+        - setWeight: 25
+        - pause: { duration: 20s }
+        - setWeight: 30
+        - pause: { duration: 20s }
+        - setWeight: 50
+        - pause: { duration: 20s }
+        - setWeight: 100
+      {{- end }}
+  selector:
+    matchLabels:
+      app: {{ template "application.name" . }}
+  template:
+    metadata:
+      labels:
+        istio-injection: enabled
+        security.istio.io/tlsMode: istio
+        service.istio.io/canonical-name: {{ template "application.name" . }}
+        service.istio.io/canonical-revision: latest
+{{ include "application.labels.selector" . | indent 8 }}
+{{- if .Values.deployment.podLabels }}
+{{ toYaml .Values.deployment.podLabels | indent 8 }}
+{{- end }}
+{{- if .Values.deployment.commonLabels }}
+{{ toYaml .Values.deployment.commonLabels | indent 8 }}
+{{- end }}
+{{- if .Values.opa.enabled }}
+        opa-injection: "enabled"
+{{- end }}
+      annotations:
+        kubectl.kubernetes.io/default-container: {{ template "application.name" . }}
+        kubectl.kubernetes.io/default-logs-container: {{ template "application.name" . }}
+        kubernetes.io/psp: eks.privileged
+        prometheus.io/path: /stats/prometheus
+        prometheus.io/port: '15020'
+        prometheus.io/scrape: 'true'
+{{- if .Values.vault.enabled }}
+{{ include "vault.annotations" (list . .Values.vault) | indent 8 }}
+{{- end }}
+{{- with .Values.deployment.additionalPodAnnotations }}
+{{ toYaml . | indent 8 }}
+{{- end }}
+    spec:
+      hostNetwork: {{ .Values.deployment.hostNetwork | default false}}
+      {{- if .Values.deployment.initContainers }}
+      initContainers:
+{{ toYaml .Values.deployment.initContainers | indent 6 }}
+      {{- end }}
+      {{- if .Values.deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.deployment.nodeSelector | indent 8 }}
+      {{- end }}
+      {{- if .Values.deployment.tolerations }}
+      tolerations:
+{{ toYaml .Values.deployment.tolerations | indent 8 -}}
+      {{- end }}
+      {{- if .Values.deployment.affinity }}
+      affinity:
+{{ toYaml .Values.deployment.affinity | indent 8 -}}
+      {{- end }}
+      {{- if .Values.deployment.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.deployment.imagePullSecrets }}
+      {{- end }}
+      containers:
+        - name: {{ template "application.name" . }}
+          image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+        {{- if .Values.deployment.command }}
+          command: {{- include "application.tplvalues.render" (dict "value" .Values.deployment.command "context" $) | nindent 12 }}
+        {{- end }}
+        {{- if .Values.deployment.args }}
+          args: {{- include "application.tplvalues.render" (dict "value" .Values.deployment.args "context" $) | nindent 12 }}
+        {{- end }}
+        {{- if .Values.deployment.ports }}
+          ports:
+{{ toYaml .Values.deployment.ports | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.envFrom }}
+          envFrom:
+        {{- range .Values.deployment.envFrom }}
+        {{- if (eq .type "configmap") }}
+            - configMapRef:
+            {{- if .name }}
+                name: {{ .name }}
+            {{- else if .nameSuffix }}
+                name: {{ template "application.name" $ }}-{{ .nameSuffix }}
+            {{- else }}
+                name: {{ template "application.name" $ }}
+            {{- end }}
+        {{- end }}
+        {{- if (eq .type "secret") }}
+            - secretRef:
+            {{- if .name }}
+                name: {{ .name }}
+            {{- else if .nameSuffix }}
+                name: {{ template "application.name" $ }}-{{ .nameSuffix }}
+            {{- else }}
+                name: {{ template "application.name" $ }}
+            {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- end }}
+        {{- if .Values.deployment.env }}
+          env:
+{{ toYaml .Values.deployment.env | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.probes.livenessProbe }}
+          livenessProbe:
+{{ toYaml .Values.deployment.probes.livenessProbe | indent 10 }}
+        {{- end }}
+        {{- if .Values.deployment.probes.readinessProbe }}
+          readinessProbe:
+{{ toYaml .Values.deployment.probes.readinessProbe | indent 10 }}
+        {{- end }}
+      {{- if or (.Values.deployment.volumeMounts) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}}
+          volumeMounts:
+        {{- if (eq .Values.persistence.mountPVC true) }}
+            - mountPath: {{ .Values.persistence.mountPath }}
+              name: {{ template "application.name" . }}-data
+        {{- end }}
+        {{- if .Values.deployment.volumeMounts }}
+{{ toYaml .Values.deployment.volumeMounts | indent 8 }}
+        {{- end }}
+      {{- end }}
+          resources:
+            limits:
+              memory: {{ .Values.deployment.resources.limits.memory }}
+              cpu: {{ .Values.deployment.resources.limits.cpu }}
+            requests:
+              memory: {{ .Values.deployment.resources.requests.memory }}
+              cpu: {{ .Values.deployment.resources.requests.cpu }}
+        {{- if .Values.deployment.additionalContainers }}
+{{ toYaml .Values.deployment.additionalContainers | indent 6 }}
+        {{- end }}
+        {{- if .Values.deployment.securityContext }}
+      securityContext:
+{{ toYaml .Values.deployment.securityContext | indent 8 }}
+          {{- end }}
+      {{- if or (.Values.deployment.volumes) (and (eq .Values.persistence.enabled true) (eq .Values.persistence.mountPVC true) )}}
+      volumes:
+        {{- if (eq .Values.persistence.mountPVC true) }}
+        - name: {{ template "application.name" . }}-data
+          persistentVolumeClaim:
+            claimName: {{ template "application.name" . }}-data
+        {{- end }}
+        {{- if .Values.deployment.volumes }}
+{{ include "application.tplvalues.render" ( dict "value" .Values.deployment.volumes "context" $ ) | indent 6 }}
+        {{- end }}
+      {{- end }}
+      {{- if and .Values.rbac.deployment.enabled .Values.rbac.serviceAccount.enabled }}
+      {{- if .Values.rbac.serviceAccount.name }}
+      serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
+        {{- else }}
+      serviceAccountName: {{ template "application.name" . }}
+      {{- end }}
+      {{- end }}
+---
+{{ end }}

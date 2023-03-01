@@ -1,0 +1,28 @@
+{{- if .Values.destinationRule }}
+{{- if .Values.destinationRule.enabled }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: {{ template "application.name" . }}-dstn-rule
+  labels:
+{{ include "application.labels.unevenlabs" . | indent 4 }}
+{{ include "application.labels.chart" . | indent 4 }}
+{{- if .Values.destinationRule.additionalLabels }}
+{{ toYaml .Values.destinationRule.additionalLabels | indent 4 }}
+{{- end }}
+{{- if .Values.destinationRule.annotations }}
+  annotations:
+{{- end }}
+{{- if or .Values.destinationRule.annotations }}
+{{ toYaml .Values.destinationRule.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .Values.destinationRule.host }}
+  host: {{ .Values.destinationRule.host }}
+{{- end }}
+  trafficPolicy:
+    loadBalancer:
+      simple: {{ .Values.destinationRule.trafficPolicyLB }}
+{{- end }}
+{{- end }}

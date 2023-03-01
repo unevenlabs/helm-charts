@@ -1,0 +1,32 @@
+{{- if .Values.argoRollouts.enabled }}
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: {{ template "application.name" . }}
+spec:
+  metrics:
+    - name: {{ template "application.name" . }}
+      {{- if .Values.argoRollouts.metrics }}
+{{ toYaml .Values.argoRollouts.metrics | indent 6 }}
+      {{- else }}
+      initialDelay: 30s
+      failureLimit: 1
+      interval: 60s
+      successCondition: result[0] >= 0.90
+      provider:
+        prometheus:
+          address: http://kiali-applications-prometheus-server.kiali:9090
+          query: >+
+            sum(irate(istio_requests_total{
+              reporter="source",
+              destination_service=~"{{ template "application.name" . }}-canary.{{ template "application.namespace" $ }}.svc.cluster.local",
+              response_code!~"5.*"}[2m])
+            )
+            /
+            sum(irate(istio_requests_total{
+              reporter="source",
+              destination_service=~"{{ template "application.name" . }}-canary.{{ template "application.namespace" $ }}.svc.cluster.local"}[2m])
+            )
+  {{ end }}
+---
+{{ end }}

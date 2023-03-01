@@ -1,0 +1,67 @@
+{{- range $index, $authorizationPolicy := .Values.authorizationPolicy }}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ template "application.name" $ }}-{{ $index }}-authorization-policy
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $authorizationPolicy.additionalLabels }}
+{{ toYaml $authorizationPolicy.additionalLabels | indent 4 }}
+{{- end }}
+{{- if $authorizationPolicy.annotations }}
+  annotations:
+{{- end }}
+{{- if or $authorizationPolicy.annotations }}
+{{ toYaml $authorizationPolicy.annotations | indent 4 }}
+{{- end }}
+spec:
+{{- if .matchLabels }}
+  selector:
+    matchLabels:
+      {{- toYaml $authorizationPolicy.matchLabels | nindent 6 }}
+{{- end }}
+  action: ALLOW
+  rules:
+{{- if $authorizationPolicy.customRules }}
+  {{- toYaml $authorizationPolicy.customRules | nindent 2 }}
+{{- else }}
+{{- if $authorizationPolicy.remoteIps }}
+  - when:
+    - key: request.headers[x-forwarded-for]
+      values:
+{{- range $authorizationPolicy.remoteIps }}
+        - {{ . | quote }}
+        - {{ print . ",*" | quote }}
+{{- end }}
+{{- else if $authorizationPolicy.remoteIpBlocks }}
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range $authorizationPolicy.remoteIpBlocks }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+    to:
+    - operation:
+{{- if $authorizationPolicy.hosts }}
+        hosts:
+{{- range $authorizationPolicy.hosts }}
+         - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- if $authorizationPolicy.methods }}
+        methods:
+{{- range $authorizationPolicy.methods }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- if $authorizationPolicy.paths }}
+        paths:
+{{- range $authorizationPolicy.paths }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

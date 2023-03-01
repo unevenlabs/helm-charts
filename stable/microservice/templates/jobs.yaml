@@ -1,0 +1,32 @@
+{{- range $job := .Values.jobs }}
+{{ if not $job.schedule }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "application.name" $ }}-{{ $job.name }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $job.additionalLabels }}
+{{ toYaml $job.additionalLabels | indent 4 }}
+{{- end }}
+{{- if $job.annotations }}
+  annotations:
+{{- end }}
+{{- if $job.annotations }}
+{{ toYaml $job.annotations | indent 4 }}
+{{- end }}
+  namespace: {{ template "application.namespace" $ }}
+spec:
+{{- if $job.ttlSecondsAfterFinished }}
+  ttlSecondsAfterFinished: {{ $job.ttlSecondsAfterFinished }}
+{{- end }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "application.name" $ }}
+        job: {{ $job.name -}}
+{{ include "jobs.template" (list $ $job) | indent 4 }}
+{{- end }}
+{{- end }}

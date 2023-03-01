@@ -1,0 +1,33 @@
+{{- range .Values.virtualService }}
+{{- if has "VirtualService" .type }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- include "yopass.labels" $ | nindent 4 }}
+spec:
+  gateways:
+{{- if not .gateways }}
+    - "default/default-gateway"
+{{- end}}
+{{- range .gateways }}
+    - {{ . }}
+{{- end }}
+  hosts:
+{{- range .hosts }}
+    - {{ . }}
+{{- end }}
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ .destination.host }}
+        port:
+          number: {{ .destination.portNumber }}
+      weight: 100
+{{- end }}
+{{- end }}

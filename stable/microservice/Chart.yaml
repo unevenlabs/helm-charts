@@ -1,0 +1,15 @@
+apiVersion: v2
+name: microservice
+description: Generic helm chart for all kind of services
+version: 1.3.0
+keywords:
+  - node
+  - java
+  - dotnet
+  - kubernetes
+  - unevenlabs
+  - microservice
+home: https://github.com/unevenlabs/helm-charts/tree/main/stable/microservice
+maintainers:
+- name: DevOps
+  email: devops@unevenlabs.com

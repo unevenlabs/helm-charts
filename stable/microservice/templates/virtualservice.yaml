@@ -1,0 +1,137 @@
+{{- range $index, $virtualService := .Values.virtualService }}
+{{- $protocol := $virtualService.protocol | default "http" }}
+---
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "application.name" $ }}-{{ $index }}-virtual-svc
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $virtualService.additionalLabels }}
+{{ toYaml $virtualService.additionalLabels | indent 4 }}
+{{- end }}
+{{- if $virtualService.annotations }}
+  annotations:
+{{- end }}
+{{- if or $virtualService.annotations }}
+{{ toYaml $virtualService.annotations | indent 4 }}
+{{- end }}
+spec:
+  gateways:
+{{- if not $virtualService.gateways }}
+    - default/default-gateway
+{{- end }}
+{{- range $virtualService.gateways }}
+    - {{ . }}
+{{- end }}
+  hosts:
+{{- range $virtualService.hosts }}
+    - {{ . | quote }}
+{{- end }}
+{{- if eq $protocol "http" }}
+  http:
+{{- else if eq $protocol "tcp" }}
+  tcp:
+{{- else }}
+  {{- fail "value for Values.virtualService.protocol must be http or tcp" }}
+{{- end }}
+{{ if $virtualService.canaryMatch }}
+  - name: canary
+    match:
+{{ toYaml $virtualService.canaryMatch | indent 4 }}
+{{- if and ($virtualService.rewrite) (eq $virtualService.protocol "http") }}
+    rewrite:
+    {{ toYaml $virtualService.rewrite | indent 6 }}
+{{- end }}
+    route:
+    - destination:
+        host: {{ template "application.name" $ }}-canary
+        port:
+          number: {{ $virtualService.destination.portNumber }}
+      weight: 100
+{{ end }}
+  - name: primary
+    match:
+{{- if $virtualService.advancedMatch }}
+{{ toYaml $virtualService.advancedMatch | indent 6 }}
+{{- else }}
+  {{- if eq $protocol "http" }}
+    - uri:
+        prefix: /
+  {{- else if eq $protocol "tcp" }}
+    - port: {{ $virtualService.destination.portNumber }}
+  {{- end }}
+{{- end }}
+{{- if and ($virtualService.rewrite) (eq $virtualService.protocol "http") }}
+    rewrite:
+    {{ toYaml $virtualService.rewrite | indent 6 }}
+{{- end }}
+    route:
+    - destination:
+        host: {{ $virtualService.destination.host }}-canary
+        port:
+          number: {{ $virtualService.destination.portNumber }}
+      weight: 0
+    - destination:
+        host: {{ $virtualService.destination.host }}
+        port:
+          number: {{ $virtualService.destination.portNumber }}
+      weight: 100
+    {{- if eq $protocol "http" }}
+    {{- if $virtualService.headers }}
+    headers:
+      {{- if $virtualService.headers.request }}
+      request:
+        {{- if $virtualService.headers.request.set }}
+        set: {{ toYaml $virtualService.headers.request.set | nindent 10 }}
+        {{- end }}
+        {{- if $virtualService.headers.request.add }}
+        add: {{ toYaml $virtualService.headers.request.add | nindent 10 }}
+        {{- end }}
+        {{- if $virtualService.headers.request.remove }}
+        remove: {{ toYaml $virtualService.headers.request.remove | nindent 10 }}
+        {{- end }}
+      {{- end }}
+      {{- if $virtualService.headers.response }}
+      response:
+        {{- if $virtualService.headers.response.set }}
+        set: {{ toYaml $virtualService.headers.response.set | nindent 10 }}
+        {{- end }}
+        {{- if $virtualService.headers.response.add }}
+        add: {{ toYaml $virtualService.headers.response.add | nindent 10 }}
+        {{- end }}
+        {{- if $virtualService.headers.response.remove }}
+        remove: {{ toYaml $virtualService.headers.response.remove | nindent 10 }}
+        {{- end }}
+      {{- end }}
+    {{- end }} {{/* if $virtualService.headers */}}
+    {{- if $virtualService.corsPolicy }}
+    corsPolicy:
+      {{- if $virtualService.corsPolicy.allowOrigins }}
+      allowOrigins:
+      {{- range $virtualService.corsPolicy.allowOrigins }}
+      - exact: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if $virtualService.corsPolicy.allowMethods }}
+      allowMethods:
+        {{- range $virtualService.corsPolicy.allowMethods }}
+        - {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- if $virtualService.corsPolicy.allowCredentials }}
+      allowCredentials: {{ $virtualService.corsPolicy.allowCredentials }}
+      {{- end }}
+      {{- if $virtualService.corsPolicy.allowHeaders }}
+      allowHeaders:
+        {{- range $virtualService.corsPolicy.allowHeaders }}
+        - {{ . }}
+        {{- end }}
+      {{- end }}
+      {{- if $virtualService.corsPolicy.maxAge }}
+      maxAge: {{ $virtualService.corsPolicy.maxAge }}
+      {{- end }}
+    {{- end }} {{/* if $virtualService.corsPolicy */}}
+    {{- end }} {{/* if eq $protocol "http" */}}
+{{- end }} {{/* range $index, $virtualService := .Values.virtualService */}}
