@@ -15,6 +15,23 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/base-1.17.1.tgz
     version: 1.17.1
+  istio-ingress:
+  - apiVersion: v1
+    appVersion: 1.17.1
+    created: "2023-03-01T15:28:41.814885814Z"
+    description: Helm chart for deploying Istio gateways
+    digest: 5ab26ec61f61b9e6031b52da4bcdc720a1b464f638ccf567bff749f1f9d1d7ae
+    icon: https://istio.io/latest/favicons/android-192x192.png
+    keywords:
+    - istio
+    - ingressgateway
+    - gateways
+    name: istio-ingress
+    sources:
+    - http://github.com/istio/istio
+    urls:
+    - https://unevenlabs.github.io/helm-charts/istio-ingress-1.17.1.tgz
+    version: 1.17.1
   istiod:
   - apiVersion: v1
     appVersion: 1.17.1
@@ -128,4 +145,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-01T15:25:10.966342277Z"
+generated: "2023-03-01T15:28:41.81288048Z"
