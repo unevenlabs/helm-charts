@@ -1,1 +1,1 @@
-TEST
+Helm chart registry branch
