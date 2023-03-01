@@ -2,11 +2,12 @@ name: release istio-discovery
 on: 
   push:
     branches:
-      - master
+      - main
     paths:
       - 'stable/istio-discovery/**'
   release:
     types: [published, created]
+  workflow_dispatch:
 
 jobs:
   release:

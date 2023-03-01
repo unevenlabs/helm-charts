@@ -2,11 +2,12 @@ name: release istio-base
 on: 
   push:
     branches:
-      - master
+      - main
     paths:
       - 'stable/istio-base/**'
   release:
     types: [published, created]
+  workflow_dispatch:
 
 jobs:
   release:

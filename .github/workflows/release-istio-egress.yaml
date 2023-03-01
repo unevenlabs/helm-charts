@@ -2,11 +2,12 @@ name: release istio-egress
 on: 
   push:
     branches:
-      - master
+      - main
     paths:
       - 'stable/istio-egress/**'
   release:
     types: [published, created]
+  workflow_dispatch:
 
 jobs:
   release:
