@@ -9,4 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.17.1] - 2023-03-01
 ### Changed
+- Fix fork. Downloaded from https://istio-release.storage.googleapis.com/charts/base-1.17.1.tgz
+
+## [1.17.1] - 2023-03-01
+### Changed
 - Fork of offical istio release 1.17.1.
