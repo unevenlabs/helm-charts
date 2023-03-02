@@ -15,6 +15,20 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/base-1.17.1.tgz
     version: 1.17.1
+  - apiVersion: v1
+    appVersion: 1.17.1
+    created: "2023-03-02T15:52:06.767938391Z"
+    description: Helm chart for deploying Istio cluster resources and CRDs
+    digest: 614bff4b4cc9ac0506728da838b1c8eaf0d7ea8aa3e74ba2093cd1aa9c09b5ee
+    icon: https://istio.io/latest/favicons/android-192x192.png
+    keywords:
+    - istio
+    name: base
+    sources:
+    - http://github.com/istio/istio
+    urls:
+    - https://unevenlabs.github.io/helm-charts/base-1.17.1-1.tgz
+    version: 1.17.1-1
   istio-egress:
   - apiVersion: v1
     appVersion: 1.17.1
@@ -258,4 +272,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-02T13:49:16.742921051Z"
+generated: "2023-03-02T15:52:06.763077781Z"
