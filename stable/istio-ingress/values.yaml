@@ -54,7 +54,7 @@ gateways:
     #    cloud.google.com/load-balancer-type: "internal"
 
     podAnnotations: {}
-    type: LoadBalancer #change to NodePort, ClusterIP or LoadBalancer if need be
+    type: NodePort #change to NodePort, ClusterIP or LoadBalancer if need be
 
     ##############
     secretVolumes:
@@ -156,7 +156,7 @@ global:
   # Default hub for Istio images.
   # Releases are published to docker hub under 'istio' project.
   # Dev builds from prow are on gcr.io
-  hub: istio
+  hub: docker.io/istio
 
   # Default tag for Istio images.
   tag: 1.17.1
