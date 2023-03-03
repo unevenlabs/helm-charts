@@ -1,0 +1,47 @@
+{{- if .Values.server.virtualService.public.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "argo-cd.server.fullname" . }}-public
+  annotations:
+  {{- range $key, $value := .Values.server.virtualService.public.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  gateways: {{ .Values.server.virtualService.public.gateways }}
+  hosts: {{ .Values.server.virtualService.public.hosts }}
+  http:
+  - match:
+    - uri:
+        prefix: /api/webhook
+    route:
+    - destination:
+        host:  {{ template "argo-cd.server.fullname" . }}
+        port:
+          number: {{ .Values.server.service.servicePortHttp }}
+      weight: 100
+{{- end }}
+---
+{{- if .Values.server.virtualService.internal.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ template "argo-cd.server.fullname" . }}-internal
+  annotations:
+  {{- range $key, $value := .Values.server.virtualService.internal.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  gateways: {{ .Values.server.virtualService.internal.gateways }}
+  hosts: {{ .Values.server.virtualService.internal.hosts }}
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host:  {{ template "argo-cd.server.fullname" . }}
+        port:
+          number: {{ .Values.server.service.servicePortHttp }}
+      weight: 100
+{{- end }}
