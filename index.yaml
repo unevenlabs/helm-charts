@@ -17,6 +17,48 @@ entries:
           description: Global affinity preset can be disabled
     apiVersion: v2
     appVersion: v2.6.3
+    created: "2023-03-06T17:20:58.853753168Z"
+    dependencies:
+    - condition: redis-ha.enabled
+      name: redis-ha
+      repository: https://dandydeveloper.github.io/charts/
+      version: 4.22.4
+    description: A Helm chart for Argo CD, a declarative, GitOps continuous delivery
+      tool for Kubernetes.
+    digest: adb05038d3257739061f8033bfa564938be32037f767ea7e32f5e098ca2034ce
+    home: https://github.com/argoproj/argo-helm
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    keywords:
+    - argoproj
+    - argocd
+    - gitops
+    kubeVersion: '>=1.22.0-0'
+    maintainers:
+    - name: argoproj
+      url: https://argoproj.github.io/
+    name: argo-cd
+    sources:
+    - https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
+    - https://github.com/argoproj/argo-cd
+    urls:
+    - https://unevenlabs.github.io/helm-charts/argo-cd-5.24.0-2.tgz
+    version: 5.24.0-2
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: Global nodeSelector configuration
+        - kind: added
+          description: Global tolerations configuration
+        - kind: added
+          description: Global topologySpreadConstraints configuration
+        - kind: added
+          description: Missing component level topologySpreadConstraints configuration
+        - kind: added
+          description: Missing component level priorityClassName configuration
+        - kind: changed
+          description: Global affinity preset can be disabled
+    apiVersion: v2
+    appVersion: v2.6.3
     created: "2023-03-03T15:44:01.963097925Z"
     dependencies:
     - condition: redis-ha.enabled
@@ -390,4 +432,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-06T15:18:55.260339152Z"
+generated: "2023-03-06T17:20:58.838695691Z"
