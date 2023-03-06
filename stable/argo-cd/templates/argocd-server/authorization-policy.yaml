@@ -1,0 +1,68 @@
+{{- if .Values.server.virtualService.public.enabled }}
+{{- if .Values.server.virtualService.public.whiteListed.ips }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ template "argo-cd.server.fullname" . }}-public
+  annotations:
+    {{- range $key, $value := .Values.server.virtualService.public.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "argo-cd.server.fullname" . }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range .Values.server.virtualService.public.whiteListed.ips }}
+          - {{ . | quote }}
+{{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .Values.server.virtualService.public.hosts }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+---
+{{- if .Values.server.virtualService.internal.enabled }}
+{{- if .Values.server.virtualService.internal.whiteListed.ips }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ template "argo-cd.server.fullname" . }}-internal
+  annotations:
+    {{- range $key, $value := .Values.server.virtualService.internal.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ template "argo-cd.server.fullname" . }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        namespaces:
+        - {{ .Release.Namespace }}
+{{- range .Values.server.virtualService.internal.whiteListed.namespaces }}
+        - {{ . | quote }}
+{{- end }}
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range .Values.server.virtualService.internal.whiteListed.ips }}
+          - {{ . | quote }}
+{{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .Values.server.virtualService.internal.hosts }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

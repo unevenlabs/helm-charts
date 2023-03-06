@@ -36,4 +36,4 @@ name: argo-cd
 sources:
   - https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
   - https://github.com/argoproj/argo-cd
-version: 5.24.0-1
+version: 5.24.0-2
