@@ -43,6 +43,29 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/argo-cd-5.24.0-1.tgz
     version: 5.24.0-1
+  argocd-apps:
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: added
+          description: Multiple sources for Application and ApplicationSet
+    apiVersion: v2
+    created: "2023-03-06T15:18:55.261995262Z"
+    description: A Helm chart for managing additional Argo CD Applications and Projects
+    digest: 30484d3620202f73cda98aa9abc3f06e2a6d22b7bf518425e8b81a88fc4c02f0
+    home: https://github.com/argoproj/argo-helm
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    keywords:
+    - argoproj
+    - argocd
+    - gitops
+    maintainers:
+    - name: argoproj
+      url: https://argoproj.github.io/
+    name: argocd-apps
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/argocd-apps-0.0.9.tgz
+    version: 0.0.9
   base:
   - apiVersion: v1
     appVersion: 1.17.1
@@ -367,4 +390,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-03T15:44:01.942078724Z"
+generated: "2023-03-06T15:18:55.260339152Z"
