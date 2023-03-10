@@ -393,7 +393,6 @@ authorizationPolicy:
 #    paths:
 #      - "/heres-my-number"
 
-
 # Service Monitor to collect Prometheus metrices
 serviceMonitor:
   enabled: false
@@ -408,38 +407,38 @@ serviceMonitor:
 
   # List of the endpoints of service from which prometheus will scrape data
   endpoints:
-  - interval: 5s
-    path: /actuator/prometheus
-    port: http
+    - interval: 5s
+      path: /actuator/prometheus
+      port: http
 
 # autoscaling is used for horizonal pod autoscaling
 autoscaling:
-# enabled is a boolean flag for enabling or disabling autoscaling
+  # enabled is a boolean flag for enabling or disabling autoscaling
   enabled: false
-# additionalLabels defines additional labels
+  # additionalLabels defines additional labels
   additionalLabels:
     # key: value
-# annotations defines annotations in key value pair
+  # annotations defines annotations in key value pair
   annotations:
     # key: value
-# minReplicas sets the minimum number of replicas
+  # minReplicas sets the minimum number of replicas
   minReplicas: 1
-# maxReplicas sets the maximum number of replicas
+  # maxReplicas sets the maximum number of replicas
   maxReplicas: 10
-# metrics is the list of metrics used for hpa
+  # metrics is the list of metrics used for hpa
   metrics:
-  - type: Resource
-    resource:
-      name: memory
-      target:
-         type: Utilization
-         averageUtilization: 60
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-         type: Utilization
-         averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
 
 # AlertmanagerConfig object for defining application specific alertmanager configurations
 alertmanagerConfig:
@@ -484,7 +483,8 @@ prometheusRule:
 
   # Groups with alerting rules. Read more here [https://docs.openshift.com/container-platform/4.7/rest_api/monitoring_apis/prometheusrule-monitoring-coreos-com-v1.html]
 
-  groups: []
+  groups:
+    []
     # - name: example-app-uptime
     #   rules:
     #     - alert: ExampleAppDown
@@ -904,10 +904,9 @@ securityGroupPolicy:
   enabled: false
   # securityGroupId: sg-01234567890abcdef                 # Mandatory if enabled true
 
-
 # Argo-rollouts
 argoRollouts:
-  enabled: false                       # Will turn on canary deployment.
+  enabled: false # Will turn on canary deployment.
   # strategy:
   #   canary:
   #     analysis:
@@ -953,3 +952,24 @@ argoRollouts:
   #           reporter="source",
   #           destination_service=~"argo-rollouts-microservice-canary.argo-rollouts-microservice.svc.cluster.local"}[2m])
   #         )
+
+kafkaTopics:
+  # topic1:
+  #   cluster: my-cluster
+  #   name: events-1
+  # topic2:
+  #   cluster: my-cluster
+  #   name: events-2
+  # topic3:
+  #   cluster: my-cluster
+  #   name: events-3
+  # topic4:
+  #   cluster: other-cluster
+  #   name: events-4
+  #   spec:
+  #     partitions: 5
+  #     replicas: 3
+  #     config:
+  #       retention.ms: 7200000
+  #       segment.bytes: 1073741824
+  #       segment.bytes1: 1073741824

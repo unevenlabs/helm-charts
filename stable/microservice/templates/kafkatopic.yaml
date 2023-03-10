@@ -1,0 +1,19 @@
+{{- range $topics := .Values.kafkaTopics }}
+{{ $spec := default dict $topics.spec }}
+{{ $config := default dict $spec.config }}
+---
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaTopic
+metadata:
+  labels:
+    strimzi.io/cluster: {{ $topics.cluster }}
+  name: {{ $topics.name }}
+  namespace: {{ template "application.namespace" $ }}
+spec:
+  topicName: {{ $topics.name | replace "-" "." }}
+  partitions: {{ $spec.partitions | default "1" }}
+  replicas: {{ $spec.replicas | default "3" }}
+  {{- if $config }}
+  config: {{ toYaml $config | nindent 4 }}
+  {{- end}}
+{{- end}}
