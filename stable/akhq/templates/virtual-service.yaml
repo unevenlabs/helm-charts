@@ -1,0 +1,23 @@
+{{- if .Values.virtualService.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ include "akhq.fullname" . }}
+  annotations:
+  {{- range $key, $value := .Values.virtualService.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  gateways: {{ .Values.virtualService.gateways }}
+  hosts: {{ .Values.virtualService.hosts }}
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ include "akhq.fullname" . }}
+        port:
+          number: {{ .Values.service.port }}
+      weight: 100
+{{- end }}
