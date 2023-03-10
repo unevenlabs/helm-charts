@@ -1,0 +1,30 @@
+{{- if .Values.virtualService.enabled }}
+{{- if .Values.virtualService.whiteListed.ips }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ include "kafka-ui.fullname" . }}
+  annotations:
+    {{- range $key, $value := .Values.virtualService.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "kafka-ui.fullname" . }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range .Values.virtualService.whiteListed.ips }}
+          - {{ . | quote }}
+{{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .Values.virtualService.hosts }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
