@@ -16,7 +16,7 @@ spec:
         prefix: /
     route:
     - destination:
-        host:  {{ include "kafka-ui.fullname" . }}
+        host: {{ include "kafka-ui.fullname" . }}
         port:
           number: {{ .Values.service.port }}
       weight: 100
