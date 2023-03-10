@@ -329,6 +329,17 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/kafka-ui-0.6.0.tgz
     version: 0.6.0
+  - apiVersion: v2
+    appVersion: v0.6.0
+    created: "2023-03-10T12:29:43.025967819Z"
+    description: A Helm chart for kafka-UI
+    digest: e92378f034019102e561cccd10e23e513705e3a394541d63179d954989dd62ce
+    icon: https://github.com/provectus/kafka-ui/raw/master/documentation/images/kafka-ui-logo.png
+    name: kafka-ui
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/kafka-ui-0.6.0-1.tgz
+    version: 0.6.0-1
   microservice:
   - apiVersion: v2
     created: "2023-03-01T13:35:48.417495436Z"
@@ -444,4 +455,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-10T12:18:30.60519845Z"
+generated: "2023-03-10T12:29:43.024034294Z"
