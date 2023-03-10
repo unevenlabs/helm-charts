@@ -1,5 +1,29 @@
 apiVersion: v1
 entries:
+  akhq:
+  - apiVersion: v1
+    appVersion: 0.23.0
+    created: "2023-03-10T13:56:11.047707926Z"
+    description: Kafka GUI for Apache Kafka to manage topics, topics data, consumers
+      group, schema registry, connect and more...
+    digest: 0ccb20bb6f7569e3c4319a5d469d6d7a6299cecedd8bcaa1cefc626c4cd5d458
+    home: https://akhq.io
+    icon: https://raw.githubusercontent.com/tchiotludo/akhq/master/client/src/images/logo_black.png
+    keywords:
+    - kafka
+    - confluent
+    - gui
+    - schema-registry
+    - kafka-connect
+    maintainers:
+    - email: tchiot.ludo@gmail.com
+      name: tchiotludo
+    name: akhq
+    sources:
+    - https://github.com/tchiotludo/akhq
+    urls:
+    - https://unevenlabs.github.io/helm-charts/akhq-0.3.1-1.tgz
+    version: 0.3.1-1
   argo-cd:
   - annotations:
       artifacthub.io/changes: |
@@ -466,4 +490,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-03-10T12:35:09.148936722Z"
+generated: "2023-03-10T13:56:11.045956936Z"
