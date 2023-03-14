@@ -528,3 +528,7 @@ internalGateway:
   namespace: default
   credentialName: default-gateway-credential
   hosts: []
+
+proxyProtocol: false
+
+envoyAccessLogging: false

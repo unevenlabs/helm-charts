@@ -1,0 +1,11 @@
+apiVersion: telemetry.istio.io/v1alpha1
+{{- if .Values.envoyAccessLogging }}
+kind: Telemetry
+metadata:
+  name: mesh-default
+  namespace: {{ .Release.Namespace }}
+spec:
+  accessLogging:
+    - providers:
+      - name: envoy
+{{- end }}

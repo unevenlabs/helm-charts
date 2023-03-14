@@ -9,4 +9,4 @@ keywords:
 name: istiod
 sources:
   - http://github.com/istio/istio
-version: 1.17.1-4
+version: 1.17.1-5

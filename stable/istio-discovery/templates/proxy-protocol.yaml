@@ -1,0 +1,20 @@
+{{- if .Values.proxyProtocol }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: proxy-protocol
+  namespace: {{ .Release.Namespace }}
+spec:
+  configPatches:
+    - applyTo: LISTENER
+      patch:
+        operation: MERGE
+
+        value:
+          listener_filters:
+            - name: envoy.listener.proxy_protocol
+            - name: envoy.listener.tls_inspector
+  workloadSelector:
+    labels:
+      istio: ingressgateway
+{{- end }}
