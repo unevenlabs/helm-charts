@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.17.1-5] - 2023-03-14
+### Changed
+- Add Telemety envoy access logging
+- Add Proxy protocol EnvoyFilter
+
 ## [1.17.1-4] - 2023-03-02
 ### Changed
 - fix fork for correct branch. Downloaded from https://istio-release.storage.googleapis.com/charts/istiod-1.17.1.tgz
