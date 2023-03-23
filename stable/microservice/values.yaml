@@ -54,7 +54,7 @@ deployment:
     # key: value
 
   # Replicas to be created
-  replicas: 1
+  replicas:
 
   # Secrets used to pull image
   imagePullSecrets: "github-docker-registry"
