@@ -164,6 +164,21 @@ entries:
   eck:
   - apiVersion: v2
     appVersion: 8.2.3
+    created: "2023-04-20T16:27:40.761784982Z"
+    dependencies:
+    - alias: eckOperator
+      name: eck-operator
+      repository: https://helm.elastic.co
+      version: 2.2.0
+    description: A Helm chart for Elastic Cloud on Kubernetes
+    digest: e351741b78c8be951496d1a646d5cd61e3c75174285906274a28cfd7b5251793
+    name: eck
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/eck-1.0.1.tgz
+    version: 1.0.1
+  - apiVersion: v2
+    appVersion: 8.2.3
     created: "2023-04-20T14:00:29.693321729Z"
     dependencies:
     - alias: eckOperator
@@ -575,4 +590,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-04-20T14:00:29.686671358Z"
+generated: "2023-04-20T16:27:40.755022058Z"
