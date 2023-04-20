@@ -1,0 +1,68 @@
+{{- if .Values.elasticsearch }}
+---
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: {{ .Values.elasticsearch.name | default .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    Environment: {{ .Values.elasticsearch.labels.Environment | default "lab" }}
+spec:
+  version: {{ .Chart.AppVersion }}
+  {{- if .Values.elasticsearch.spec.volumeClaimDeletePolicy }}
+  volumeClaimDeletePolicy: {{ .Values.elasticsearch.spec.volumeClaimDeletePolicy }}
+  {{- end }}
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: {{ .Values.elasticsearch.spec.disableTls }}
+  nodeSets:
+  {{- range .Values.elasticsearch.spec.nodeSets }}
+  - name: {{ .name | default "default" }}
+    count: {{ .count | default 3 }}
+    config:
+      {{- if eq .config.nodeStoreAllowMmap false }}
+      node.store.allow_mmap: {{ .config.nodeStoreAllowMmap }}
+      {{- end }}
+      {{- if .config.nodeRoles }}
+      node.roles: {{ .config.nodeRoles }}
+      {{- end }}
+    podTemplate:
+      metadata:
+        labels:
+          Environment: {{ $.Values.elasticsearch.labels.Environment | default "lab" }}
+      spec:
+        containers:
+        - name: elasticsearch
+          env:
+          - name: xpack.security.enabled
+            value: "false"
+          - name: READINESS_PROBE_PROTOCOL
+            value: http
+          resources:
+            limits:
+              cpu: {{ .resources.limits.cpu | default 2 }}
+              memory: {{ .resources.limits.memory | default "2Gi" }}
+            requests:
+              cpu: {{ .resources.requests.cpu | default "100m" }}
+              memory: {{ .resources.requests.memory | default "1Gi" }}
+    volumeClaimTemplates:
+      - metadata:
+          name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+        spec:
+          # If not specified, will use the default storage class.
+          accessModes:
+          - {{ .accessModes | default "ReadWriteOnce" }}
+          resources:
+            requests:
+              storage: {{ .storage | default "100Gi" }}
+  {{- end }}
+  podDisruptionBudget:
+    spec:
+      {{- with .Values.elasticsearch.spec.podDisruptionBudget }}
+      minAvailable: {{ .minAvailable }}
+      selector:
+        matchLabels:
+          elasticsearch.k8s.elastic.co/cluster-name: {{ $.Values.elasticsearch.name | default $.Release.Name }}
+  {{- end}}
+{{- end }}

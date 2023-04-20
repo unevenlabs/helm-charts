@@ -1,0 +1,46 @@
+{{- if .Values.beats }}
+{{- range .Values.beats }}
+---
+apiVersion: beat.k8s.elastic.co/v1beta1
+kind: Beat
+metadata:
+  name: {{ if .name }}{{ .name }}{{ else }}{{ $.Release.Name }}{{ end }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    Environment: {{ .labels.Environment | default "lab" }}
+spec:
+  type: {{ .spec.type }}
+  version: {{ $.Chart.AppVersion }}
+  {{- if .spec.elasticsearchRef }}
+  elasticsearchRef:
+    {{- range $key, $value := .spec.elasticsearchRef }}
+    {{ toYaml $key }}: {{ toYaml $value }}
+    {{- end }}
+  {{- end }}
+  {{- if .spec.kibanaRef }}
+  kibanaRef:
+    {{- range $key, $value := .spec.kibanaRef }}
+    {{ toYaml $key }}: {{ toYaml $value }}
+    {{- end }}
+  {{- end }}
+  {{- if .spec.config }}
+  config:
+    {{ toYaml .spec.config | indent 4 | trim }}
+  {{- end }}
+  {{- if (and .spec.deployment (not .spec.daemonSet)) }}
+  deployment:
+    {{- if .spec.cloudwatchServiceAccount }}
+      {{- $sa_spec := dict "podTemplate" (dict "spec" (dict "serviceAccountName" .spec.cloudwatchServiceAccount.name)) }}
+      {{- $full_spec := merge .spec.deployment $sa_spec }}
+      {{- toYaml $full_spec | nindent 4 }}
+    {{- else }}
+    {{ toYaml .spec.deployment | indent 4 | trim }}
+    {{- end }}
+  {{- else }}
+  {{- if (and .spec.daemonSet (not .spec.deployment)) }}
+  daemonSet:
+    {{ toYaml .spec.daemonSet | indent 4 | trim }}
+  {{- end }}
+  {{- end }}
+{{- end }}
+{{- end }}

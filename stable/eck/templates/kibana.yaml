@@ -1,0 +1,31 @@
+{{- if .Values.kibana }}
+---
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: {{ .Values.kibana.name | default .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    Environment: {{ .Values.kibana.labels.Environment | default "lab" }}
+spec:
+  version: {{ .Chart.AppVersion }}
+  count: {{ .Values.kibana.spec.count }}
+  http:
+    tls:
+      selfSignedCertificate:
+        disabled: {{ .Values.kibana.spec.disableTls }}
+  {{- if .Values.kibana.spec.elasticsearchRef }}
+  elasticsearchRef:
+    {{- range $key, $value := .Values.kibana.spec.elasticsearchRef }}
+    {{ toYaml $key }}: {{ toYaml $value }}
+    {{- end }}
+  {{- end }}
+  {{- if .Values.kibana.spec.config }}
+  config:
+    {{ toYaml .Values.kibana.spec.config | indent 4 | trim }}
+  {{- end }}
+  {{- if .Values.kibana.spec.podTemplate }}
+  podTemplate:
+    {{ toYaml .Values.kibana.spec.podTemplate | indent 4 | trim }}
+  {{- end }}
+{{- end }}
