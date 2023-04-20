@@ -6,7 +6,7 @@ metadata:
   name: {{ .Values.elasticsearch.name | default .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    Environment: {{ .Values.elasticsearch.labels.Environment | default "lab" }}
+    Environment: {{ .Values.elasticsearch.labels.Environment | default "dev" }}
 spec:
   version: {{ .Chart.AppVersion }}
   {{- if .Values.elasticsearch.spec.volumeClaimDeletePolicy }}
@@ -30,7 +30,10 @@ spec:
     podTemplate:
       metadata:
         labels:
-          Environment: {{ $.Values.elasticsearch.labels.Environment | default "lab" }}
+          Environment: {{ $.Values.elasticsearch.labels.Environment | default "dev" }}
+      {{- if $.Values.elasticsearch.additionalPodAnnotations }}
+        annotations: {{ toYaml $.Values.elasticsearch.additionalPodAnnotations | nindent 10 }}
+      {{- end }}
       spec:
         containers:
         - name: elasticsearch

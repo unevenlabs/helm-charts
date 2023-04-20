@@ -6,7 +6,7 @@ metadata:
   name: {{ .Values.kibana.name | default .Release.Name }}
   namespace: {{ .Release.Namespace }}
   labels:
-    Environment: {{ .Values.kibana.labels.Environment | default "lab" }}
+    Environment: {{ .Values.kibana.labels.Environment | default "dev" }}
 spec:
   version: {{ .Chart.AppVersion }}
   count: {{ .Values.kibana.spec.count }}

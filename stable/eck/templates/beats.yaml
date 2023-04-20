@@ -7,7 +7,7 @@ metadata:
   name: {{ if .name }}{{ .name }}{{ else }}{{ $.Release.Name }}{{ end }}
   namespace: {{ $.Release.Namespace }}
   labels:
-    Environment: {{ .labels.Environment | default "lab" }}
+    Environment: {{ .labels.Environment | default "dev" }}
 spec:
   type: {{ .spec.type }}
   version: {{ $.Chart.AppVersion }}
