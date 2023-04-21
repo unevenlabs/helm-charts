@@ -344,7 +344,7 @@ virtualService:
     whiteListed:
       ips: []
       matchLabels:
-        app: kibana
+        common.k8s.elastic.co/type: kibana
       # releaseNamespace: true
   elasticsearch:
     name: elasticsearch
@@ -359,4 +359,4 @@ virtualService:
     whiteListed:
       ips: []
       matchLabels:
-        app: elasticssearch
+        common.k8s.elastic.co/type: elasticsearch
