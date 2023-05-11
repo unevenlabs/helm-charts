@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2023-05-11
+### Changed
+- Add internalIPs whitelisting
+
 ## [1.2.0] - 2023-04-21
 ### Changed
 - Add metricbeat

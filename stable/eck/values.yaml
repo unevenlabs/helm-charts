@@ -346,6 +346,7 @@ virtualService:
       matchLabels:
         common.k8s.elastic.co/type: kibana
       # releaseNamespace: true
+      # internalIPs: []
   elasticsearch:
     name: elasticsearch
     type:
