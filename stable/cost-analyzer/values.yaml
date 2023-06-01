@@ -11,15 +11,12 @@ global:
     enabled: false
     proxy: false
 
-pricingCsv:
-  enabled: false
-  location:
-    provider: "AWS"
-    region: "us-east-1"
-    URI: s3://kc-csv-test/pricing_schema.csv # a valid file URI
-    csvAccessCredentials: pricing-schema-access-secret
-
 cost-analyzer:
+  global:
+    grafana:
+      enabled: false
+      proxy: false
+
   pricingCsv:
     enabled: false
     location:
@@ -130,7 +127,7 @@ cost-analyzer:
       # clusterIDConfigmap: cluster-id-configmap
       image:
         repository: public.ecr.aws/kubecost/prometheus
-        tag: v2.35.01
+        tag: v2.35.1
       resources: {}
       # limits:
       #   cpu: 500m
