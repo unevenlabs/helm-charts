@@ -161,6 +161,20 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/base-1.17.1-1.tgz
     version: 1.17.1-1
+  cost-analyzer:
+  - apiVersion: v2
+    created: "2023-06-01T14:41:12.139345716Z"
+    dependencies:
+    - name: cost-analyzer
+      repository: oci://public.ecr.aws/kubecost
+      version: 1.103.4
+    description: cost-analyzer
+    digest: 3fbbcd9f2ab35d72a2d7179a2952b293272128c1435a51d7237c95dbd5037983
+    name: cost-analyzer
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/cost-analyzer-1.103.4-1.tgz
+    version: 1.103.4-1
   eck:
   - apiVersion: v2
     appVersion: 8.7.0
@@ -661,4 +675,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-05-11T12:56:01.141748185Z"
+generated: "2023-06-01T14:41:12.122289568Z"
