@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.1] - 2023-06-08
+### Changed
+- Make labels lower case
+
 ## [1.3.0] - 2023-06-08
 ### Changed
 - Add Chain label

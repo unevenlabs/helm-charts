@@ -18,10 +18,10 @@ appVersion: "{{ .Values.deployment.image.tag }}"
 {{- end -}}
 
 {{- define "application.labels.chart" -}}
-Environment: {{ .Values.labels.environment }}
-Owner: {{ .Values.labels.owner }}
-Application: {{ .Values.labels.application }}
-Chain:  {{ .Values.labels.chain }}
+environment: {{ .Values.labels.environment }}
+owner: {{ .Values.labels.owner }}
+application: {{ .Values.labels.application }}
+chain:  {{ .Values.labels.chain }}
 provider: unevenlabs
 chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 release: {{ .Release.Name | quote }}
