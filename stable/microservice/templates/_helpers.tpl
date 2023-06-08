@@ -21,6 +21,7 @@ appVersion: "{{ .Values.deployment.image.tag }}"
 Environment: {{ .Values.labels.environment }}
 Owner: {{ .Values.labels.owner }}
 Application: {{ .Values.labels.application }}
+Chain:  {{ .Values.labels.chain }}
 provider: unevenlabs
 chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
 release: {{ .Release.Name | quote }}

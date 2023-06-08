@@ -8,9 +8,9 @@ labels:
   environment: "dev"
   owner: "payments"
   application: "balance"
+  chain: "goerli"
 
 deployment:
-
   # By default deploymentStrategy is set to rollingUpdate with maxSurge of 25% and maxUnavailable of 25%
   # You can change type to `Recreate` or can uncomment `rollingUpdate` specification and adjust them to your usage.
   strategy:
@@ -31,21 +31,21 @@ deployment:
 
   # Init containers which runs before the app container
   hostAliases:
-  - ip: "127.0.0.1"
-    hostnames:
-    - "foo.local"
-    - "bar.local"
-  - ip: "10.1.2.3"
-    hostnames:
-    - "foo.remote"
-    - "bar.remote"
+    - ip: "127.0.0.1"
+      hostnames:
+        - "foo.local"
+        - "bar.local"
+    - ip: "10.1.2.3"
+      hostnames:
+        - "foo.remote"
+        - "bar.remote"
 
   # Init containers which runs before the app container
   initContainers:
-  - name: init-contaner
-    image: busybox
-    imagePullPolicy: IfNotPresent
-    command: ['/bin/sh']
+    - name: init-contaner
+      image: busybox
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh"]
 
   # Additional labels for Deployment
   additionalLabels:
@@ -80,17 +80,17 @@ deployment:
 
   # If want to mount Envs from configmap or secret
   envFrom:
-  - type: configmap
-    name: my-configmap
-  - type: configmap
-    nameSuffix: your-configmap
-  - type: secret
-    name: my-secret
+    - type: configmap
+      name: my-configmap
+    - type: configmap
+      nameSuffix: your-configmap
+    - type: secret
+      name: my-secret
 
   # Environment variables to be passed to the app container
   env:
-  - name: ENVIRONMENT
-    value: "dev"
+    - name: ENVIRONMENT
+      value: "dev"
 
   # Volumes to be added to the pod
   volumes:
@@ -123,14 +123,14 @@ deployment:
 
   # Pod affinity and pod anti-affinity allow you to specify rules about how pods should be placed relative to other pods.
   affinity:
-   nodeAffinity:
-     requiredDuringSchedulingIgnoredDuringExecution:
-       nodeSelectorTerms:
-       - matchExpressions:
-         - key: disktype
-           operator: In
-           values:
-           - ssd
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: disktype
+                operator: In
+                values:
+                  - ssd
 
   # Image of the app container
   image:
@@ -175,10 +175,10 @@ deployment:
 
   # Add additional containers besides init and app containers
   additionalContainers:
-  - name: sidecar-contaner
-    image: busybox
-    imagePullPolicy: IfNotPresent
-    command: ['/bin/sh']
+    - name: sidecar-contaner
+      image: busybox
+      imagePullPolicy: IfNotPresent
+      command: ["/bin/sh"]
 
   # Security Context for the pod
   securityContext:
@@ -192,15 +192,15 @@ deployment:
 
   # List of ports for the primary container
   ports:
-  - containerPort: 8080
-    name: http
-    protocol: TCP
-  - containerPort: 8778
-    name: jolokia
-    protocol: TCP
-  - containerPort: 8443
-    name: https
-    protocol: TCP
+    - containerPort: 8080
+      name: http
+      protocol: TCP
+    - containerPort: 8778
+      name: jolokia
+      protocol: TCP
+    - containerPort: 8443
+      name: https
+      protocol: TCP
 
 # Add Storage volumes to the pods
 persistence:
@@ -229,9 +229,9 @@ service:
     expose: "true"
   annotations:
     config.xposer.unevenlabs.com/Domain: unevenlabs.com
-    config.xposer.unevenlabs.com/IngressNameTemplate: '{{.Service}}-{{.Namespace}}'
+    config.xposer.unevenlabs.com/IngressNameTemplate: "{{.Service}}-{{.Namespace}}"
     config.xposer.unevenlabs.com/IngressURLPath: /
-    config.xposer.unevenlabs.com/IngressURLTemplate: '{{.Service}}.{{.Namespace}}.{{.Domain}'
+    config.xposer.unevenlabs.com/IngressURLTemplate: "{{.Service}}.{{.Namespace}}.{{.Domain}"
     xposer.unevenlabs.com/annotations: |-
       kubernetes.io/ingress.class: external-ingress
       ingress.kubernetes.io/rewrite-target: /
@@ -264,43 +264,43 @@ rbac:
 
   # Create Roles (Namespaced)
   roles:
-  - name: configmaps
-    rules:
-    - apiGroups:
-      - ""
-      resources:
-      - configmaps
-      verbs:
-      - get
-  - name: secrets
-    rules:
-    - apiGroups:
-      - ""
-      resources:
-      - secrets
-      verbs:
-      - get
+    - name: configmaps
+      rules:
+        - apiGroups:
+            - ""
+          resources:
+            - configmaps
+          verbs:
+            - get
+    - name: secrets
+      rules:
+        - apiGroups:
+            - ""
+          resources:
+            - secrets
+          verbs:
+            - get
 
   # Create ClusterRoles (Clusterwide)
   clusterroles:
-  - name: configmaps
-    rules:
-    - apiGroups:
-      - ""
-      resources:
-      - configmaps
-      verbs:
-      - get
-  - name: pods
-    rules:
-    - apiGroups:
-      - ""
-      resources:
-      - pods
-      verbs:
-      - get
-      - list
-      - watch
+    - name: configmaps
+      rules:
+        - apiGroups:
+            - ""
+          resources:
+            - configmaps
+          verbs:
+            - get
+    - name: pods
+      rules:
+        - apiGroups:
+            - ""
+          resources:
+            - pods
+          verbs:
+            - get
+            - list
+            - watch
 
 # Additional ConfigMaps
 configMap:
@@ -310,18 +310,18 @@ configMap:
   annotations:
     common-annotation: value
   files:
-  - nameSuffix: code-config
-    additionalLabels:
-      test-label: value
-    annotations:
-      test-annotation: value
-    data:
-      key1: value1
-      key2: value2
-  - nameSuffix: dev-config
-    data:
-      key1: value1
-      key2: value2
+    - nameSuffix: code-config
+      additionalLabels:
+        test-label: value
+      annotations:
+        test-annotation: value
+      data:
+        key1: value1
+        key2: value2
+    - nameSuffix: dev-config
+      data:
+        key1: value1
+        key2: value2
 
 # Additional Secrets
 secret:
@@ -357,19 +357,19 @@ virtualService:
 
     # Istio gateway
     gateways:
-    - default/default-gateway
+      - default/default-gateway
 
     # Matching hosts
     hosts:
-    - example.unevenlabs.com
+      - example.unevenlabs.com
 
     advancedMatch:
-    - uri:
-        prefix: /login
-    - uri:
-        prefix: /admin
-      rewrite:
-        uri: /
+      - uri:
+          prefix: /login
+      - uri:
+          prefix: /admin
+        rewrite:
+          uri: /
 
     destination:
       # Service name of the application
@@ -404,16 +404,16 @@ virtualService:
     corsPolicy:
       # Allowed origins
       allowOrigins:
-      - https://example.com
+        - https://example.com
       # List of allowed HTTP methods
       allowMethods:
-      - POST
-      - GET
+        - POST
+        - GET
       # Allowed to send request using credentials
       allowCredentials: true
       # List of allowed HTTP headers
       allowHeaders:
-      - X-Foo-Bar
+        - X-Foo-Bar
       # Cache duration of preflight request
       maxAge: "24h"
 
@@ -457,38 +457,38 @@ serviceMonitor:
 
   # List of the endpoints of service from which prometheus will scrape data
   endpoints:
-  - interval: 5s
-    path: /actuator/prometheus
-    port: http
+    - interval: 5s
+      path: /actuator/prometheus
+      port: http
 
 # autoscaling is used for horizonal pod autoscaling
 autoscaling:
-# enabled is a boolean flag for enabling or disabling autoscaling
+  # enabled is a boolean flag for enabling or disabling autoscaling
   enabled: true
-# additionalLabels defines additional labels
+  # additionalLabels defines additional labels
   additionalLabels:
     key: value
-# annotations defines annotations in key value pair
+  # annotations defines annotations in key value pair
   annotations:
     # key: value
-# minReplicas sets the minimum number of replicas
+  # minReplicas sets the minimum number of replicas
   minReplicas: 1
-# maxReplicas sets the maximum number of replicas
+  # maxReplicas sets the maximum number of replicas
   maxReplicas: 10
-# metrics is the list of metrics used for hpa
+  # metrics is the list of metrics used for hpa
   metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-         type: Utilization
-         averageUtilization: 60
-  - type: Resource
-    resource:
-      name: memory
-      target:
-         type: Utilization
-         averageUtilization: 60
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 60
+    - type: Resource
+      resource:
+        name: memory
+        target:
+          type: Utilization
+          averageUtilization: 60
 
 # AlertmanagerConfig object for defining application specific alertmanager configurations
 alertmanagerConfig:
@@ -503,26 +503,26 @@ alertmanagerConfig:
     route:
       receiver: "null"
       groupBy:
-      - job
+        - job
       routes:
-      - receiver: "null"
-        groupBy:
-        - alertname
-        - severity
-        continue: true
+        - receiver: "null"
+          groupBy:
+            - alertname
+            - severity
+          continue: true
       groupWait: 30s
       groupInterval: 5m
       repeatInterval: 12h
     receivers:
-    - name: "null"
+      - name: "null"
     inhibitRules:
-    - sourceMatch:
-        - name: severity
-          value: 'critical'
-      targetMatch:
-        - name: severity
-          value: 'warning'
-      equal: ['cluster', 'service']
+      - sourceMatch:
+          - name: severity
+            value: "critical"
+        targetMatch:
+          - name: severity
+            value: "warning"
+        equal: ["cluster", "service"]
 
 # PrometheusRule object for defining application alerting rules
 prometheusRule:
@@ -595,15 +595,15 @@ jobs:
       imagePullPolicy: Always
     # optional env vars
     env:
-    - name: ECHO_VAR
-      value: "busybox"
+      - name: ECHO_VAR
+        value: "busybox"
     envFrom:
-    - type: configmap
-      name: my-configmap
-    - type: configmap
-      nameSuffix: your-configmap
-    - type: secret
-      name: my-secret
+      - type: configmap
+        name: my-configmap
+      - type: configmap
+        nameSuffix: your-configmap
+      - type: secret
+        name: my-secret
     schedule: "* * * * *"
     command: ["/bin/sh"]
     args:
@@ -625,18 +625,18 @@ jobs:
     nodeSelector:
       type: infra
     tolerations:
-    - effect: NoSchedule
-      operator: Exists
+      - effect: NoSchedule
+        operator: Exists
     affinity:
       nodeAffinity:
         requiredDuringSchedulingIgnoredDuringExecution:
           nodeSelectorTerms:
-          - matchExpressions:
-            - key: kubernetes.io/e2e-az-name
-              operator: In
-              values:
-              - e2e-az1
-              - e2e-az2
+            - matchExpressions:
+                - key: kubernetes.io/e2e-az-name
+                  operator: In
+                  values:
+                    - e2e-az1
+                    - e2e-az2
   # first regular job
   - name: hello-world-job
     image:
@@ -660,19 +660,19 @@ vault:
     annotations:
       key: value
     files:
-    - mountPath: "/keys/custom-content-key.json"
-      secretPath: "unevenlabs/test/app/keys"
-      contents:
-        - name: "username"
-          value: .Data.username
-        - name: "password"
-          value: .Data.password
-        - name: "endpoint"
-          value: .Data.endpoint
-      command: "echo 'Test command'"
-    - mountPath: "/keys/key-1.json"
-      secretPath: "unevenlabs/test/app/keys"
-      secretKey: "KEY1"
+      - mountPath: "/keys/custom-content-key.json"
+        secretPath: "unevenlabs/test/app/keys"
+        contents:
+          - name: "username"
+            value: .Data.username
+          - name: "password"
+            value: .Data.password
+          - name: "endpoint"
+            value: .Data.endpoint
+        command: "echo 'Test command'"
+      - mountPath: "/keys/key-1.json"
+        secretPath: "unevenlabs/test/app/keys"
+        secretKey: "KEY1"
 
 opa:
   enabled: true
@@ -857,95 +857,95 @@ statefulSet:
 keda:
   enabled: true
   scaledObjects:
-  - name: test-scaled-object-prometheus
-    scaleTargetRef:
-      apiVersion: apps/v1                               # Optional. Default: apps/v1
-      kind: kind-of-target-resource                     # Optional. Default: Deployment
-      name: name-of-target-resource                     # Mandatory. Must be in the same namespace as the ScaledObject
-      # envSourceContainerName: container-name          # Optional. Default: .spec.template.spec.containers[0]
-    pollingInterval: 30
-    cooldownPeriod: 300
-    minReplicaCount: 1
-    maxReplicaCount: 100
-    # {list of triggers to activate scaling of the target resource}
-    triggers:
-      - type: prometheus
-        metadata:
-          serverAddress: http://prometheus-server
-          metricName: nginx_connections_active_keda
-          query: |
-            sum(avg_over_time(nginx_ingress_nginx_connections_active{app="main-nginx-ingress"}[1m]))
-          threshold: "100"
-        # authenticationRef:                          # optional.
-        #   name: keda-vault-prometheus-credential
-  - name: test-scaled-object-kafka
-    scaleTargetRef:
-      apiVersion: apps/v1                              # Optional. Default: apps/v1
-      kind: kind-of-target-resource                    # Optional. Default: Deployment
-      name: name-of-target-resource                    # Mandatory. Must be in the same namespace as the ScaledObject
-      # envSourceContainerName: container-name         # Optional. Default: .spec.template.spec.containers[0]
-    pollingInterval:  30                               # Optional. Default: 30 seconds
-    cooldownPeriod:   300                              # Optional. Default: 300 seconds
-    minReplicaCount:  1                                # Optional. Default: 1
-    maxReplicaCount:  100                              # Optional. Default: 100
-    fallback:                                          # Optional. Section to specify fallback options
-      failureThreshold: 3                              # Mandatory if fallback section is included
-      replicas: 6                                      # Mandatory if fallback section is included
-    advanced:                                          # Optional. Section to specify advanced options
-      restoreToOriginalReplicaCount: false             # Optional. Default: false
-      horizontalPodAutoscalerConfig:                   # Optional. Section to specify HPA related options
-        behavior:                                      # Optional. Use to modify HPA's scaling behavior
-          scaleDown:
-            stabilizationWindowSeconds: 300
-            policies:
-            - type: Percent
-              value: 100
-              periodSeconds: 15
-    # {list of triggers to activate scaling of the target resource}
-    triggers:
-      - type: kafka
-        metadata:
-          bootstrapServers: localhost:9092
-          consumerGroup: my-group       # Make sure that this consumer group name is the same one as the one that is consuming topics
-          topic: test-topic
-          # Optional
-          lagThreshold: "50"
-        authenticationRef:
-          name: keda-vault-kafka-credential
+    - name: test-scaled-object-prometheus
+      scaleTargetRef:
+        apiVersion: apps/v1 # Optional. Default: apps/v1
+        kind: kind-of-target-resource # Optional. Default: Deployment
+        name: name-of-target-resource # Mandatory. Must be in the same namespace as the ScaledObject
+        # envSourceContainerName: container-name          # Optional. Default: .spec.template.spec.containers[0]
+      pollingInterval: 30
+      cooldownPeriod: 300
+      minReplicaCount: 1
+      maxReplicaCount: 100
+      # {list of triggers to activate scaling of the target resource}
+      triggers:
+        - type: prometheus
+          metadata:
+            serverAddress: http://prometheus-server
+            metricName: nginx_connections_active_keda
+            query: |
+              sum(avg_over_time(nginx_ingress_nginx_connections_active{app="main-nginx-ingress"}[1m]))
+            threshold: "100"
+          # authenticationRef:                          # optional.
+          #   name: keda-vault-prometheus-credential
+    - name: test-scaled-object-kafka
+      scaleTargetRef:
+        apiVersion: apps/v1 # Optional. Default: apps/v1
+        kind: kind-of-target-resource # Optional. Default: Deployment
+        name: name-of-target-resource # Mandatory. Must be in the same namespace as the ScaledObject
+        # envSourceContainerName: container-name         # Optional. Default: .spec.template.spec.containers[0]
+      pollingInterval: 30 # Optional. Default: 30 seconds
+      cooldownPeriod: 300 # Optional. Default: 300 seconds
+      minReplicaCount: 1 # Optional. Default: 1
+      maxReplicaCount: 100 # Optional. Default: 100
+      fallback: # Optional. Section to specify fallback options
+        failureThreshold: 3 # Mandatory if fallback section is included
+        replicas: 6 # Mandatory if fallback section is included
+      advanced: # Optional. Section to specify advanced options
+        restoreToOriginalReplicaCount: false # Optional. Default: false
+        horizontalPodAutoscalerConfig: # Optional. Section to specify HPA related options
+          behavior: # Optional. Use to modify HPA's scaling behavior
+            scaleDown:
+              stabilizationWindowSeconds: 300
+              policies:
+                - type: Percent
+                  value: 100
+                  periodSeconds: 15
+      # {list of triggers to activate scaling of the target resource}
+      triggers:
+        - type: kafka
+          metadata:
+            bootstrapServers: localhost:9092
+            consumerGroup: my-group # Make sure that this consumer group name is the same one as the one that is consuming topics
+            topic: test-topic
+            # Optional
+            lagThreshold: "50"
+          authenticationRef:
+            name: keda-vault-kafka-credential
 
   triggerAuthentications:
     - name: keda-vault-prometheus-credential
       spec:
-        hashiCorpVault:                                     # Optional.
-          address: {hashicorp-vault-address}                # Required.
-          namespace: {hashicorp-vault-namespace}            # Optional. Default is root namespace. Useful for Vault Enterprise
-          authentication: token | kubernetes                # Required.
-          role: {hashicorp-vault-role}                      # Optional.
-          mount: {hashicorp-vault-mount}                    # Optional.
-          credential:                                       # Optional.
-            token: {hashicorp-vault-token}                  # Optional.
-            serviceAccount: {path-to-service-account-file}  # Optional.
-          secrets:                                          # Required.
-          - parameter: {scaledObject-parameter-name}        # Required.
-            key: {hasicorp-vault-secret-key-name}           # Required.
-            path: {hasicorp-vault-secret-path}              # Required.
+        hashiCorpVault: # Optional.
+          address: { hashicorp-vault-address } # Required.
+          namespace: { hashicorp-vault-namespace } # Optional. Default is root namespace. Useful for Vault Enterprise
+          authentication: token | kubernetes # Required.
+          role: { hashicorp-vault-role } # Optional.
+          mount: { hashicorp-vault-mount } # Optional.
+          credential: # Optional.
+            token: { hashicorp-vault-token } # Optional.
+            serviceAccount: { path-to-service-account-file } # Optional.
+          secrets: # Required.
+            - parameter: { scaledObject-parameter-name } # Required.
+              key: { hasicorp-vault-secret-key-name } # Required.
+              path: { hasicorp-vault-secret-path } # Required.
     - name: keda-vault-kafka-credential
-      kind: ClusterTriggerAuthentication                    # optional. Default is TriggerAuthentication. TriggerAuthentication is namespaced; ClusterTriggerAuthentication is cluster wide.
+      kind: ClusterTriggerAuthentication # optional. Default is TriggerAuthentication. TriggerAuthentication is namespaced; ClusterTriggerAuthentication is cluster wide.
       spec:
-        hashiCorpVault:                                     # Optional.
-          address: {hashicorp-vault-address}                # Required.
-          namespace: {hashicorp-vault-namespace}            # Optional. Default is root namespace. Useful for Vault Enterprise
-          authentication: token | kubernetes                # Required.
-          role: {hashicorp-vault-role}                      # Optional.
-          mount: {hashicorp-vault-mount}                    # Optional.
-          credential:                                       # Optional.
-            token: {hashicorp-vault-token}                  # Optional.
-            serviceAccount: {path-to-service-account-file}  # Optional.
-          secrets:                                          # Required.
-          - parameter: {scaledObject-parameter-name}        # Required.
-            key: {hasicorp-vault-secret-key-name}           # Required.
-            path: {hasicorp-vault-secret-path}              # Required.
+        hashiCorpVault: # Optional.
+          address: { hashicorp-vault-address } # Required.
+          namespace: { hashicorp-vault-namespace } # Optional. Default is root namespace. Useful for Vault Enterprise
+          authentication: token | kubernetes # Required.
+          role: { hashicorp-vault-role } # Optional.
+          mount: { hashicorp-vault-mount } # Optional.
+          credential: # Optional.
+            token: { hashicorp-vault-token } # Optional.
+            serviceAccount: { path-to-service-account-file } # Optional.
+          secrets: # Required.
+            - parameter: { scaledObject-parameter-name } # Required.
+              key: { hasicorp-vault-secret-key-name } # Required.
+              path: { hasicorp-vault-secret-path } # Required.
 
 securityGroupPolicy:
   enabled: true
-  securityGroupId: sg-01234567890abcdef                # Mandatory if enabled true
+  securityGroupId: sg-01234567890abcdef # Mandatory if enabled true

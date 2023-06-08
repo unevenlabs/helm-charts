@@ -8,6 +8,7 @@ labels:
   environment: ""
   owner: ""
   application: ""
+  chain: shared
 
 deployment:
   enabled: true
