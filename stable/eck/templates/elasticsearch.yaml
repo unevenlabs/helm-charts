@@ -20,13 +20,7 @@ spec:
   {{- range .Values.elasticsearch.spec.nodeSets }}
   - name: {{ .name | default "default" }}
     count: {{ .count | default 3 }}
-    config:
-      {{- if eq .config.nodeStoreAllowMmap false }}
-      node.store.allow_mmap: {{ .config.nodeStoreAllowMmap }}
-      {{- end }}
-      {{- if .config.nodeRoles }}
-      node.roles: {{ .config.nodeRoles }}
-      {{- end }}
+    config: {{ toYaml .config | nindent 6 }}
     podTemplate:
       metadata:
         labels:
