@@ -232,12 +232,13 @@ elasticsearch:
     Environment: dev
   spec:
     disableTls: true
+    # awsRoleArn: arn:aws:iam::121212121212:role/dev-eck
     nodeSets:
       - name: default
         config:
-          nodeStoreAllowMmap: false
+          node.store.allow_mmap: false
           # Specify node roles
-          # nodeRoles: ["master"]
+          # node.roles: ["master"]
         count: 3
         storage: 200Gi
         resources:

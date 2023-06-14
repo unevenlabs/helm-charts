@@ -36,6 +36,15 @@ spec:
             value: "false"
           - name: READINESS_PROBE_PROTOCOL
             value: http
+        {{- if $.Values.elasticsearch.spec.awsRoleArn }}
+          - name: AWS_WEB_IDENTITY_TOKEN_FILE
+            value: "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
+          - name: AWS_ROLE_ARN
+            value: {{ $.Values.elasticsearch.spec.awsRoleArn }}
+          volumeMounts:
+            - name: aws-iam-token
+              mountPath: /usr/share/elasticsearch/config/repository-s3
+        {{- end }}
           resources:
             limits:
               cpu: {{ .resources.limits.cpu | default 2 }}
@@ -43,6 +52,17 @@ spec:
             requests:
               cpu: {{ .resources.requests.cpu | default "100m" }}
               memory: {{ .resources.requests.memory | default "1Gi" }}
+      {{- if $.Values.elasticsearch.spec.awsRoleArn }}
+        serviceAccountName: {{ $.Values.elasticsearch.name | default $.Release.Name }}-aws-sa
+        volumes:
+          - name: aws-iam-token
+            projected:
+              sources:
+                - serviceAccountToken:
+                    audience: sts.amazonaws.com
+                    expirationSeconds: 86400
+                    path: aws-web-identity-token-file
+      {{- end }}
     volumeClaimTemplates:
       - metadata:
           name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
