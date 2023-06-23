@@ -1,0 +1,14 @@
+{{- if .Values.datadogMonitors }}
+{{- range .Values.datadogMonitors }}
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ if .name }}{{ .name }}{{ else }}{{ $.Release.Name }}{{ end }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    Environment: {{ $.Values.labels.Environment | default "dev" }}
+spec: {{ toYaml .spec | nindent 2 }}
+
+{{- end }}
+{{- end }}

@@ -362,3 +362,18 @@ virtualService:
       ips: []
       matchLabels:
         common.k8s.elastic.co/type: elasticsearch
+
+datadogMonitors:
+  []
+  # - name: test
+  #   spec:
+  #     query: "max(last_5m):max:elasticsearch.unassigned_shards{cluster_name:dev-applications} > 50"
+  #     type: "query alert"
+  #     name: "Elasticsearch Unassigned Shards test"
+  #     message: "@ofir@unevenlabs.com  @filipe@unevenlabs.com"
+  #     tags:
+  #       - "test:datadog"
+  #     priority: 5
+  #     options:
+  #       thresholds:
+  #         critical: "50"
