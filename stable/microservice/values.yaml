@@ -974,3 +974,31 @@ kafkaTopics:
   #       retention.ms: 7200000
   #       segment.bytes: 1073741824
   #       segment.bytes1: 1073741824
+
+datadogMonitors:
+  # test1:
+  #   name: test1
+  #   spec:
+  #     query: "max(last_5m):max:elasticsearch.unassigned_shards{cluster_name:dev-applications} > 50"
+  #     type: "query alert"
+  #     name: "Elasticsearch Unassigned Shards test"
+  #     message: "@filipe@unevenlabs.com"
+  #     tags:
+  #       - "test:datadog"
+  #     priority: 5
+  #     options:
+  #       thresholds:
+  #         critical: "50"
+  # test2:
+  #   name: test2
+  #   spec:
+  #     query: "max(last_5m):max:elasticsearch.unassigned_shards{cluster_name:dev-applications} > 50"
+  #     type: "query alert"
+  #     name: "Elasticsearch Unassigned Shards test"
+  #     message: "@filipe@unevenlabs.com"
+  #     tags:
+  #       - "test:datadog"
+  #     priority: 5
+  #     options:
+  #       thresholds:
+  #         critical: "50"

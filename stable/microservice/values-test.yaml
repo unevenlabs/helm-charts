@@ -949,3 +949,31 @@ keda:
 securityGroupPolicy:
   enabled: true
   securityGroupId: sg-01234567890abcdef # Mandatory if enabled true
+
+datadogMonitors:
+  test1:
+    name: test1
+    spec:
+      query: "max(last_5m):max:elasticsearch.unassigned_shards{cluster_name:dev-applications} > 50"
+      type: "query alert"
+      name: "Elasticsearch Unassigned Shards test"
+      message: "@filipe@unevenlabs.com"
+      tags:
+        - "test:datadog"
+      priority: 5
+      options:
+        thresholds:
+          critical: "50"
+  test2:
+    name: test2
+    spec:
+      query: "max(last_5m):max:elasticsearch.unassigned_shards{cluster_name:dev-applications} > 50"
+      type: "query alert"
+      name: "Elasticsearch Unassigned Shards test"
+      message: "@filipe@unevenlabs.com"
+      tags:
+        - "test:datadog"
+      priority: 5
+      options:
+        thresholds:
+          critical: "50"

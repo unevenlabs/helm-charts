@@ -1,0 +1,14 @@
+{{- if .Values.datadogMonitors }}
+{{- range $datadogMonitor := .Values.datadogMonitors }}
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-{{ $datadogMonitor.name }}
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec: {{ toYaml $datadogMonitor.spec | nindent 2 }}
+{{- end }}
+{{- end }}
