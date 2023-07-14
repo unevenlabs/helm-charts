@@ -38,6 +38,8 @@ crds:
   keep: true
   # -- Annotations to be added to all CRDs
   annotations: {}
+  # -- Addtional labels to be added to all CRDs
+  additionalLabels: {}
 
 ## Globally shared configuration
 global:
@@ -79,6 +81,9 @@ global:
   # -- Labels for the all deployed pods
   podLabels: {}
 
+  # -- Add Prometheus scrape annotations to all metrics services. This can be used as an alternative to the ServiceMonitors.
+  addPrometheusAnnotations: false
+
   # -- Toggle and define pod-level security context.
   # @default -- `{}` (See [values.yaml])
   securityContext: {}
@@ -106,7 +111,7 @@ global:
   nodeSelector: {}
 
   # -- Default tolerations for all components
-  tolerations: {}
+  tolerations: []
 
   # Default affinity preset for all components
   affinity:
@@ -132,6 +137,18 @@ global:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
+  # -- Deployment strategy for the all deployed Deployments
+  deploymentStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
+  # -- Environment variables to pass to all deployed Deployments
+  env: []
+
+  # -- Annotations for the all deployed Certificates
+  certificateAnnotations: {}
 
 ## Argo Configs
 configs:
@@ -203,6 +220,10 @@ configs:
   # Argo CD configuration parameters
   ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cmd-params-cm.yaml
   params:
+    # -- Create the argocd-cmd-params-cm configmap
+    # If false, it is expected the configmap will be created by something else.
+    create: true
+
     # -- Annotations to be added to the argocd-cmd-params-cm ConfigMap
     annotations: {}
 
@@ -304,10 +325,15 @@ configs:
     # -- Known hosts to be added to the known host list by default.
     # @default -- See [values.yaml]
     knownHosts: |
+      [ssh.github.com]:443 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
+      [ssh.github.com]:443 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
+      [ssh.github.com]:443 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
+      bitbucket.org ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBPIQmuzMBuKdWeF4+a2sjSSpBK0iqitSQ+5BM9KhpexuGt20JpTVM7u5BDZngncgrqDMbWdxMWWOGtZ9UgbqgZE=
+      bitbucket.org ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIIazEu89wgQZ4bqs3d63QSMzYVa0MuJ2e2gKTKqu+UUO
       bitbucket.org ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAubiN81eDcafrgMeLzaFPsw2kNvEcqTKl/VqLat/MaB33pZy0y3rJZtnqwR2qOOvbwKZYKiEO1O6VqNEBxKvJJelCq0dTXWT5pbO2gDXC6h6QDXCaHo6pOHGPUy+YBaGQRGuSusMEASYiWunYN0vCAI8QaXnWMXNMdFP3jHAJH0eDsoiGnLPBlBp4TNm6rYI74nMzgz3B9IikW4WVK+dc8KZJZWYjAuORU3jc1c/NPskD2ASinf8v3xnfXeukU0sJ5N6m5E8VLjObPEO+mN2t/FZTMZLiFqPWc/ALSqnMnnhwrNi2rbfg/rd/IpL8Le3pSBne8+seeFVBoGqzHM9yXw==
       github.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBEmKSENjQEezOmxkZMy7opKgwFB9nkt5YRrYMjNuG5N87uRgg6CLrbo5wAdT/y6v0mKV0U2w0WZ2YB/++Tpockg=
       github.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl
-      github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ==
+      github.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ue1gvwnGLVlOhGeYrnZaMgRK6+PKCUXaDbC7qtbW8gIkhL7aGCsOr/C56SJMy/BCZfxd1nWzAOxSDPgVsmerOBYfNqltV9/hWCqBywINIR+5dIg6JTJ72pcEpEjcYgXkE2YEFXV1JHnsKgbLWNlhScqb2UmyRkQyytRLtL+38TGxkxCflmO+5Z8CSSNY7GidjMIZ7Q4zMjA2n1nGrlTDkzwDCsw+wqFPGQA179cnfGWOWRVruj16z6XyvxvjJwbz0wQZ75XK5tKSb7FNyeIEs4TT4jk+S4dhPeAUC5y+bDYirYgM4GC7uEnztnZyaVWQ7B381AK4Qdrwt51ZqExKbQpTUNn+EjqoTwvqNj4kqx5QUCI0ThS/YkOxJCXmPUWZbhjpCg56i+2aB6CmK2JGhn57K5mj0MNdBXA4/WnwH6XoPWJzK5Nyu2zB3nAZp+S5hpQs+p1vN1/wsjk=
       gitlab.com ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBFSMqzJeV9rUzU4kWitGjeR4PWSa29SPqJ1fVkhtj3Hw9xjLVXVYrU9QlYWrOLXBpQ6KWjbjTDTdDkoohFzgbEY=
       gitlab.com ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAfuCHKVTjquxvt6CM6tdG4SLp1Btn/nOeHHE5UOzRdf
       gitlab.com ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCsj2bNKTBSpIYDEGk9KxsGh3mySTRgMtXL583qmBpzeQ+jqCMRgBqB98u3z++J1sKlXHWfM9dyhSevkMwSbhoR8XIq/U0tCNyokEi/ueaBMCvbcTHhO7FcwzY92WK4Yt0aGROY5qX2UKSeOvuP4D6TPqKF1onrSzH9bx9XUf2lEdWT/ia1NEKjunUqu1xOB/StKDHMoX4/OKyIzuS0q/T1zOATthvasJFoPrAjkohTyaDUz2LN5JoH839hViyEG82yB+MjcFV5MU3N1l1QL3cVUCh93xSaua1N85qivl+siMkPGbO5xR/En4iEY6K2XPASUEMaieWVNTRCtJ4S8H+9
@@ -331,11 +357,55 @@ configs:
       #   ...
       #   -----END CERTIFICATE-----
 
+  # ConfigMap for Config Management Plugins
+  # Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/config-management-plugins/
+  cmp:
+    # -- Create the argocd-cmp-cm configmap
+    create: false
+
+    # -- Annotations to be added to argocd-cmp-cm configmap
+    annotations: {}
+
+    # -- Plugin yaml files to be added to argocd-cmp-cm
+    plugins: {}
+      # --- First plugin
+      # my-plugin:
+      #   init:
+      #     command: [sh]
+      #     args: [-c, 'echo "Initializing..."']
+      #   generate:
+      #     command: [sh, -c]
+      #     args:
+      #       - |
+      #         echo "{\"kind\": \"ConfigMap\", \"apiVersion\": \"v1\", \"metadata\": { \"name\": \"$ARGOCD_APP_NAME\", \"namespace\": \"$ARGOCD_APP_NAMESPACE\", \"annotations\": {\"Foo\": \"$ARGOCD_ENV_FOO\", \"KubeVersion\": \"$KUBE_VERSION\", \"KubeApiVersion\": \"$KUBE_API_VERSIONS\",\"Bar\": \"baz\"}}}"
+      #   discover:
+      #     fileName: "./subdir/s*.yaml"
+      #     find:
+      #       glob: "**/Chart.yaml"
+      #       command: [sh, -c, find . -name env.yaml]
+
+      # --- Second plugin
+      # my-plugin2:
+      #   init:
+      #     command: [sh]
+      #     args: [-c, 'echo "Initializing..."']
+      #   generate:
+      #     command: [sh, -c]
+      #     args:
+      #       - |
+      #         echo "{\"kind\": \"ConfigMap\", \"apiVersion\": \"v1\", \"metadata\": { \"name\": \"$ARGOCD_APP_NAME\", \"namespace\": \"$ARGOCD_APP_NAMESPACE\", \"annotations\": {\"Foo\": \"$ARGOCD_ENV_FOO\", \"KubeVersion\": \"$KUBE_VERSION\", \"KubeApiVersion\": \"$KUBE_API_VERSIONS\",\"Bar\": \"baz\"}}}"
+      #   discover:
+      #     fileName: "./subdir/s*.yaml"
+      #     find:
+      #       glob: "**/Chart.yaml"
+      #       command: [sh, -c, find . -name env.yaml]
+
   # -- Provide one or multiple [external cluster credentials]
   # @default -- `[]` (See [values.yaml])
   ## Ref:
   ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#clusters
   ## - https://argo-cd.readthedocs.io/en/stable/operator-manual/security/#external-cluster-credentials
+  ## - https://argo-cd.readthedocs.io/en/stable/user-guide/projects/#project-scoped-repositories-and-clusters
   clusterCredentials: []
     # - name: mycluster
     #   server: https://mycluster.com
@@ -352,6 +422,16 @@ configs:
     #   annotations: {}
     #   namespaces: namespace1,namespace2
     #   clusterResources: true
+    #   config:
+    #     bearerToken: "<authentication token>"
+    #     tlsClientConfig:
+    #       insecure: false
+    #       caData: "<base64 encoded certificate>"
+    # - name: mycluster3-project-scoped
+    #   server: https://mycluster3.com
+    #   labels: {}
+    #   annotations: {}
+    #   project: my-project1
     #   config:
     #     bearerToken: "<authentication token>"
     #     tlsClientConfig:
@@ -702,6 +782,10 @@ controller:
       # -- Additional labels
       labels: []
     service:
+      # -- Metrics service type
+      type: ClusterIP
+      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
+      clusterIP: ""
       # -- Metrics service annotations
       annotations: {}
       # -- Metrics service labels
@@ -736,6 +820,17 @@ controller:
     rules:
       # -- Deploy a PrometheusRule for the application controller
       enabled: false
+      # -- PrometheusRule namespace
+      namespace: "" # "monitoring"
+      # -- PrometheusRule selector
+      selector: {}
+        # prometheus: kube-prometheus
+
+      # -- PrometheusRule labels
+      additionalLabels: {}
+      # -- PrometheusRule annotations
+      annotations: {}
+
       # -- PrometheusRule.Spec for the application controller
       spec: []
       # - alert: ArgoAppMissing
@@ -762,11 +857,6 @@ controller:
       #       The application [{{`{{$labels.name}}`}} has not been synchronized for over
       #       12 hours which means that the state of this cloud has drifted away from the
       #       state inside Git.
-    #   selector:
-    #     prometheus: kube-prometheus
-    #   namespace: monitoring
-    #   additionalLabels: {}
-    #   annotations: {}
 
   ## Enable this and set the rules: to whatever custom rules you want for the Cluster Role resource.
   ## Defaults to off
@@ -841,7 +931,7 @@ dex:
     # -- Dex image repository
     repository: ghcr.io/dexidp/dex
     # -- Dex image tag
-    tag: v2.35.3
+    tag: v2.37.0
     # -- Dex imagePullPolicy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
@@ -861,6 +951,15 @@ dex:
     # -- Argo CD init image imagePullPolicy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
+    # -- Argo CD init image resources
+    # @default -- `{}` (defaults to dex.resources)
+    resources: {}
+    #  requests:
+    #    cpu: 5m
+    #    memory: 96Mi
+    #  limits:
+    #    cpu: 10m
+    #    memory: 144Mi
 
   # -- Environment variables to pass to the Dex server
   env: []
@@ -1025,6 +1124,20 @@ dex:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
+  # -- Deployment strategy to be added to the Dex server Deployment
+  deploymentStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
+  # -- Dex log format. Either `text` or `json`
+  # @default -- `""` (defaults to global.logging.format)
+  logFormat: ""
+  # -- Dex log level. One of: `debug`, `info`, `warn`, `error`
+  # @default -- `""` (defaults to global.logging.level)
+  logLevel: ""
+
 ## Redis
 redis:
   # -- Enable redis
@@ -1053,7 +1166,7 @@ redis:
     # -- Redis repository
     repository: public.ecr.aws/docker/library/redis
     # -- Redis tag
-    tag: 7.0.7-alpine
+    tag: 7.0.11-alpine
     # -- Redis image pull policy
     # @default -- `""` (defaults to global.image.imagePullPolicy)
     imagePullPolicy: ""
@@ -1062,6 +1175,8 @@ redis:
   exporter:
     # -- Enable Prometheus redis-exporter sidecar
     enabled: false
+    # -- Environment variables to pass to the Redis exporter
+    env: []
     ## Prometheus redis-exporter image
     image:
       # -- Repository to use for the redis-exporter
@@ -1294,7 +1409,7 @@ redis-ha:
       enabled: true
   image:
     # -- Redis tag
-    tag: 7.0.7-alpine
+    tag: 7.0.11-alpine
 
   ## https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/
   topologySpreadConstraints:
@@ -1522,7 +1637,7 @@ server:
     # -- Server container port
     server: 8080
     # -- Metrics container port
-    metrics: 8082
+    metrics: 8083
 
   # -- Host Network for Server pods
   hostNetwork: false
@@ -1595,6 +1710,13 @@ server:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
+  # -- Deployment strategy to be added to the server Deployment
+  deploymentStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
   # TLS certificate configuration via cert-manager
   ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#tls-certificates-used-by-argocd-server
   certificate:
@@ -1633,6 +1755,11 @@ server:
       algorithm: RSA
       # -- Key bit size of the private key. If algorithm is set to `Ed25519`, size is ignored.
       size: 2048
+    # -- Annotations to be applied to the Server Certificate
+    annotations: {}
+    # -- Usages for the certificate
+    ### Ref: https://cert-manager.io/docs/reference/api-docs/#cert-manager.io/v1.KeyUsage
+    usages: []
 
   # TLS certificate configuration via Secret
   ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#tls-certificates-used-by-argocd-server
@@ -1668,6 +1795,8 @@ server:
     servicePortHttpName: http
     # -- Server service https port name, can be used to route traffic via istio
     servicePortHttpsName: https
+    # -- Server service https port appProtocol. (should be upper case - i.e. HTTPS)
+    # servicePortHttpsAppProtocol: HTTPS
     # -- LoadBalancer will get created with the IP specified in this field
     loadBalancerIP: ""
     # -- Source IP ranges to allow access to service from
@@ -1684,6 +1813,10 @@ server:
     # -- Deploy metrics service
     enabled: false
     service:
+      # -- Metrics service type
+      type: ClusterIP
+      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
+      clusterIP: ""
       # -- Metrics service annotations
       annotations: {}
       # -- Metrics service labels
@@ -1727,23 +1860,6 @@ server:
     labels: {}
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
-
-  virtualService:
-    public:
-      enabled: true
-      gateways: ["default/default-gateway"]
-      annotations: {}
-      hosts: []
-      whiteListed:
-        ips: []
-    internal:
-      enabled: true
-      gateways: ["default/default-gateway"]
-      annotations: {}
-      hosts: []
-      whiteListed:
-        ips: []
-        namespaces: []
 
   ingress:
     # -- Enable an ingress resource for the Argo CD server
@@ -1974,31 +2090,53 @@ repoServer:
   # - secretRef:
   #     name: secret-name
 
+  # -- Specify postStart and preStop lifecycle hooks for your argo-repo-server container
+  lifecycle: {}
+
   # -- Additional containers to be added to the repo server pod
   ## Ref: https://argo-cd.readthedocs.io/en/stable/user-guide/config-management-plugins/
   ## Note: Supports use of custom Helm templates
   extraContainers: []
-  # - name: cmp
-  #   # Entrypoint should be Argo CD lightweight CMP server i.e. argocd-cmp-server
-  #   command: [/var/run/argocd/argocd-cmp-server]
-  #   # This can be off-the-shelf or custom-built image
-  #   image: busybox
-  #   securityContext:
-  #     runAsNonRoot: true
-  #     runAsUser: 999
-  #   volumeMounts:
-  #     - mountPath: /var/run/argocd
-  #       name: var-files
-  #     - mountPath: /home/argocd/cmp-server/plugins
-  #       name: plugins
-  #     # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
-  #     - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-  #       subPath: plugin.yaml
-  #       name: cmp-plugin
-  #     # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
-  #     # mitigate path traversal attacks.
-  #     - mountPath: /tmp
-  #       name: cmp-tmp
+    # - name: cmp-my-plugin
+    #   command:
+    #     - "/var/run/argocd/argocd-cmp-server"
+    #   image: busybox
+    #   securityContext:
+    #     runAsNonRoot: true
+    #     runAsUser: 999
+    #   volumeMounts:
+    #     - mountPath: /var/run/argocd
+    #       name: var-files
+    #     - mountPath: /home/argocd/cmp-server/plugins
+    #       name: plugins
+    #     # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
+    #     - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+    #       subPath: my-plugin.yaml
+    #       name: argocd-cmp-cm
+    #     # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
+    #     # mitigate path traversal attacks.
+    #     - mountPath: /tmp
+    #       name: cmp-tmp
+    # - name: cmp-my-plugin2
+    #   command:
+    #     - "/var/run/argocd/argocd-cmp-server"
+    #   image: busybox
+    #   securityContext:
+    #     runAsNonRoot: true
+    #     runAsUser: 999
+    #   volumeMounts:
+    #     - mountPath: /var/run/argocd
+    #       name: var-files
+    #     # Remove this volumeMount if you've chosen to bake the config file into the sidecar image.
+    #     - mountPath: /home/argocd/cmp-server/plugins
+    #       name: plugins
+    #     - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+    #       subPath: my-plugin2.yaml
+    #       name: argocd-cmp-cm
+    #     # Starting with v2.4, do NOT mount the same tmp volume as the repo-server container. The filesystem separation helps
+    #     # mitigate path traversal attacks.
+    #     - mountPath: /tmp
+    #       name: cmp-tmp
 
   # -- Init containers to add to the repo server pods
   initContainers: []
@@ -2008,9 +2146,9 @@ repoServer:
 
   # -- Additional volumes to the repo server pod
   volumes: []
-  #  - name: cmp-plugin
+  #  - name: argocd-cmp-cm
   #    configMap:
-  #      name: cmp-plugin
+  #      name: argocd-cmp-cm
   #  - name: cmp-tmp
   #    emptyDir: {}
 
@@ -2106,6 +2244,13 @@ repoServer:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
+  # -- Deployment strategy to be added to the repo server Deployment
+  deploymentStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
   # -- Priority class for the repo server pods
   # @default -- `""` (defaults to global.priorityClassName)
   priorityClassName: ""
@@ -2143,6 +2288,10 @@ repoServer:
     # -- Deploy metrics service
     enabled: false
     service:
+      # -- Metrics service type
+      type: ClusterIP
+      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
+      clusterIP: ""
       # -- Metrics service annotations
       annotations: {}
       # -- Metrics service labels
@@ -2296,12 +2445,16 @@ applicationSet:
     # -- Deploy metrics service
     enabled: false
     service:
+      # -- Metrics service type
+      type: ClusterIP
+      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
+      clusterIP: ""
       # -- Metrics service annotations
       annotations: {}
       # -- Metrics service labels
       labels: {}
       # -- Metrics service port
-      servicePort: 8085
+      servicePort: 8080
       # -- Metrics service port name
       portName: http-metrics
     serviceMonitor:
@@ -2334,6 +2487,8 @@ applicationSet:
     annotations: {}
     # -- ApplicationSet service labels
     labels: {}
+    # -- ApplicationSet service type
+    type: ClusterIP
     # -- ApplicationSet service port
     port: 7000
     # -- ApplicationSet service port name
@@ -2446,6 +2601,13 @@ applicationSet:
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
 
+  # -- Deployment strategy to be added to the ApplicationSet controller Deployment
+  deploymentStrategy: {}
+    # type: RollingUpdate
+    # rollingUpdate:
+    #   maxSurge: 25%
+    #   maxUnavailable: 25%
+
   # -- Priority class for the ApplicationSet controller pods
   # @default -- `""` (defaults to global.priorityClassName)
   priorityClassName: ""
@@ -2494,6 +2656,47 @@ applicationSet:
         # - secretName: argocd-applicationset-tls
         #   hosts:
         #     - argocd-applicationset.example.com
+
+  # TLS certificate configuration via cert-manager
+  ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/tls/#tls-configuration
+  certificate:
+    # -- Deploy a Certificate resource (requires cert-manager)
+    enabled: false
+    # -- The name of the Secret that will be automatically created and managed by this Certificate resource
+    secretName: argocd-application-controller-tls
+    # -- Certificate primary domain (commonName)
+    domain: argocd.example.com
+    # -- Certificate Subject Alternate Names (SANs)
+    additionalHosts: []
+    # -- The requested 'duration' (i.e. lifetime) of the certificate.
+    # @default -- `""` (defaults to 2160h = 90d if not specified)
+    ## Ref: https://cert-manager.io/docs/usage/certificate/#renewal
+    duration: ""
+    # -- How long before the expiry a certificate should be renewed.
+    # @default -- `""` (defaults to 360h = 15d if not specified)
+    ## Ref: https://cert-manager.io/docs/usage/certificate/#renewal
+    renewBefore: ""
+    # Certificate issuer
+    ## Ref: https://cert-manager.io/docs/concepts/issuer
+    issuer:
+      # -- Certificate issuer group. Set if using an external issuer. Eg. `cert-manager.io`
+      group: ""
+      # -- Certificate issuer kind. Either `Issuer` or `ClusterIssuer`
+      kind: ""
+      # -- Certificate issuer name. Eg. `letsencrypt`
+      name: ""
+    # Private key of the certificate
+    privateKey:
+      # -- Rotation policy of private key when certificate is re-issued. Either: `Never` or `Always`
+      rotationPolicy: Never
+      # -- The private key cryptography standards (PKCS) encoding for private key. Either: `PCKS1` or `PKCS8`
+      encoding: PKCS1
+      # -- Algorithm used to generate certificate private key. One of: `RSA`, `Ed25519` or `ECDSA`
+      algorithm: RSA
+      # -- Key bit size of the private key. If algorithm is set to `Ed25519`, size is ignored.
+      size: 2048
+    # -- Annotations to be applied to the ApplicationSet Certificate
+    annotations: {}
 
 ## Notifications controller
 notifications:
@@ -2608,6 +2811,10 @@ notifications:
     # -- Metrics port
     port: 9001
     service:
+      # -- Metrics service type
+      type: ClusterIP
+      # -- Metrics service clusterIP. `None` makes a "headless service" (no virtual IP)
+      clusterIP: ""
       # -- Metrics service annotations
       annotations: {}
       # -- Metrics service labels
@@ -2703,6 +2910,10 @@ notifications:
     # - maxSkew: 1
     #   topologyKey: topology.kubernetes.io/zone
     #   whenUnsatisfiable: DoNotSchedule
+
+  # -- Deployment strategy to be added to the notifications controller Deployment
+  deploymentStrategy:
+    type: Recreate
 
   # -- Priority class for the notifications controller pods
   # @default -- `""` (defaults to global.priorityClassName)

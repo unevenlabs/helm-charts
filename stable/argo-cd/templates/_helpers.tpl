@@ -174,7 +174,10 @@ Merge Argo Configuration with Preset Configuration
 {{- $config := (mergeOverwrite (deepCopy (omit .Values.configs.cm "create" "annotations")) (.Values.server.config | default dict))  -}}
 {{- $preset := include "argo-cd.config.cm.presets" . | fromYaml | default dict -}}
 {{- range $key, $value := mergeOverwrite $preset $config }}
-{{ $key }}: {{ toString $value | toYaml }}
+{{- $fmted := $value | toString }}
+{{- if not (eq $fmted "") }}
+{{ $key }}: {{ $fmted | toYaml }}
+{{- end }}
 {{- end }}
 {{- end -}}
 
@@ -204,7 +207,7 @@ applicationsetcontroller.enable.leader.election: {{ gt (.Values.applicationSet.r
 Merge Argo Params Configuration with Preset Configuration
 */}}
 {{- define "argo-cd.config.params" -}}
-{{- $config := omit .Values.configs.params "annotations" }}
+{{- $config := omit .Values.configs.params "create" "annotations" }}
 {{- $preset := include "argo-cd.config.params.presets" . | fromYaml | default dict -}}
 {{- range $key, $value := mergeOverwrite $preset $config }}
 {{ $key }}: {{ toString $value | toYaml }}
