@@ -1861,6 +1861,23 @@ server:
     # -- Automount API credentials for the Service Account
     automountServiceAccountToken: true
 
+  virtualService:
+    public:
+      enabled: true
+      gateways: ["default/default-gateway"]
+      annotations: {}
+      hosts: []
+      whiteListed:
+        ips: []
+    internal:
+      enabled: true
+      gateways: ["default/default-gateway"]
+      annotations: {}
+      hosts: []
+      whiteListed:
+        ips: []
+        namespaces: []
+
   ingress:
     # -- Enable an ingress resource for the Argo CD server
     enabled: false
