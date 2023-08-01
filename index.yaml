@@ -252,6 +252,16 @@ entries:
   eck:
   - apiVersion: v2
     appVersion: 8.9.0
+    created: "2023-08-01T09:45:18.018100559Z"
+    description: A Helm chart for Elastic Cloud on Kubernetes
+    digest: 8d6aa12b1fce8d69fb3564447afeeef122f199afb54243c1959e52ed01722ed8
+    name: eck
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/eck-2.0.2.tgz
+    version: 2.0.2
+  - apiVersion: v2
+    appVersion: 8.9.0
     created: "2023-08-01T09:21:21.835596464Z"
     description: A Helm chart for Elastic Cloud on Kubernetes
     digest: 3c8261e681ca157cbbb8a5eb3ce31d4fa492aa35e96ccd06591f0a4bac301c04
@@ -892,4 +902,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/microservice-1.0.0-1.tgz
     version: 1.0.0-1
-generated: "2023-08-01T09:21:21.833575368Z"
+generated: "2023-08-01T09:45:18.014757902Z"
