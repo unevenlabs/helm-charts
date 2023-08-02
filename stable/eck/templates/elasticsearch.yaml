@@ -73,6 +73,9 @@ spec:
           resources:
             requests:
               storage: {{ .storage | default "100Gi" }}
+          {{- if .storageClassName }}
+          storageClassName: {{ .storageClassName }}
+          {{- end }}
   {{- end }}
   podDisruptionBudget:
     spec:

@@ -20,6 +20,7 @@ elasticsearch:
           # node.roles: ["master"]
         count: 3
         storage: 200Gi
+        storageClassName: null
         resources:
           limits:
             cpu: 2
