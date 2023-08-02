@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.3] - 2023-08-02
+### Changed
+- Change filebeat clusterrole
+
 ## [2.0.2] - 2023-08-01
 ### Changed
 - Make names functions of release name

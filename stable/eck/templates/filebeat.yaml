@@ -10,16 +10,44 @@ metadata:
     heritage: {{ .Release.Service | quote }}
     release: {{ .Release.Name | quote }}
 rules:
-  - verbs:
-      - get
-      - list
-      - watch
-    apiGroups:
-      - ''
+  - apiGroups:
+      - ""
+      - apps
+      - autoscaling
+      - batch
+      - extensions
+      - policy
+      - rbac.authorization.k8s.io
     resources:
+      - componentstatuses
+      - configmaps
+      - daemonsets
+      - deployments
+      - events
+      - endpoints
+      - horizontalpodautoscalers
+      - ingress
+      - jobs
+      - limitranges
       - namespaces
       - nodes
       - pods
+      - persistentvolumes
+      - persistentvolumeclaims
+      - resourcequotas
+      - replicasets
+      - replicationcontrollers
+      - serviceaccounts
+      - services
+    verbs:
+      - get
+      - watch
+      - list
+  - nonResourceURLs: ["*"]
+    verbs:
+      - get
+      - watch
+      - list
 ---
 apiVersion: v1
 kind: ServiceAccount
