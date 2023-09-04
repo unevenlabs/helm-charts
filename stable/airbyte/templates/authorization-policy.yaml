@@ -1,0 +1,34 @@
+{{- if .Values.webapp.virtualService.enabled }}
+{{- if .Values.webapp.virtualService.whiteListed.ips }}
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+    {{- range $key, $value := .Values.webapp.virtualService.annotations }}
+      {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ .Release.Name }}
+  action: ALLOW
+  rules:
+  - from:
+    - source:
+      namespaces:
+        - {{ .Release.Namespace }}
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range .Values.webapp.virtualService.whiteListed.ips }}
+          - {{ . | quote }}
+{{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .Values.webapp.virtualService.hosts }}
+          - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}

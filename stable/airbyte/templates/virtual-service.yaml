@@ -1,0 +1,23 @@
+{{- if .Values.webapp.virtualService.enabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+  {{- range $key, $value := .Values.webapp.virtualService.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  gateways: {{ .Values.webapp.virtualService.gateways }}
+  hosts: {{ .Values.webapp.virtualService.hosts }}
+  http:
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: {{ .Release.Name }}
+        port:
+          number: {{ .Values.webapp.service.port }}
+      weight: 100
+{{- end }}
