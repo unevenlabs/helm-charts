@@ -416,9 +416,10 @@ webapp:
     enabled: true
     gateways: ["default/default-gateway"]
     annotations: {}
-    hosts: [aa]
+    hosts: []
     whiteListed:
-      ips: [1.1]
+      ips: []
+      internalIPs: []
 
 ## @section Pod Sweeper parameters
 

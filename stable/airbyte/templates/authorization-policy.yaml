@@ -11,13 +11,18 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: {{ .Release.Name }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/name: webapp
   action: ALLOW
   rules:
+{{- if .Values.webapp.virtualService.whiteListed.internalIPs }}
   - from:
     - source:
-      namespaces:
-        - {{ .Release.Namespace }}
+        remoteIpBlocks:
+  {{- range .Values.webapp.virtualService.whiteListed.internalIPs }}
+          - {{ . | quote }}
+  {{- end }}
+{{- end }}
   - from:
     - source:
         remoteIpBlocks:

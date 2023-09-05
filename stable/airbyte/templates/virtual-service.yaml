@@ -16,7 +16,7 @@ spec:
         prefix: /
     route:
     - destination:
-        host: {{ .Release.Name }}
+        host: {{ .Release.Name }}-airbyte-webapp-svc
         port:
           number: {{ .Values.webapp.service.port }}
       weight: 100

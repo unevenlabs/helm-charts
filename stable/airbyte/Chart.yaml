@@ -57,4 +57,4 @@ dependencies:
 description: Helm chart to deploy airbyte
 name: airbyte
 type: application
-version: 0.48.8-1
+version: 0.48.8-2
