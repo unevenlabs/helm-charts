@@ -575,7 +575,7 @@ server:
     enabled: true
     initialDelaySeconds: 30
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -590,7 +590,7 @@ server:
     enabled: true
     initialDelaySeconds: 10
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -1534,7 +1534,7 @@ connector-builder-server:
     enabled: true
     initialDelaySeconds: 30
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -1549,7 +1549,7 @@ connector-builder-server:
     enabled: true
     initialDelaySeconds: 10
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -1572,6 +1572,7 @@ connector-builder-server:
     ##    memory: 256Mi
     ##    cpu: 250m
     requests: {}
+
 
   ##  connector-builder-server.log.level The log level to log at.
   log:
@@ -1606,7 +1607,7 @@ airbyte-api-server:
     enabled: true
     initialDelaySeconds: 30
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -1621,7 +1622,7 @@ airbyte-api-server:
     enabled: true
     initialDelaySeconds: 10
     periodSeconds: 10
-    timeoutSeconds: 1
+    timeoutSeconds: 10
     failureThreshold: 3
     successThreshold: 1
 
@@ -1644,6 +1645,7 @@ airbyte-api-server:
     ##    memory: 256Mi
     ##    cpu: 250m
     requests: {}
+
 
   ##  airbyte-api-server.log.level The log level to log at.
   log:
