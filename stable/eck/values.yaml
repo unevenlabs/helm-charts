@@ -21,6 +21,11 @@ elasticsearch:
         count: 3
         storage: 200Gi
         storageClassName: null
+        # tolerations:
+        #   - key: resources
+        #     operator: Equal
+        #     value: large
+        #     effect: NoSchedule
         resources:
           limits:
             cpu: 2

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.0.5] - 2023-09-22
+### Changed
+- Add tolerations configuration
+
 ## [2.0.4] - 2023-08-02
 ### Changed
 - Add storageClassName configuration
