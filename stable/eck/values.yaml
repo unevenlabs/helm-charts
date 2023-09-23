@@ -26,6 +26,15 @@ elasticsearch:
         #     operator: Equal
         #     value: large
         #     effect: NoSchedule
+        # affinity:
+        #   nodeAffinity:
+        #     requiredDuringSchedulingIgnoredDuringExecution:
+        #       nodeSelectorTerms:
+        #         - matchExpressions:
+        #             - key: "memory-heavy"
+        #               operator: "Exists"
+        #             - key: "cpu-heavy"
+        #               operator: "Exists"
         resources:
           limits:
             cpu: 2
