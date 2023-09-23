@@ -53,10 +53,10 @@ spec:
               cpu: {{ .resources.requests.cpu | default "100m" }}
               memory: {{ .resources.requests.memory | default "1Gi" }}
         {{- if .tolerations }}
-        tolerations: {{ toYaml .tolerations | nindent 8 }}
+        tolerations: {{ toYaml .tolerations | nindent 10 }}
         {{- end }}
         {{- if .affinity }}
-        affinity: {{ toYaml .affinity | nindent 8 }}
+        affinity: {{ toYaml .affinity | nindent 10 }}
         {{- end }}
       {{- if $.Values.elasticsearch.spec.awsRoleArn }}
         serviceAccountName: {{ $.Values.elasticsearch.name | default $.Release.Name }}-aws-sa
