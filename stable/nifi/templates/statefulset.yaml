@@ -145,8 +145,16 @@ spec:
           prop_replace nifi.security.user.login.identity.provider ''
           prop_replace nifi.security.user.authorizer managed-authorizer
           prop_replace nifi.security.user.oidc.discovery.url {{ .Values.auth.oidc.discoveryUrl }}
+          {{- if .Values.auth.oidc.clientId }}
           prop_replace nifi.security.user.oidc.client.id {{ .Values.auth.oidc.clientId }}
+          {{- else}}
+          prop_replace nifi.security.user.oidc.client.id $NIFI_SECURITY_USER_OIDC_CLIENT_ID
+          {{- end }}
+          {{- if .Values.auth.oidc.clientSecret }}
           prop_replace nifi.security.user.oidc.client.secret {{ .Values.auth.oidc.clientSecret }}
+          {{- else}}
+          prop_replace nifi.security.user.oidc.client.secret $NIFI_SECURITY_USER_OIDC_CLIENT_SECRET
+          {{- end }}
           prop_replace nifi.security.user.oidc.claim.identifying.user {{ .Values.auth.oidc.claimIdentifyingUser }}
           xmlstarlet ed --inplace --delete "//authorizers/authorizer[identifier='single-user-authorizer']" "${NIFI_HOME}/conf/authorizers.xml"
           xmlstarlet ed --inplace --update "//authorizers/userGroupProvider/property[@name='Users File']" -v './auth-conf/users.xml' "${NIFI_HOME}/conf/authorizers.xml"
@@ -307,7 +315,7 @@ spec:
               echo "truststore=$(prop nifi.security.truststore)" >> secure.properties
               echo "truststorePasswd=$(prop nifi.security.truststorePasswd)" >> secure.properties
               echo "proxiedEntity={{ .Values.auth.admin }}" >> secure.properties
-             
+
               secureArgs="-p secure.properties"
 
               echo baseUrl ${baseUrl}
@@ -374,7 +382,7 @@ spec:
 {{- if .Values.metrics.prometheus.enabled }}
         - containerPort: {{ .Values.metrics.prometheus.port }}
           name: metrics
-          protocol: TCP                  
+          protocol: TCP
 {{- end }}
         - containerPort: {{ .Values.properties.httpsPort }}
 {{- if .Values.sts.hostPort }}
@@ -534,7 +542,7 @@ spec:
       - name: app-log
         imagePullPolicy: {{ .Values.sidecar.imagePullPolicy | default "Always" | quote }}
         image: "{{ .Values.sidecar.image }}:{{ .Values.sidecar.tag }}"
-        args: 
+        args:
           - /bin/sh
           - -c
           - trap "exit 0" TERM; tail -n+1 -F /var/log/nifi-app.log & wait $!
@@ -576,7 +584,7 @@ spec:
         - -ce
         - |
           trap "exit 0" TERM
-          
+
           NODENAME=$(hostname)
           mkdir -p "${NIFI_HOME}"/tls/cert-manager
 
@@ -595,12 +603,12 @@ spec:
                  --output /tmp/secret.json
             jq .data < /tmp/secret.json > /tmp/secret-data.json
             rm -f /tmp/secret.json
-          }       
-        
+          }
+
           pullNodeSecretData
           jq -r '."ca.crt"' < /tmp/secret-data.json | base64 -d > "${NIFI_HOME}"/tls/cert-manager/ca.crt
           touch /tmp/tls.crt.old
-            
+
           rm -f "${NIFI_HOME}/tls/truststore-new.jks"
           for ca in "${NIFI_HOME}"/tls/*/ca.crt
           do

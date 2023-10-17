@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-2] - 2023-10-17
+### Changed
+- Get OIDC credentials from secrets env variable
+
 ## [1.1.3-1] - 2023-10-17
 ### Changed
 - Fork of nifi helm. Downloaded https://cetic.github.io/helm-charts/nifi/nifi-1.1.3.tgz
 - Added virtualservice
 - Added AuthorizationPolicy
-- Get OIDC credentials from secrets env variable
