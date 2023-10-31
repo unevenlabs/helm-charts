@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.3-1] - 2023-10-31
+### Changed
+- Fork of offical istio release 1.19.3. Downloaded from https://istio-release.storage.googleapis.com/charts/gateway-1.19.3.tgz
 
 ## [1.17.1] - 2023-03-01
 ### Changed
