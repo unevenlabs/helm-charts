@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-3] - 2023-11-02
+### Changed
+- Add DestinationRule to support TLS
+
 ## [1.1.3-2] - 2023-10-17
 ### Changed
 - Get OIDC credentials from secrets env variable
