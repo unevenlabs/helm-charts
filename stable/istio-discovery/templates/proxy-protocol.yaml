@@ -6,15 +6,15 @@ metadata:
   namespace: {{ .Release.Namespace }}
 spec:
   configPatches:
-    - applyTo: LISTENER
-      patch:
-        operation: MERGE
-
-        value:
-          listener_filters:
-            - name: envoy.listener.proxy_protocol
-            - name: envoy.listener.tls_inspector
+  - applyTo: LISTENER_FILTER
+    patch:
+      operation: INSERT_FIRST
+      value:
+        name: proxy_protocol
+        typed_config:
+          '@type': type.googleapis.com/envoy.extensions.filters.listener.proxy_protocol.v3.ProxyProtocol
   workloadSelector:
     labels:
       istio: ingressgateway
+
 {{- end }}

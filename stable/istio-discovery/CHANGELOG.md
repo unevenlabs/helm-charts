@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.3-2] - 2023-11-02
+### Changed
+- Fix EnvoyFilter proxy protocol
+
 ## [1.19.3-1] - 2023-10-31
 ### Changed
 - Fork of offical istio release 1.19.3. Downloaded from https://istio-release.storage.googleapis.com/charts/istiod-1.19.3.tgz
