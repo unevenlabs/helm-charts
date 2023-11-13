@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-4] - 2023-11-13
+### Changed
+- Changed local state path to be persisted
+
 ## [1.1.3-3] - 2023-11-02
 ### Changed
 - Add DestinationRule to support TLS
