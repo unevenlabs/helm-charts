@@ -791,6 +791,43 @@ entries:
           url: https://github.com/grafana/grafana
     apiVersion: v2
     appVersion: 10.2.2
+    created: "2023-12-06T15:31:52.611088674Z"
+    description: The leading tool for querying and visualizing time series and metrics.
+    digest: dfae8e3e8cc163bec5bad194ac6bbcba0f97621855d4568cdbc2cc9e541ef756
+    home: https://grafana.net
+    icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_transparent_400x.png
+    keywords:
+    - monitoring
+    - metric
+    kubeVersion: ^1.8.0-0
+    maintainers:
+    - email: zanhsieh@gmail.com
+      name: zanhsieh
+    - email: rluckie@cisco.com
+      name: rtluckie
+    - email: maor.friedman@redhat.com
+      name: maorfr
+    - email: miroslav.hadzhiev@gmail.com
+      name: Xtigyro
+    - email: mail@torstenwalter.de
+      name: torstenwalter
+    name: grafana
+    sources:
+    - https://github.com/grafana/grafana
+    - https://github.com/grafana/helm-charts
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/grafana-7.0.11-2.tgz
+    version: 7.0.11-2
+  - annotations:
+      artifacthub.io/license: AGPL-3.0-only
+      artifacthub.io/links: |
+        - name: Chart Source
+          url: https://github.com/grafana/helm-charts
+        - name: Upstream Project
+          url: https://github.com/grafana/grafana
+    apiVersion: v2
+    appVersion: 10.2.2
     created: "2023-12-06T15:22:26.85234837Z"
     description: The leading tool for querying and visualizing time series and metrics.
     digest: 69012499334e633e5b55657106902dd84c526042089f7d866aa42c20ce96e725
@@ -1485,4 +1522,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/nifi-1.1.3-1.tgz
     version: 1.1.3-1
-generated: "2023-12-06T15:22:26.849474325Z"
+generated: "2023-12-06T15:31:52.607673519Z"
