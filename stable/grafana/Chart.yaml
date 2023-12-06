@@ -11,23 +11,23 @@ description: The leading tool for querying and visualizing time series and metri
 home: https://grafana.net
 icon: https://raw.githubusercontent.com/grafana/grafana/master/public/img/logo_transparent_400x.png
 keywords:
-- monitoring
-- metric
+  - monitoring
+  - metric
 kubeVersion: ^1.8.0-0
 maintainers:
-- email: zanhsieh@gmail.com
-  name: zanhsieh
-- email: rluckie@cisco.com
-  name: rtluckie
-- email: maor.friedman@redhat.com
-  name: maorfr
-- email: miroslav.hadzhiev@gmail.com
-  name: Xtigyro
-- email: mail@torstenwalter.de
-  name: torstenwalter
+  - email: zanhsieh@gmail.com
+    name: zanhsieh
+  - email: rluckie@cisco.com
+    name: rtluckie
+  - email: maor.friedman@redhat.com
+    name: maorfr
+  - email: miroslav.hadzhiev@gmail.com
+    name: Xtigyro
+  - email: mail@torstenwalter.de
+    name: torstenwalter
 name: grafana
 sources:
-- https://github.com/grafana/grafana
-- https://github.com/grafana/helm-charts
+  - https://github.com/grafana/grafana
+  - https://github.com/grafana/helm-charts
 type: application
-version: 7.0.11
+version: 7.0.11-1
