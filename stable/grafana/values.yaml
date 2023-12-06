@@ -1308,7 +1308,7 @@ virtualService:
       host: grafana
       portNumber: 80
     whiteListed:
-      ips: [123]
+      ips: []
       matchLabels:
         app.kubernetes.io/instance: grafana
       # releaseNamespace: true
