@@ -1295,7 +1295,7 @@ extraObjects:
   #         name: adminPassword
 
 virtualService:
-  kibana:
+  grafana:
     name: grafana
     type:
       - VirtualService
