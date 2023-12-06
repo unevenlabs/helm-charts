@@ -1,0 +1,49 @@
+{{- range .Values.virtualService }}
+{{- if .whiteListed }}
+{{- if has "AuthorizationPolicy" .type }}
+---
+apiVersion: security.istio.io/v1beta1
+kind: AuthorizationPolicy
+metadata:
+  name: {{ .name }}
+  labels:
+    {{- with $.Values.labels }}
+      {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+{{- if .whiteListed.matchLabels }}
+  selector:
+    matchLabels:
+      {{- toYaml .whiteListed.matchLabels | nindent 6 }}
+{{- end }}
+  action: ALLOW
+  rules:
+{{- if .whiteListed.releaseNamespace }}
+  - from:
+    - source:
+        namespaces:
+        - {{ $.Release.Namespace }}
+{{- end }}
+{{- if .whiteListed.internalIPs }}
+  - from:
+    - source:
+        remoteIpBlocks:
+  {{- range .whiteListed.internalIPs }}
+          - {{ . | quote }}
+  {{- end }}
+{{- end }}
+  - from:
+    - source:
+        remoteIpBlocks:
+{{- range .whiteListed.ips }}
+          - {{ . | quote }}
+{{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .hosts }}
+         - {{ . | quote }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
