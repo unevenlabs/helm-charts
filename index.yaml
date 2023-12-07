@@ -941,6 +941,22 @@ entries:
   istiod:
   - apiVersion: v1
     appVersion: 1.19.3
+    created: "2023-12-07T11:30:54.019906884Z"
+    description: Helm chart for istio control plane
+    digest: 8625bb536d3d2af09183dabe3b986d738bb285d61d18deb1201407613c22f036
+    icon: https://istio.io/latest/favicons/android-192x192.png
+    keywords:
+    - istio
+    - istiod
+    - istio-discovery
+    name: istiod
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://unevenlabs.github.io/helm-charts/istiod-1.19.3-3.tgz
+    version: 1.19.3-3
+  - apiVersion: v1
+    appVersion: 1.19.3
     created: "2023-11-02T13:48:47.135625716Z"
     description: Helm chart for istio control plane
     digest: de2762f9184929b2853fed6a394b0ca86c648aca0473a7ec0f6ed558cbfc6542
@@ -1522,4 +1538,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/nifi-1.1.3-1.tgz
     version: 1.1.3-1
-generated: "2023-12-06T15:31:52.607673519Z"
+generated: "2023-12-07T11:30:54.017783308Z"
