@@ -516,3 +516,5 @@ internalGateway:
 proxyProtocol: false
 
 envoyAccessLogging: false
+
+prometheus: false
