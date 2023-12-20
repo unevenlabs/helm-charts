@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.3-4] - 2023-12-20
+### Changed
+- Increased Prometheus storage
+
 ## [1.19.3-3] - 2023-12-07
 ### Changed
 - Added Prometheus deployment from instructions in https://istio.io/latest/docs/ops/integrations/prometheus

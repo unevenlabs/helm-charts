@@ -523,6 +523,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 10Gi
-  storageClassName: ebs-gp3-3000-125
+      storage: 1500Gi
+  storageClassName: ebs-gp3-6000-250
 {{- end }}
