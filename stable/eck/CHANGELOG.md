@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.1.0] - 2023-12-29
+### Changed
+- Bump elasticsearch version 8.11.0
+
 ## [2.0.7] - 2023-09-23
 ### Changed
 - Fix affinity configuration
