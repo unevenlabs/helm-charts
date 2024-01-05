@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-5] - 2024-01-05
+### Changed
+- Fix AuthorizationPolicy match label
+
 ## [1.1.3-4] - 2023-11-13
 ### Changed
 - Changed local state path to be persisted
