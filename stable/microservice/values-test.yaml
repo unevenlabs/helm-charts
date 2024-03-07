@@ -158,6 +158,15 @@ deployment:
       httpGet:
         path: /path
         port: 8080
+    startupProbe:
+      failureThreshold: 3
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+      initialDelaySeconds: 10
+      httpGet:
+        path: /path
+        port: 8080
 
   # Resources to be defined for pod
   resources:
@@ -801,6 +810,15 @@ statefulSet:
     #   path: /health
     #   port: 80
     livenessProbe:
+    # failureThreshold: 3
+    # periodSeconds: 10
+    # successThreshold: 1
+    # timeoutSeconds: 1
+    # initialDelaySeconds: 10
+    # httpGet:
+    #   path: /health
+    #   port: 80
+    startupProbe:
     # failureThreshold: 3
     # periodSeconds: 10
     # successThreshold: 1
