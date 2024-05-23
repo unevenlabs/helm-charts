@@ -180,6 +180,7 @@ headless:
 # ui service
 service:
   type: ClusterIP
+  httpPort: 80
   httpsPort: 8443
   # nodePort: 30236
   annotations:

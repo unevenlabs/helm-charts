@@ -60,6 +60,10 @@ spec:
   {{- end }}
   {{- end }}
   ports:
+    - port: {{ .Values.service.httpPort }}
+      name: http
+      targetPort: {{ .Values.service.httpPort }}
+      nodePort: {{ .Values.service.httpPort }}
     - port: {{ .Values.service.httpsPort }}
       name: https
       targetPort: {{ .Values.properties.httpsPort }}
@@ -106,4 +110,4 @@ spec:
     app: {{ template "apache-nifi.name" . }}
     release: {{ .Release.Name }}
   type: ClusterIP
-  {{- end }}    
+  {{- end }}

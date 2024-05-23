@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-6] - 2024-05-23
+### Changed
+- Add nginx reverse proxy as a workaround for istio RBAC.
+
 ## [1.1.3-5] - 2024-01-05
 ### Changed
 - Fix AuthorizationPolicy match label

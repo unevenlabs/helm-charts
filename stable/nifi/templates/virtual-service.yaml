@@ -18,6 +18,6 @@ spec:
     - destination:
         host: {{ template "apache-nifi.fullname" . }}
         port:
-          number: {{ .Values.service.httpsPort }}
+          number: {{ .Values.service.httpPort }}
       weight: 100
 {{- end }}

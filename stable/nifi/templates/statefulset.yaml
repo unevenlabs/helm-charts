@@ -113,6 +113,16 @@ spec:
 {{- if .Values.extraContainers }}
 {{- toYaml .Values.extraContainers | nindent 6 }}
 {{- end }}
+      - name: nginx
+        image: nginx:alpine
+        ports:
+          - containerPort: 80
+            protocol: TCP
+        resources: {}
+        volumeMounts:
+          - name: nginx-config
+            mountPath: /etc/nginx/nginx.conf
+            subPath: nginx.conf
       - name: server
         imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -705,6 +715,12 @@ spec:
 {{ toYaml .Values.certManager.resources | indent 10 }}
 {{- /* if .Values.certManager.enabled */}}{{ end }}
       volumes:
+      - name: nginx-config
+        configMap:
+          name: {{ template "apache-nifi.fullname" . }}-config
+          items:
+            - key: "nginx.conf"
+              path: "nginx.conf"
       - name: "bootstrap-conf"
         configMap:
           name: {{ template "apache-nifi.fullname" . }}-config
