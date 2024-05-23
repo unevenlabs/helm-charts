@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3-7] - 2024-05-23
+### Changed
+- Fix service.
+
 ## [1.1.3-6] - 2024-05-23
 ### Changed
 - Add nginx reverse proxy as a workaround for istio RBAC.

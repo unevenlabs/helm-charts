@@ -63,7 +63,7 @@ spec:
     - port: {{ .Values.service.httpPort }}
       name: http
       targetPort: {{ .Values.service.httpPort }}
-      nodePort: {{ .Values.service.httpPort }}
+      nodePort: {{ .Values.service.nodeHttpPort }}
     - port: {{ .Values.service.httpsPort }}
       name: https
       targetPort: {{ .Values.properties.httpsPort }}
