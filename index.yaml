@@ -1229,6 +1229,25 @@ entries:
     version: 0.6.0-1
   microservice:
   - apiVersion: v2
+    created: "2024-06-13T08:33:18.541951715Z"
+    description: Generic helm chart for all kind of services
+    digest: d1d37f2df2f5b1fa959e0f1f60d576c5b7ba624589f32191fd254fac09173e59
+    home: https://github.com/unevenlabs/helm-charts/tree/main/stable/microservice
+    keywords:
+    - node
+    - java
+    - dotnet
+    - kubernetes
+    - unevenlabs
+    - microservice
+    maintainers:
+    - email: devops@unevenlabs.com
+      name: DevOps
+    name: microservice
+    urls:
+    - https://unevenlabs.github.io/helm-charts/microservice-1.6.0.tgz
+    version: 1.6.0
+  - apiVersion: v2
     created: "2024-03-07T11:00:19.368669135Z"
     description: Generic helm chart for all kind of services
     digest: 23942b7f52cb9818c0311a6bf3d3cf89c0e7874c22fa69a4ab4d0811551f66bb
@@ -1833,4 +1852,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/nifi-1.1.3-1.tgz
     version: 1.1.3-1
-generated: "2024-05-24T08:00:47.066129338Z"
+generated: "2024-06-13T08:33:18.540201471Z"
