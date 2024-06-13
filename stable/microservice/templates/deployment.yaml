@@ -77,7 +77,7 @@ spec:
       - name: {{ .Values.deployment.imagePullSecrets }}
       {{- end }}
       containers:
-      - name: {{ template "application.name" . }}
+      - name: {{ .Values.deployment.name | default (include "application.name" .) }}
         image: "{{ .Values.deployment.image.repository }}:{{ .Values.deployment.image.tag }}"
         imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
         {{- if .Values.deployment.command }}
