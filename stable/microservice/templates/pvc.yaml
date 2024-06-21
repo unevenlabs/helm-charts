@@ -30,3 +30,30 @@ spec:
 {{- end }}
 {{- end }}
 {{- end }}
+{{- range $index, $pvc := .Values.persistentVolumeClaims }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $pvc.additionalLabels }}
+{{ toYaml $pvc.additionalLabels | indent 4 }}
+{{- end }}
+{{- if $pvc.annotations }}
+  annotations:
+{{ toYaml $pvc.annotations | indent 4 }}
+{{- end }}
+  name: {{ template "application.name" $ }}-data-{{ $pvc.name | default $index }}
+  namespace: {{ template "application.namespace" $ }}
+spec:
+  accessModes:
+    - {{ $pvc.accessMode | default "ReadWriteOnce" }}
+  resources:
+    requests:
+      storage: {{ $pvc.size | default "1Gi" }}
+  {{- if $pvc.storageClassName }}
+  storageClassName: {{ $pvc.storageClassName }}
+  {{- end }}
+{{- end }}

@@ -204,6 +204,21 @@ persistence:
   #  "helm.sh/resource-policy": keep
   storageSize: 8Gi
 
+# Additional persistentVolumeClaims
+persistentVolumeClaims:
+  # - name: data
+  #   accessMode: ReadWriteOnce
+  #   size: 5Gi
+  #   storageClassName: standard
+  # - name: backups
+  #   accessMode: ReadWriteMany
+  #   size: 10Gi
+  #   storageClassName: slow
+  # - name: logs
+  #   accessMode: ReadWriteOnce
+  #   size: 2Gi
+  #   storageClassName: fast
+
 # Service object for servicing pods
 service:
   enabled: true
