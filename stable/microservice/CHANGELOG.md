@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.8.0] - 2024-06-25
+### Changed
+- Add support for configuring the name of the main stateful container
+
 ## [1.7.0] - 2024-06-21
 ### Changed
 - Add support for additional PersistentVolumeClaim

@@ -65,7 +65,7 @@ spec:
         - name: {{ .Values.statefulSet.imagePullSecrets }}
       {{- end }}
       containers:
-      - name: {{ template "application.name" . }}
+      - name: {{ .Values.statefulSet.name | default (include "application.name" .) }}
         image: "{{ .Values.statefulSet.image.repository }}:{{ .Values.statefulSet.image.tag }}"
         imagePullPolicy: {{ .Values.statefulSet.image.pullPolicy }}
       {{- if .Values.statefulSet.command }}
