@@ -140,6 +140,12 @@ spec:
       securityContext:
 {{ toYaml .Values.statefulSet.securityContext | indent 8 }}
           {{- end }}
+      {{- if .Values.statefulSet.volumes }}
+      volumes:
+        {{- if .Values.statefulSet.volumes }}
+{{ include "application.tplvalues.render" ( dict "value" .Values.statefulSet.volumes "context" $ ) | indent 6 }}
+        {{- end }}
+      {{- end }}
       {{- if and .Values.rbac.statefulSet.enabled .Values.rbac.serviceAccount.enabled }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}

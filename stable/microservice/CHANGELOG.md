@@ -9,7 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [1.8.0] - 2024-06-25
 ### Changed
-- Add support for configuring the name of the main stateful container
+- Add support for volumes in StatefulSet
+
+## [1.8.0] - 2024-06-25
+### Changed
+- Add support for configuring the name of the main StatefulSet container
 
 ## [1.7.0] - 2024-06-21
 ### Changed

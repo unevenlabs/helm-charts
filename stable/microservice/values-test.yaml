@@ -754,9 +754,9 @@ statefulSet:
 
   # Volumes to be added to the pod
   volumes:
-  # - name: config-volume
-  #   configMap:
-  #     name: configmap-name
+    - name: config-volume
+      configMap:
+        name: configmap-name
   # - name: configmap-volume
   #   configMap:
   #     name: '{{ template "application.name" . }}-configmap-nameSuffix'
