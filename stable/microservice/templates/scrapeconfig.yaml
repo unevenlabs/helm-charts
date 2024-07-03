@@ -1,0 +1,22 @@
+{{- range $sc := .Values.scrapeConfigs }}
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: {{ template "application.name" $ }}-{{ $sc.name }}
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+{{- if $sc.additionalLabels }}
+{{ toYaml $sc.additionalLabels | indent 4 }}
+{{- end }}
+{{- if $sc.annotations }}
+  annotations:
+{{- end }}
+{{- if $sc.annotations }}
+{{ toYaml $sc.annotations | indent 4 }}
+{{- end }}
+spec:
+{{ toYaml $sc.spec | indent 2 }}
+{{- end }}

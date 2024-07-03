@@ -1035,3 +1035,25 @@ datadogMonitors:
   #     options:
   #       thresholds:
   #         critical: "50"
+
+scrapeConfigs:
+  # - name: geth
+  #   spec:
+  #     jobName: go-ethereum
+  #     metricsPath: /debug/metrics/prometheus
+  #     scrapeInterval: 10s
+  #     staticConfigs:
+  #       - labels:
+  #           chain: ethereum
+  #         targets:
+  #           - localhost:6060
+  # - name: lighthouse
+  #   spec:
+  #     jobName: lighthouse
+  #     metricsPath: /metrics
+  #     scrapeInterval: 10s
+  #     staticConfigs:
+  #       - labels:
+  #           chain: ethereum
+  #         targets:
+  #           - localhost:5052
