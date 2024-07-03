@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.10.1] - 2024-07-03
+### Changed
+- Improve Prometheus ScrapeConfig values-test.yaml
+
 ## [1.10.0] - 2024-07-03
 ### Changed
 - Add support for Prometheus ScrapeConfig

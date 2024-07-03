@@ -1000,6 +1000,9 @@ datadogMonitors:
 
 scrapeConfigs:
   - name: geth
+    additionalLabels:
+      prometheus: nodes
+      chain: ethereum
     spec:
       jobName: go-ethereum
       metricsPath: /debug/metrics/prometheus
