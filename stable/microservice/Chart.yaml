@@ -1,7 +1,7 @@
 apiVersion: v2
 name: microservice
 description: Generic helm chart for all kind of services
-version: 1.10.1
+version: 1.10.2
 keywords:
   - node
   - java

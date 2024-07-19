@@ -13,10 +13,8 @@ metadata:
 {{- if .Values.deployment.commonLabels }}
 {{ toYaml .Values.deployment.commonLabels | indent 4 }}
 {{- end }}
-  annotations:
-    checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-    checksum/vault-configmap: {{ include (print $.Template.BasePath "/vault-configmap.yaml") . | sha256sum }}
 {{- if .Values.deployment.annotations }}
+  annotations:
 {{ toYaml .Values.deployment.annotations | indent 4 }}
 {{- end }}
   name: {{ template "application.name" . }}
@@ -45,9 +43,9 @@ spec:
 {{- if .Values.opa.enabled }}
         opa-injection: "enabled"
 {{- end }}
-{{- if or (.Values.vault.enabled) (.Values.deployment.additionalPodAnnotations) }}
       annotations:
-{{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/vault-configmap: {{ include (print $.Template.BasePath "/vault-configmap.yaml") . | sha256sum }}
 {{- if .Values.vault.enabled }}
 {{ include "vault.annotations" (list . .Values.vault) | indent 8 }}
 {{- end }}
