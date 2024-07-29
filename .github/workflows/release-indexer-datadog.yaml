@@ -1,0 +1,22 @@
+name: release indexer-datadog
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "stable/indexer-datadog/**"
+  release:
+    types: [published, created]
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Publish Helm charts
+        uses: ./.github/actions/helm-gh-pages
+        with:
+          token: ${{ secrets.CR_TOKEN }}
+          charts_dir: stable/indexer-datadog

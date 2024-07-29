@@ -1,0 +1,48 @@
+{{- if .Values.datadogMonitors.increase_in_500_errors_on_resource_name.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-increase-in-500-errors-on-resource-name
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 500 errors on {{`{{`}}resource_name{{`}}`}}
+  type: query alert
+  query: sum(last_4h):anomalies(sum:trace.hapi.request.errors.by_http_status{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }},http.status_code:500} by {resource_name}.as_count(), 'basic', 2, direction='above', interval=60, alert_window='last_15m', count_default_zero='true') >= 1
+  message: |-
+    @slack-alerts
+
+    [Click here and filter on route {{`{{`}}resource_name{{`}}`}} for related logs](https://app.datadoghq.com/logs?query=service%3Aindexer-v5-{{ .Values.chain_name }}%20%40error.output.statusCode%3A500&cols=host%2Cservice&index=%2A&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts={{`{{`}}eval "last_triggered_at_epoch-10*60*1000"{{`}}`}}&to_ts={{`{{`}}eval "last_triggered_at_epoch+10*60*1000"{{`}}`}}&live=false)
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1"
+      criticalRecovery: "0.5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    thresholdWindows:
+      triggerWindow: last_15m
+      recoveryWindow: last_15m
+    includeTags: true
+    newGroupDelay: 60
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

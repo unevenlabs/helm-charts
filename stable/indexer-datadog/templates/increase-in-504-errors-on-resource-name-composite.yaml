@@ -1,0 +1,108 @@
+{{- if .Values.datadogMonitors.increase_in_504_errors_on_resource_name_composite.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-anomaly
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors on {{`{{`}}resource_name{{`}}`}} Anomaly
+  type: query alert
+  query: sum(last_4h):anomalies(sum:trace.hapi.request.errors.by_http_status{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }},http.status_code:504} by {resource_name}.as_count(), 'basic', 2, direction='above', interval=60, alert_window='last_15m', count_default_zero='true') >= 1
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "1"
+      criticalRecovery: "0.5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    thresholdWindows:
+      triggerWindow: last_15m
+      recoveryWindow: last_15m
+    includeTags: true
+    newGroupDelay: 60
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-threshold
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors on {{`{{`}}resource_name{{`}}`}} Threshold
+  type: query alert
+  query: sum(last_5m):sum:trace.hapi.request.errors.by_http_status{service:indexer-v5-{{ .Values.chain_name }}, env:{{ .Values.environment }}, http.status_code:504} by {resource_name}.as_count() > 100
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "100"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    includeTags: true
+    newGroupDelay: 60
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-composite
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors on {{`{{`}}resource_name{{`}}`}}
+  type: composite
+  query: 149951722 && 149951721
+  message: |-
+    [Click here and filter on route {{`{{`}}resource_name{{`}}`}} for related logs](https://app.datadoghq.com/logs?query=service%3Aindexer-v5-{{ .Values.chain_name }}%20%40{r .Values.t.statusCod }e%3A504&cols=host%2Cservice&index=%2A&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts={{`{{`}}eval "last_triggered_at_epoch-10*60*1000"{{`}}`}}&to_ts={{`{{`}}eval "last_triggered_at_epoch+10*60*1000"{{`}}`}}&live=false)
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: null
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

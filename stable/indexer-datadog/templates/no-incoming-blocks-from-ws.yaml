@@ -1,0 +1,43 @@
+{{- if .Values.datadogMonitors.no_incoming_blocks_from_ws.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-no-incoming-blocks-from-ws
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - No incoming blocks from WS
+  type: log alert
+  query: logs(""Detected new block" service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }}").index("*").rollup("count").last("{{ .Values.datadogMonitors.no_incoming_blocks_from_ws.last }}") <= 0
+  message: |-
+    - Check if there are any issues with the provider
+    - Try restarting master if there don't appear to be any provider issues
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "0"
+    enableLogsSample: false
+    notifyAudit: false
+    onMissingData: default
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

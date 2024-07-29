@@ -1,0 +1,43 @@
+{{- if .Values.datadogMonitors.weekly_regression_order_ingestion_latency.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-weekly-regression-order-ingestion-latency
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Order Ingestion Latency Weekly Regression
+  type: query alert
+  query: avg(last_2w):anomalies(p50:orderLatency{source IN (opensea,looksrare,blur.io) AND service:indexer-v5-{{ .Values.chain_name }} AND env:{{ .Values.environment }}} by {source}.fill(last), 'basic', 4, direction='above', interval=21600, alert_window='last_1w', count_default_zero='true') >= 0.75
+  message: |-
+    Check the [internal regression dashboard](https://app.datadoghq.com/dashboard/p88-ecn-nxr/internal-regression-dashboard) to identify whether there is a general issue with block syncing
+    - If the issue is specific to one source, check for any status issues from that source
+    - For an issue affecting multiple sources, more likely the issue is on our side - check for queue buffering or db issues in performance insights
+
+    @slack-alerts
+
+  options:
+    thresholds:
+      critical: "0.75"
+      criticalRecovery: "0.2"
+
+    thresholdWindows:
+      triggerWindow: "last_1w"
+      recoveryWindow: "last_1w"
+
+    notifyAudit: false
+    requireFullWindow: true
+    notifyNoData: false
+    noDataTimeframe: 30
+    includeTags: true
+    newGroupDelay: 60
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

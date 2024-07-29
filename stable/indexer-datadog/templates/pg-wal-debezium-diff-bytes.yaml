@@ -1,0 +1,42 @@
+{{- if .Values.datadogMonitors.pg_wal_debezium_diff_bytes.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-pg-wal-debezium-diff-byte
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Postgresql WAL debezium replication slot size
+  type: query alert
+  query: avg(last_5m):avg:pg_wal.debezium.diff_bytes{pgenv:{{ .Values.environment }},chain:{{ .Values.chain_name }}} > {{ .Values.datadogMonitors.pg_wal_debezium_diff_bytes.thresholds_critical }}
+  message: |-
+    - Check Postgresql WAL replication slot and Debezium because Debezium Postgresql replication slot has become too large.
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "{{ .Values.datadogMonitors.pg_wal_debezium_diff_bytes.thresholds_critical }}"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    noDataTimeframe: 10
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

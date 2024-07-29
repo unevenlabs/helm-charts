@@ -1,0 +1,44 @@
+{{- if .Values.datadogMonitors.failed_to_relay_orders_to_indexer.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-failed-to-relay-orders-to-indexer
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Failed to relay orders to Indexer
+  type: log alert
+  query: logs("service:relayer-{{ .Values.chain_name }} status:error \"Failed to relay orders to Indexer\"").index("*").rollup("count").last("5m") > 50
+  message: |-
+    - Pinpoint the exact cause of the issue by checking the corresponding [error logs](https://app.datadoghq.com/logs?query=%22Failed%20to%20relay%20orders%20to%20Indexer%22%20&cols=host%2Cservice&index=&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts=1684076413889&to_ts=1684335613889&live=true)
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "50"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

@@ -1,0 +1,52 @@
+{{- if .Values.datadogMonitors.processing_event_latency_lagging.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-processing-event-latency-lagging
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - {{`{{`}}event.name{{`}}`}} processing latency lagging
+  type: query alert
+  query: percentile(last_5m):p50:averageLatency{service:indexer-firehose-{{ .Values.chain_name }}} by {event} > 120000
+  message: |-
+    - Check for mem leaks or other issues in the indexer firehose dashboard
+    - Check the firehose trigger queues:
+      - ask-websocket-events-trigger-queue
+      - bid-websocket-events-trigger-queue
+      - approval-websocket-events-trigger-queue
+      - transfer-websocket-events-trigger-queue
+      - sale-websocket-events-trigger-queue
+      - new-top-bid-trigger-queue
+    - Check the kafka deployment / UI for errors
+      - https://kafka-ui.internal.reservoir.tools/ui/clusters/local/brokers (mainnet)
+    - Check datadog logs for the indexer-firehose for errors
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "120000"
+      warning: "60000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: true
+    newGroupDelay: 60
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

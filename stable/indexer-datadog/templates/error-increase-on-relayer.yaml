@@ -1,0 +1,45 @@
+{{- if .Values.datadogMonitors.error_increase_on_relayer.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-error-increase-on-relayer
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Error increase on relayer
+  type: log alert
+  query: logs("service:relayer-{{ .Values.chain_name }} status:error").index("*").rollup("count").by("service").last("30m") > 1500
+  message: |-
+    Monitor general increase of error logs in the relayer regardless of specific component.
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1500"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+    groupbySimpleMonitor: false
+
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

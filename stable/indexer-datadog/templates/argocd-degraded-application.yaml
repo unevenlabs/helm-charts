@@ -1,0 +1,44 @@
+{{- if .Values.datadogMonitors.argocd_degraded_application.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-argocd-degraded-application
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Argocd degraded application
+  type: query alert
+  query: avg(last_5m):default_zero(avg:argocd.app_controller.app.info{health_status:degraded AND name IN ({{ .Values.environment }}-indexer-api-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-firehose-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-kafka-worker-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-websocket-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }},{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }}-1,{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }}-2,{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }}-3,{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }}-4,{{ .Values.environment }}-indexer-worker-{{ .Values.chain_name }}-5,{{ .Values.environment }}-indexer-worker-master-{{ .Values.chain_name }},{{ .Values.environment }}-relayer-{{ .Values.chain_name }})}) >= 1
+  message: |-
+    Deployment is degraded.
+    Check Argocd
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: false
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

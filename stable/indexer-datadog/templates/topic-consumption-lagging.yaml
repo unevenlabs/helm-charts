@@ -1,0 +1,56 @@
+{{- if .Values.datadogMonitors.topic_consumption_lagging.enabled -}}
+{{- $formattedTopics := list -}}
+{{- range .Values.datadogMonitors.topic_consumption_lagging.topics -}}
+{{- $formattedTopics = append $formattedTopics (printf "%s.%s" $.Values.chain_name .) -}}
+{{- end -}}
+{{- $formattedTopicsString := join "," $formattedTopics -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-topic-consumption-lagging
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - indexer-{{ .Values.chain_name }}-consumer-v2 consumption lagging behind"
+  type: query alert
+  query: avg(last_5m):avg:kafka.consumer_lag{consumer_group:indexer-{{ .Values.chain_name }}-consumer-v2 AND topic IN ({{ $formattedTopicsString }})} >= 100000
+  message: |-
+    - Check the firehose trigger queues:
+      - ask-websocket-events-trigger-queue
+      - bid-websocket-events-trigger-queue
+      - approval-websocket-events-trigger-queue
+      - transfer-websocket-events-trigger-queue
+      - sale-websocket-events-trigger-queue
+      - new-top-bid-trigger-queue
+    - Check the kafka deployment / UI for errors
+      - https://kafka-ui.internal.reservoir.tools/ui/clusters/local/brokers (prod)
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "100000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: true
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+    noDataTimeframe: 600
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

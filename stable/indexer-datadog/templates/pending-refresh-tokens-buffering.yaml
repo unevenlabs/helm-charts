@@ -1,0 +1,46 @@
+{{- if .Values.datadogMonitors.pending_refresh_tokens_buffering.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-pending-refresh-tokens-buffering
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Pending Refresh Tokens Buffering
+  type: query alert
+  query: max(last_5m):max:pendingRefreshTokens{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}} > 1000000
+  message: |-
+    - Check Redis memory usage to identify if metadata queue needs to be paused
+    - Check rate limiting from metadata provider (opensea, simplehash)
+    - If other errors are occurring or other queues are buffering, could be a sign that the metadata queue is overloading redis
+    - If all looks good, no action is required. Monitor redis and metadata queue to ensure the system is not impacted by metadata queue size
+
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1000000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

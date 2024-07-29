@@ -1,0 +1,46 @@
+{{- if .Values.datadogMonitors.indexer_response_joi_validation_errors.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-indexer-response-joi-validation-errors
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Indexer Response Joi Validation Errors
+  type: log alert
+  query: logs("status:error @component:metrics \"ValidationError\" -\"\\".value\\" is not allowed to be empty\" service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }}").index("*").rollup("count").last("5m") > 50
+  message: |-
+    Check related logs and traces to pinpoint which endpoint(s) are having Joi Validation Errors
+    - Run indexer locally and make the same request(s) to reproduce
+    - Make necessary updates to Joi format or fix malformed response to fix errors
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "50"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

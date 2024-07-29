@@ -1,0 +1,41 @@
+{{- if .Values.datadogMonitors.rabbitmq_buffering_queues.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-rabbitmq-buffering-queues
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - {{`{{`}}rabbitmq_vhost.name{{`}}`}} {{`{{`}}rabbitmq_queue.name{{`}}`}} RabbitMQ Large Queues Monitor
+  type: query alert
+  query: max(last_5m):top(max:rabbitmq.queue.messages_ready{host:prod-applications, rabbitmq_vhost:{{ .Values.chain_name }}} by {rabbitmq_vhost,rabbitmq_queue}, 50, 'max', 'desc') > 75000
+  message: |-
+    {{`{{`}}rabbitmq_vhost.name{{`}}`}} - {{`{{`}}rabbitmq_queue.name{{`}}`}} is buffering with {{`{{`}}value{{`}}`}} messages ready to be consumed
+    Check the queue for errors or any backfill in case it's buffering
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "75000"
+      warning: "50000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 0
+    includeTags: true
+    newGroupDelay: 60
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

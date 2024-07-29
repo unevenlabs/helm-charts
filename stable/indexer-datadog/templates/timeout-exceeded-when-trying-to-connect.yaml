@@ -1,0 +1,47 @@
+{{- if .Values.datadogMonitors.timeout_exceeded_when_trying_to_connect.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-timeout-exceeded-when-trying-to-connect
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Timeout exceeded when trying to connect
+  type: log alert
+  query: logs("\"timeout exceeded when trying to connect\" service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }}").index("*").rollup("count").last("5m") > 200
+  message: |-
+    - Check RDS performance insights for the db to see if there are an unusually high number of active connections or waits
+    - Identify whether any queues or backfills could be impacting DB performance, causing slowness in other queries
+    - Check the [internal dashboard](https://app.datadoghq.com/dashboard/63q-6aa-gtg/internal-master-dashboard) to identify any system-wide issues
+
+    @backend@unevenlabs.com @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "200"
+      warning: "100"
+    enableLogsSample: false
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

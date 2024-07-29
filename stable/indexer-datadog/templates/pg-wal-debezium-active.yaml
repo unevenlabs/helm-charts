@@ -1,0 +1,42 @@
+{{- if .Values.datadogMonitors.pg_wal_debezium_active.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-pg-wal-debezium-active
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Postgresql WAL debezium replication slot status
+  type: query alert
+  query: avg(last_5m):avg:pg_wal.debezium.active{pgenv:{{ .Values.environment }},chain:{{ .Values.chain_name }}} < 0.5
+  message: |-
+    - Check Postgresql WAL replication slot and Debezium because Debezium Postgresql replication slot is not active.
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "0.5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    noDataTimeframe: 10
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

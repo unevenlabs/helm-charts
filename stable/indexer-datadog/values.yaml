@@ -1,0 +1,98 @@
+applicationName: "example"
+
+namespaceOverride: ""
+
+labels:
+  environment: "dev"
+  owner: "PLATFORM"
+  application: "indexer-test"
+  chain: test
+
+environment: prod
+chain_name: test
+chain_tier: 2
+
+datadogMonitors:
+  argocd_degraded_application:
+    enabled: true
+  argocd_progressing_application:
+    enabled: true
+  block_sync_latency:
+    enabled: true
+    timeframe: 10
+  daily_volumes_jobs_error:
+    enabled: true
+  dune_data_export_failed:
+    enabled: true
+  error_increase_on_relayer:
+    enabled: true
+  event_not_being_published:
+    enabled: true
+    event_filter: "!event:sale.deleted,!event:collection.updated,!event:collection.created,!event:transfer.updated,!event:transfer.deleted"
+    timeframe: 10
+  events_sync_process_realtime_buffering:
+    enabled: true
+  expired_orders_update_failure:
+    enabled: true
+  failed_to_relay_orders_to_indexer:
+    enabled: true
+  high_order_ingestion_latency:
+    enabled: true
+  high_p95_latency:
+    enabled: true
+  high_sales_processing_latency:
+    enabled: true
+  increase_in_500_errors_on_resource_name:
+    enabled: true
+  increase_in_504_errors_on_resource_name_composite:
+    enabled: false # composite not supported yet
+  indexer_response_joi_validation_errors:
+    enabled: true
+  kubernetes_container_restarts:
+    enabled: true
+    thresholds_critical: 3
+  no_incoming_blocks_from_ws:
+    enabled: true
+    last: 10m
+  opensea_unauthorized_api_key_errors:
+    enabled: true
+  order_fetcher_errors_on_execute_buy:
+    enabled: true
+  pending_refresh_tokens_buffering:
+    enabled: true
+  pg_wal_debezium_active:
+    enabled: true
+  pg_wal_debezium_diff_bytes:
+    enabled: true
+    thresholds_critical: "500000000"
+  processed_blur_orders_anomaly_alarm:
+    enabled: false
+  processed_orders_anomaly_alarm:
+    enabled: true
+  processed_ppv2_orders_anomaly_alarm:
+    enabled: false
+  processed_seaport_orders_anomaly_alarm:
+    enabled: false
+  processing_event_latency_lagging:
+    enabled: true
+  rabbitmq_buffering_queues:
+    enabled: true
+  req_sec_of_postgres_queries_is_high_on_v5:
+    enabled: true
+  service_unavailable_errors:
+    enabled: true
+  timeout_exceeded_when_trying_to_connect:
+    enabled: true
+  topic_consumption_lagging:
+    enabled: true
+    topics:
+      - "indexer.public.orders"
+      - "indexer.public.fill_events_2"
+      - "indexer.public.nft_transfer_events"
+      - "indexer.public.tokens"
+      - "indexer.public.collections"
+      - "indexer.public.token_attributes"
+  weekly_regression_order_ingestion_latency:
+    enabled: true
+  weekly_regression_sales_processing_latency:
+    enabled: true

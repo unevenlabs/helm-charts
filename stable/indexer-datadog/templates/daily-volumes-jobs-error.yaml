@@ -1,0 +1,33 @@
+{{- if .Values.datadogMonitors.daily_volumes_jobs_error.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-daily-volumes-job-error
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Daily Volumes Job Error
+  type: log alert
+  query: logs(""Something went wrong with retrying during updating the collection, stopping" service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }}").index("*").rollup("count").last("1d") > 0
+  message: |-
+    - If daily volumes job fails, try triggering the job manually with the admin API /admin/sync-daily-volumes
+    @slack-alerts @backend@unevenlabs.com @pagerduty-indexer
+
+  options:
+    thresholds:
+      critical: "0"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

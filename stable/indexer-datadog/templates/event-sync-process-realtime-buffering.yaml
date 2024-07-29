@@ -1,0 +1,43 @@
+{{- if .Values.datadogMonitors.events_sync_process_realtime_buffering.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-events-sync-process-realtime-buffering
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Events Sync Process Realtime Buffering
+  type: query alert
+  query: max(last_5m):max:queue.jobCount{queue:events-sync-process-realtime,service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}} > 1500
+  message: |-
+    Check queue at https://api.reservoir.tools/admin/bullmq/queue/events-sync-process-realtime (or api-[chain].reservoir.tools for chains other than mainnet)
+    - If redis memory usage is high (roughly > 20 GB), may need to pause the queue
+    - If memory is ok and queue is still buffering, check on RDS performance insights to see if there's an issue with the DB
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1500"
+      criticalRecovery: "1000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

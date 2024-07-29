@@ -1,0 +1,45 @@
+{{- if .Values.datadogMonitors.argocd_progressing_application.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-block-sync-latency
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Block Sync Latency
+  type: query alert
+  query: avg(last_5m):avg:blockSyncTime3{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}} > 60000
+  message: |-
+    - Check logs for the queues for errors or delays
+    - Check the RPC nodes for errors
+    - Check for recent deploys
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "60000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: true
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+    noDataTimeframe: {{ .Values.datadogMonitors.block_sync_latency.timeframe }}
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

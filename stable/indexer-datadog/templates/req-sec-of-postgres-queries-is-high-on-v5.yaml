@@ -1,0 +1,43 @@
+{{- if .Values.datadogMonitors.req_sec_of_postgres_queries_is_high_on_v5.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-req-sec-of-postgres-queries-is-high-on-v5
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Req/sec of postgres queries is high on v5
+  type: query alert
+  query: avg(last_5m):sum:trace.pg.query.hits{env:{{ .Values.environment }},service:indexer-v5-{{ .Values.chain_name }}-postgres}.as_rate() > 11000
+  message: |-
+    throughput deviated too much from its usual value.
+    @george@unevenlabs.com @peter@unevenlabs.com @idan@unevenlabs.com @webhook-Discord-Alerts-Channel
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "11000"
+      warning: "10000"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: true
+    escalationMessage: "@pagerduty-indexer"
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

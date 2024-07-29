@@ -1,0 +1,52 @@
+{{- if .Values.datadogMonitors.event_not_being_published.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-event-not-being-published
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - {{`{{`}}event.name{{`}}`}} not being published
+  type: query alert
+  query: sum(last_1m):sum:eventCounts{{`{`}}{{ .Values.datadogMonitors.event_not_being_published.event_filter }},service:indexer-firehose-{{ .Values.chain_name }},env:{{ .Values.environment }}} by {event}.as_count() <= 0
+  message: |-
+    - Check for mem leaks or other issues in the indexer firehose dashboard
+    - Check the firehose trigger queues:
+      - ask-websocket-events-trigger-queue
+      - bid-websocket-events-trigger-queue
+      - approval-websocket-events-trigger-queue
+      - transfer-websocket-events-trigger-queue
+      - sale-websocket-events-trigger-queue
+      - new-top-bid-trigger-queue
+    - Check the kafka deployment / UI for errors
+      - https://kafka-ui.internal.reservoir.tools/ui/clusters/local/brokers (mainnet)
+    - Check datadog logs for the indexer-firehose for errors
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "0"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: true
+    renotifyInterval: 30
+    includeTags: true
+    newGroupDelay: 60
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+    noDataTimeframe: {{ .Values.datadogMonitors.event_not_being_published.timeframe }}
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

@@ -1,0 +1,43 @@
+{{- if .Values.datadogMonitors.kubernetes_container_restarts.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-kubernetes-container-restarts
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Kubernetes container restarts
+  type: query alert
+  query: max(last_5m):per_minute(sum:kubernetes_state.container.restarts{env:{{ .Values.environment }} AND (kube_deployment:indexer-api-{{ .Values.chain_name }} or kube_deployment:indexer-firehose-{{ .Values.chain_name }}-master or kube_deployment:indexer-firehose-{{ .Values.chain_name }} or kube_deployment:indexer-kafka-worker-{{ .Values.chain_name }} or kube_deployment:indexer-worker-{{ .Values.chain_name }} or kube_deployment:indexer-worker-master-{{ .Values.chain_name }})} by {kube_deployment}) > {{ .Values.datadogMonitors.kubernetes_container_restarts.thresholds_critical }}
+  message: |-
+    - Kubernetes containers are restarting too frequently.
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "{{ .Values.datadogMonitors.kubernetes_container_restarts.thresholds_critical }}"
+
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    noDataTimeframe: 10
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

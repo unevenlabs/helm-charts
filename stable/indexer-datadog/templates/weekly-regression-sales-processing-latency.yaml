@@ -1,0 +1,41 @@
+{{- if .Values.datadogMonitors.weekly_regression_sales_processing_latency.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-weekly-regression-sales-processing-latency
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Sales Processing Latency Weekly Regression
+  type: query alert
+  query: avg(last_2w):anomalies(cutoff_max(p50:salesLatency{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}, 1000000), 'basic', 4, direction='above', interval=21600, alert_window='last_1w', count_default_zero='true') >= 0.75
+  message: |-
+    - Check the [internal regression dashboard](https://app.datadoghq.com/dashboard/p88-ecn-nxr/internal-regression-dashboard) to identify if there are any general issues with block syncing
+    - Check for any delays or buffering in event processing queues
+
+    @slack-alerts
+
+  options:
+    thresholds:
+      critical: "0.75"
+      criticalRecovery: "0.2"
+
+    thresholdWindows:
+      triggerWindow: "last_1w"
+      recoveryWindow: "last_1w"
+
+    notifyAudit: false
+    requireFullWindow: true
+    notifyNoData: false
+    noDataTimeframe: 30
+    includeTags: true
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

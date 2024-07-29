@@ -1,0 +1,44 @@
+{{- if .Values.datadogMonitors.expired_orders_update_failure.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-expired-orders-update-failure
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Expired orders update failure
+  type: log alert
+  query: logs("@service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }} Failed to handle expired orders").index("*").rollup("count").last("5m") > 1
+  message: |-
+    - Check the [error logs](https://app.datadoghq.com/logs?query=%22Failed%20to%20handle%20expired%20orders%22%20&cols=host%2Cservice&index=&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts=1681743766622&to_ts=1684335766622&live=true) for any obvious errors
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    escalationMessage: "@pagerduty-indexer"
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

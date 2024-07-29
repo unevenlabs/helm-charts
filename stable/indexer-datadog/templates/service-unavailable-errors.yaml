@@ -1,0 +1,44 @@
+{{- if .Values.datadogMonitors.service_unavailable_errors.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-service-unavailable-errors
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Service Unavailable errors
+  type: query alert
+  query: avg(last_12h):anomalies(sum:serviceUnavailable{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}.as_count(), 'basic', 3, direction='above', interval=120, alert_window='last_30m', count_default_zero='true') >= 1
+  message: |-
+    - Check [error logs](https://app.datadoghq.com/logs?query=status%3Aerror%20%40component%3Ametrics%20%22Service%20Unavailable%22%20%40error.output.statusCode%3A503%20&cols=host%2Cservice&index=%2A&messageDisplay=inline&sort=time&stream_sort=desc&viz=stream&live=true) to investigate further
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "1"
+      warning: "0.5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    noDataTimeframe: 10
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    escalationMessage: "@pagerduty-indexer"
+
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

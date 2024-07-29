@@ -1,0 +1,44 @@
+{{- if .Values.datadogMonitors.processed_orders_anomaly_alarm.enabled -}}
+{{- $interval := ternary "last_30m" (ternary "last_90m" "last_180m" (eq (int .Values.chain_tier) 2)) (eq (int .Values.chain_tier) 1) -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-processed-orders-anomaly-alarm
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed orders anomaly alarm
+  type: query alert
+  query: avg(last_12h):anomalies(sum:ingestedOrdersV2{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}.as_count(), 'basic', 3, direction='below', interval=120, alert_window='{{ $interval }}', count_default_zero='true') >= 1
+  message: |-
+    This alarm fires if we experience an unusual drop in order processing
+    - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed
+    - Check DB performance insights to see if we have any DB slowness impacting order processing
+    - Check the [internal dashboard](https://app.datadoghq.com/dashboard/63q-6aa-gtg/internal-master-dashboard) to identify any broader issues with block syncing
+
+    @slack-alerts @backend@unevenlabs.com @pagerduty-indexer
+
+  options:
+    thresholds:
+      critical: "1"
+      criticalRecovery: "0"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 00
+
+    thresholdWindows:
+      triggerWindow: "{{ $interval }}"
+      recoveryWindow: "last_15m"
+
+    includeTags: true
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

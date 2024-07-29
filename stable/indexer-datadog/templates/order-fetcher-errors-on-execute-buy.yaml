@@ -1,0 +1,46 @@
+{{- if .Values.datadogMonitors.order_fetcher_errors_on_execute_buy.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-order-fetcher-errors-on-execute-buy
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Order fetcher errors on execute/buy
+  type: log alert
+  query: logs("service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }} @component:(get-execute-buy-v7-handler OR get-execute-buy-v6-handler) \"Request failed\"").index("*").rollup("count").last("5m") > 10
+  message: |-
+    This alarm fires if execute/buy fails due to an issue on the order fetcher:
+    - Check for any environment variable or connection issues with the order fetcher
+    - Check order fetcher logs to debug further
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "10"
+    enableLogsSample: false
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+    renotifyInterval: 30
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    renotifyOccurrences: 1
+    escalationMessage: "@pagerduty-indexer"
+    groupbySimpleMonitor: false
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

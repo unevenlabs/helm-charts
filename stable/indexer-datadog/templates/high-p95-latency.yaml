@@ -1,0 +1,47 @@
+{{- if .Values.datadogMonitors.high_p95_latency.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-high-p95-latency
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High P95 Latency
+  type: query alert
+  query: percentile(last_5m):p95:trace.hapi.request{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}} > 3
+  message: |-
+    95th percentile latency is too high.
+    - Check [internal dashboard](https://app.datadoghq.com/dashboard/63q-6aa-gtg/internal-master-dashboard) to identify any system-wide issues that could be impacting latency
+    - Identify whether latency is isolated to specific endpoints or affecting the whole API
+    - Check RDS performance insights to see if there are any DB issues or slowness
+
+    @slack-alerts @backend@unevenlabs.com
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "3"
+      warning: "2"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+    renotifyOccurrences: 1
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

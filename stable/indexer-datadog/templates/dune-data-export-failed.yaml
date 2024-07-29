@@ -1,0 +1,33 @@
+{{- if .Values.datadogMonitors.dune_data_export_failed.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-dune-data-export-failed
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Dune Data Export Failed
+  type: log alert
+  query: logs("@component:export-data-queue status:error service:indexer-v5-{{ .Values.chain_name }} env:{{ .Values.environment }}").index("*").rollup("count").by("service").last("30m") > 50
+  message: |-
+    @slack-alerts
+    @backend@unevenlabs.com
+    @pagerduty-indexer
+
+  options:
+    thresholds:
+      critical: "50"
+    enableLogsSample: true
+    notifyAudit: false
+    onMissingData: default
+    includeTags: true
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}

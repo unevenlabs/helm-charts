@@ -1,0 +1,12 @@
+apiVersion: v2
+name: indexer-datadog
+description: Indexer datadog
+version: 1.0.0
+keywords:
+  - kubernetes
+  - unevenlabs
+  - datadog
+home: https://github.com/unevenlabs/helm-charts/tree/main/stable/indexer-datadog
+maintainers:
+  - name: DevOps
+    email: devops@unevenlabs.com

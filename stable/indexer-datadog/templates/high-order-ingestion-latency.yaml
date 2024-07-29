@@ -1,0 +1,48 @@
+{{- if .Values.datadogMonitors.high_order_ingestion_latency.enabled -}}
+{{- $interval := ternary "last_15m" "last_30m" (eq (int .Values.chain_tier) 1) -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-high-order-ingestion-latency
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Order Ingestion Latency
+  type: query alert
+  query: pct_change(percentile(last_1h),{{ $interval }}):p50:orderLatency{source IN (opensea,looksrare,blur.io) AND service:indexer-v5-{{ .Values.chain_name }} AND env:{{ .Values.environment }}} by {source} > 100
+  message: |-
+    Check the [internal dashboard](https://app.datadoghq.com/dashboard/63q-6aa-gtg/internal-master-dashboard) to identify whether there is a general issue with block syncing
+    - If the issue is specific to one source, check for any status issues from that source
+    - For an issue affecting multiple sources, more likely the issue is on our side - check for queue buffering or db issues in performance insights
+
+    @slack-alerts
+
+    {{`{{`}}#is_recovery{{`}}`}}
+    @pagerduty-indexer
+    {{`{{`}}/is_recovery{{`}}`}}
+
+  options:
+    thresholds:
+      critical: "100"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: true
+    noDataTimeframe: {{ .Values.chain_tier }}
+    renotifyInterval: 30
+    includeTags: true
+    newGroupDelay: 60
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+    noDataTimeframe: {{ .Values.datadogMonitors.event_not_being_published.timeframe }}
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+{{- end -}}
