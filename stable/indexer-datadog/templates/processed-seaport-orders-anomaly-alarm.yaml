@@ -8,7 +8,7 @@ metadata:
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
 spec:
-  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed seaport orders anomaly alarm
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Seaport orders anomaly alarm
   type: query alert
   query: avg(last_12h):anomalies(sum:ingestedOrdersV2{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }},orderkind:seaport*}.as_count(), 'basic', 3, direction='below', interval=120, alert_window='last_30m', count_default_zero='true') >= 1
   message: |-
