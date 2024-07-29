@@ -30,4 +30,5 @@ spec:
     - Environment:{{ .Values.labels.environment }}
     - Owner:{{ .Values.labels.owner }}
     - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
 {{- end -}}

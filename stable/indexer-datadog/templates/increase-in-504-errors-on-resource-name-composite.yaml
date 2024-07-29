@@ -33,6 +33,7 @@ spec:
     - Environment:{{ .Values.labels.environment }}
     - Owner:{{ .Values.labels.owner }}
     - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
 ---
 apiVersion: datadoghq.com/v1alpha1
 kind: DatadogMonitor
@@ -64,6 +65,7 @@ spec:
     - Environment:{{ .Values.labels.environment }}
     - Owner:{{ .Values.labels.owner }}
     - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
 ---
 apiVersion: datadoghq.com/v1alpha1
 kind: DatadogMonitor
@@ -105,4 +107,5 @@ spec:
     - Environment:{{ .Values.labels.environment }}
     - Owner:{{ .Values.labels.owner }}
     - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
 {{- end -}}
