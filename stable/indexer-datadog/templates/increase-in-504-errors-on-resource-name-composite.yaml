@@ -81,7 +81,7 @@ data:
     - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-anomaly
     - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-threshold
   body: |-
-    name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors
+    name: {{ .Values.environment }} - {{ title .Values.chain_name }} - composite Increase in 504 errors
     type: composite
     query:
     message: |-
