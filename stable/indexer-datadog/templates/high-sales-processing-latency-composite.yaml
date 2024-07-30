@@ -84,8 +84,8 @@ metadata:
 {{ include "application.labels.chart" $ | indent 4 }}
 data:
   composite: |-
-    - {{ template "application.name" $ }}-high_sales-processing-latency-anomaly
-    - {{ template "application.name" $ }}-high_sales-processing-latency-threshold
+    - {{ template "application.name" $ }}-high-sales-processing-latency-anomaly
+    - {{ template "application.name" $ }}-high-sales-processing-latency-threshold
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Sales Processing Latency
     type: composite
