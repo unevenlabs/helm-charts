@@ -67,45 +67,50 @@ spec:
     - K8sPath:{{ .Template.Name }}
     - generated:kubernetes
 ---
-apiVersion: datadoghq.com/v1alpha1
-kind: DatadogMonitor
+apiVersion: v1
+kind: ConfigMap
 metadata:
   name: {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-composite
   namespace: {{ template "application.namespace" $ }}
   labels:
+    datadog-operator-extra: "true"
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
-spec:
-  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors on {{`{{`}}resource_name{{`}}`}}
-  type: composite
-  query: 149951722 && 149951721
-  message: |-
-    [Click here and filter on route {{`{{`}}resource_name{{`}}`}} for related logs](https://app.datadoghq.com/logs?query=service%3Aindexer-v5-{{ .Values.chain_name }}%20%40{r .Values.t.statusCod }e%3A504&cols=host%2Cservice&index=%2A&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts={{`{{`}}eval "last_triggered_at_epoch-10*60*1000"{{`}}`}}&to_ts={{`{{`}}eval "last_triggered_at_epoch+10*60*1000"{{`}}`}}&live=false)
+data:
+  composite: |-
+    - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-anomaly
+    - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-threshold
+  body: |-
+    name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors
+    type: composite
+    query:
+    message: |-
+      [Click here and filter on route {{`{{`}}resource_name{{`}}`}} for related logs](https://app.datadoghq.com/logs?query=service%3Aindexer-v5-{{ .Values.chain_name }}%20%40{r .Values.t.statusCod }e%3A504&cols=host%2Cservice&index=%2A&messageDisplay=inline&stream_sort=time%2Cdesc&viz=stream&from_ts={{`{{`}}eval "last_triggered_at_epoch-10*60*1000"{{`}}`}}&to_ts={{`{{`}}eval "last_triggered_at_epoch+10*60*1000"{{`}}`}}&live=false)
 
-    @slack-alerts
+      @slack-alerts
 
-    {{`{{`}}#is_recovery{{`}}`}}
-    @pagerduty-indexer
-    {{`{{`}}/is_recovery{{`}}`}}
+      {{`{{`}}#is_recovery{{`}}`}}
+      @pagerduty-indexer
+      {{`{{`}}/is_recovery{{`}}`}}
 
-  options:
-    thresholds:
-      critical: null
-    notifyAudit: false
-    requireFullWindow: false
-    notifyNoData: false
-    includeTags: true
-    renotifyInterval: 30
-    # renotifyStatuses:
-    #   - alert
-    #   - no data
-    escalationMessage: "@pagerduty-indexer"
+    options:
+      thresholds:
+        critical: null
+      notifyAudit: false
+      requireFullWindow: false
+      notifyNoData: false
+      includeTags: true
+      renotifyInterval: 30
+      # renotifyStatuses:
+      #   - alert
+      #   - no data
+      escalationMessage: "@pagerduty-indexer"
 
-  tags:
-    - Application:{{ .Values.labels.application }}
-    - Chain:{{ .Values.labels.chain }}
-    - Environment:{{ .Values.labels.environment }}
-    - Owner:{{ .Values.labels.owner }}
-    - K8sPath:{{ .Template.Name }}
-    - generated:kubernetes
+    tags:
+      - Application:{{ .Values.labels.application }}
+      - Chain:{{ .Values.labels.chain }}
+      - Environment:{{ .Values.labels.environment }}
+      - Owner:{{ .Values.labels.owner }}
+      - K8sPath:{{ .Template.Name }}
+      - generated:kubernetes
 {{- end -}}

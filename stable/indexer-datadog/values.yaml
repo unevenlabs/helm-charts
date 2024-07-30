@@ -1,6 +1,6 @@
 applicationName: "example"
 
-namespaceOverride: ""
+namespaceOverride: "platform"
 
 labels:
   environment: "dev"
@@ -45,7 +45,7 @@ datadogMonitors:
   increase_in_500_errors_on_resource_name:
     enabled: true
   increase_in_504_errors_on_resource_name_composite:
-    enabled: false # composite not supported yet
+    enabled: true
   indexer_response_joi_validation_errors:
     enabled: true
   kubernetes_container_restarts:
