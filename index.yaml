@@ -938,6 +938,22 @@ entries:
     version: 7.0.11-1
   indexer-datadog:
   - apiVersion: v2
+    created: "2024-07-30T13:58:08.579911218Z"
+    description: Indexer datadog
+    digest: f66e931f4c2ff6bb6fef52baf943fbbc74e54d50d74d4484f3eebfe3e0c6930a
+    home: https://github.com/unevenlabs/helm-charts/tree/main/stable/indexer-datadog
+    keywords:
+    - kubernetes
+    - unevenlabs
+    - datadog
+    maintainers:
+    - email: devops@unevenlabs.com
+      name: DevOps
+    name: indexer-datadog
+    urls:
+    - https://unevenlabs.github.io/helm-charts/indexer-datadog-1.0.3.tgz
+    version: 1.0.3
+  - apiVersion: v2
     created: "2024-07-29T11:56:08.668359817Z"
     description: Indexer datadog
     digest: c05d0ec795c0b8ff2d9497050e5777cf5d987c11ff9a585fb19d6f3d5495de28
@@ -2069,4 +2085,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/nifi-1.1.3-1.tgz
     version: 1.1.3-1
-generated: "2024-07-29T11:56:08.666601572Z"
+generated: "2024-07-30T13:58:08.578265329Z"
