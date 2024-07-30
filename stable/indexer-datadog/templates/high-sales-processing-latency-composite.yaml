@@ -1,0 +1,123 @@
+{{- if .Values.datadogMonitors.high_sales_processing_latency_composite.enabled -}}
+{{- $interval := ternary "last_15m" "last_30m" (eq (int .Values.chain_tier) 1) -}}
+{{- $deviations := ternary "5" "4" (eq (int .Values.chain_tier) 3) -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-high-sales-processing-latency-anomaly
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Sales Processing Latency Anomaly
+  type: query alert
+  query: avg(last_12h):anomalies(cutoff_max(p50:salesLatency{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}, 1000000), 'basic', {{ $deviations }}, direction='above', interval=120, alert_window='{{ $interval }}', count_default_zero='true') >= 1
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "1"
+      criticalRecovery: "0.2"
+    thresholdWindows:
+      triggerWindow: {{ $interval }}
+      recoveryWindow: {{ $interval }}
+    notifyAudit: false
+    requireFullWindow: true
+    notifyNoData: false
+    noDataTimeframe: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
+    renotifyInterval: 30
+    includeTags: true
+    # renotifyStatuses:
+    #   - alert
+    #   - no data
+    escalationMessage: "@pagerduty-indexer"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-high-sales-processing-latency-threshold
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Sales Processing Latency Threshold
+  type: query alert
+  query: sum({{ $interval }}):count:salesLatency{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}.as_count() > 5
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    includeTags: true
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "application.name" $ }}-high-sales-processing-latency-composite
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+    datadog-operator-extra: "true"
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+data:
+  composite: |-
+    - {{ template "application.name" $ }}-high_sales-processing-latency-anomaly
+    - {{ template "application.name" $ }}-high_sales-processing-latency-threshold
+  body: |-
+    name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Sales Processing Latency
+    type: composite
+    query:
+    message: |-
+      - Check the [internal dashboard](https://app.datadoghq.com/dashboard/63q-6aa-gtg/internal-master-dashboard) to identify if there are any general issues with block syncing
+      - Check for any delays or buffering in event processing queues
+
+      @slack-alerts
+
+      {{`{{`}}#is_recovery{{`}}`}}
+      @pagerduty-indexer
+      {{`{{`}}/is_recovery{{`}}`}}
+
+    options:
+      thresholds:
+        critical: null
+      notifyAudit: false
+      requireFullWindow: false
+      notifyNoData: false
+      includeTags: true
+      renotifyInterval: 30
+      # renotifyStatuses:
+      #   - alert
+      #   - no data
+      escalationMessage: "@pagerduty-indexer"
+
+    tags:
+      - Application:{{ .Values.labels.application }}
+      - Chain:{{ .Values.labels.chain }}
+      - Environment:{{ .Values.labels.environment }}
+      - Owner:{{ .Values.labels.owner }}
+      - K8sPath:{{ .Template.Name }}
+      - generated:kubernetes
+{{- end -}}

@@ -41,6 +41,8 @@ datadogMonitors:
   high_p95_latency:
     enabled: true
   high_sales_processing_latency:
+    enabled: false
+  high_sales_processing_latency_composite:
     enabled: true
   increase_in_500_errors_on_resource_name:
     enabled: true
