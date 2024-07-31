@@ -53,7 +53,7 @@ metadata:
 spec:
   name: {{ .Values.environment }} - {{ title .Values.chain_name }} - High Sales Processing Latency Threshold
   type: query alert
-  query: sum({{ $interval }}):count:salesLatency{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}.as_count() > 5
+  query: sum({{ $interval }}):default_zero(count:salesLatency{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }}}.as_count()) > 5
   message: |-
     Part of composite monitor
 
