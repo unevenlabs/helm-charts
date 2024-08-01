@@ -27,8 +27,8 @@ spec:
     thresholds:
       critical: "100"
     notifyAudit: false
-    requireFullWindow: false
-    notifyNoData: true
+    requireFullWindow: true
+    notifyNoData: false
     noDataTimeframe: {{ .Values.chain_tier }}
     renotifyInterval: 30
     includeTags: true
