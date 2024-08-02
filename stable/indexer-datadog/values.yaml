@@ -28,7 +28,7 @@ datadogMonitors:
     enabled: true
   event_not_being_published:
     enabled: true
-    event_filter: "!event:sale.deleted,!event:collection.updated,!event:collection.created,!event:transfer.updated,!event:transfer.deleted"
+    event_filter: "!event:sale.deleted,!event:collection.updated,!event:collection.created,!event:transfer.updated,!event:transfer.deleted,!event:top-bid.changed"
     timeframe: 10
   events_sync_process_realtime_buffering:
     enabled: true
