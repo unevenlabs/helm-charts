@@ -52,7 +52,7 @@ datadogMonitors:
     enabled: true
   kubernetes_container_restarts:
     enabled: true
-    thresholds_critical: 3
+    thresholds_critical: 0.5
   no_incoming_blocks_from_ws:
     enabled: true
     last: 10m
