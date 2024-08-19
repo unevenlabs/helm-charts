@@ -84,7 +84,7 @@ data:
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Blur orders composite
     type: composite
-    query:
+    query: {{ template "application.name" $ }}-processed-blur-orders-anomaly && !{{ template "application.name" $ }}-processed-blur-orders-threshold
     message: |-
       This alarm fires if we experience an unusual drop in Blur order processing
       - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed

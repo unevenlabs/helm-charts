@@ -85,7 +85,7 @@ data:
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed PPV2 orders composite
     type: composite
-    query:
+    query: {{ template "application.name" $ }}-processed-ppv2-orders-anomaly && !{{ template "application.name" $ }}-processed-ppv2-orders-threshold
     message: |-
       This alarm fires if we experience an unusual drop in PPV2 order processing
       - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed
