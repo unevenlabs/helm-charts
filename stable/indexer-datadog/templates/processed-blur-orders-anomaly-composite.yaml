@@ -1,0 +1,115 @@
+{{- if .Values.datadogMonitors.processed_blur_orders_anomaly_alarm.enabled -}}
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-processed-blur-orders-anomaly
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Blur orders anomaly
+  type: query alert
+  query: avg(last_12h):anomalies(sum:ingestedOrdersV2{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }},orderkind:blur*}.as_count(), 'basic', 3, direction='below', interval=120, alert_window='last_30m', count_default_zero='true') >= 1
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "1"
+      criticalRecovery: "0"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    renotifyInterval: 0
+    includeTags: true
+
+    thresholdWindows:
+      triggerWindow: "last_30m"
+      recoveryWindow: "last_15m"
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
+---
+apiVersion: datadoghq.com/v1alpha1
+kind: DatadogMonitor
+metadata:
+  name: {{ template "application.name" $ }}-processed-blur-orders-threshold
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+spec:
+  name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Blur orders threshold
+  type: query alert
+  query: pct_change(sum(last_30m),last_1w):sum:ingestedOrdersV2{service:indexer-v5-{{ .Values.chain_name }},env:{{ .Values.environment }},orderkind:blur*}.as_count().rollup(count, 120) < -10
+  message: |-
+    Part of composite monitor
+
+  options:
+    thresholds:
+      critical: "-10"
+      criticalRecovery: "-5"
+    notifyAudit: false
+    requireFullWindow: false
+    notifyNoData: false
+    includeTags: true
+
+  tags:
+    - Application:{{ .Values.labels.application }}
+    - Chain:{{ .Values.labels.chain }}
+    - Environment:{{ .Values.labels.environment }}
+    - Owner:{{ .Values.labels.owner }}
+    - K8sPath:{{ .Template.Name }}
+    - generated:kubernetes
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ template "application.name" $ }}-processed-blur-orders-composite
+  namespace: {{ template "application.namespace" $ }}
+  labels:
+    datadog-operator-extra: "true"
+{{ include "application.labels.unevenlabs" $ | indent 4 }}
+{{ include "application.labels.chart" $ | indent 4 }}
+data:
+  composite: |-
+    - {{ template "application.name" $ }}-processed-blur-orders-anomaly
+    - {{ template "application.name" $ }}-processed-blur-orders-threshold
+  body: |-
+    name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Blur orders composite
+    type: composite
+    query:
+    message: |-
+      This alarm fires if we experience an unusual drop in Blur order processing
+      - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed
+      - Check Blur related logs
+
+      @slack-alerts @backend@unevenlabs.com @pagerduty-indexer
+
+    options:
+      thresholds:
+        critical: null
+      notifyAudit: false
+      requireFullWindow: false
+      notifyNoData: false
+      includeTags: true
+      renotifyInterval: 30
+      # renotifyStatuses:
+      #   - alert
+      #   - no data
+      escalationMessage: "@pagerduty-indexer"
+
+    tags:
+      - Application:{{ .Values.labels.application }}
+      - Chain:{{ .Values.labels.chain }}
+      - Environment:{{ .Values.labels.environment }}
+      - Owner:{{ .Values.labels.owner }}
+      - K8sPath:{{ .Template.Name }}
+      - generated:kubernetes
+{{- end -}}
