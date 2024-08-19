@@ -32,7 +32,6 @@ spec:
     # renotifyStatuses:
     #   - alert
     #   - no data
-    escalationMessage: "@pagerduty-indexer"
 
   tags:
     - Application:{{ .Values.labels.application }}
