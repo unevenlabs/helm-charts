@@ -79,13 +79,11 @@ metadata:
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
 data:
-  composite: |-
-    - {{ template "application.name" $ }}-processed-ppv2-orders-anomaly
-    - {{ template "application.name" $ }}-processed-ppv2-orders-threshold
+  composite: "<{{ template "application.name" $ }}-processed-ppv2-orders-anomaly> && !<{{ template "application.name" $ }}-processed-ppv2-orders-threshold>"
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed PPV2 orders composite
     type: composite
-    query: {{ template "application.name" $ }}-processed-ppv2-orders-anomaly && !{{ template "application.name" $ }}-processed-ppv2-orders-threshold
+    query:
     message: |-
       This alarm fires if we experience an unusual drop in PPV2 order processing
       - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed
