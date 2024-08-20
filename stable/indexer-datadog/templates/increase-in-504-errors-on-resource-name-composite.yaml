@@ -77,9 +77,7 @@ metadata:
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
 data:
-  composite: |-
-    - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-anomaly
-    - {{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-threshold
+  composite: "<{{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-anomaly> && <{{ template "application.name" $ }}-increase-in-504-errors-on-resource-name-threshold>"
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Increase in 504 errors
     type: composite

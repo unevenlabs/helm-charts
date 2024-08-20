@@ -83,13 +83,11 @@ metadata:
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
 data:
-  composite: |-
-    - {{ template "application.name" $ }}-processed-seaport-orders-anomaly
-    - {{ template "application.name" $ }}-opensea-websocket-events-anomaly
+  composite: <{{ template "application.name" $ }}-processed-seaport-orders-anomaly> && !<{{ template "application.name" $ }}-opensea-websocket-events-anomaly>
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Seaport Orders Anomaly Composite
     type: composite
-    query: {{ template "application.name" $ }}-processed-seaport-orders-anomaly && !{{ template "application.name" $ }}-opensea-websocket-events-anomaly
+    query:
     message: |-
       This alarm fires if we experience an unusual drop in Seaport order processing
       - Check related queues to determine if there are any delays or buffering responsible for fewer orders processed
