@@ -83,7 +83,7 @@ metadata:
 {{ include "application.labels.unevenlabs" $ | indent 4 }}
 {{ include "application.labels.chart" $ | indent 4 }}
 data:
-  composite: <{{ template "application.name" $ }}-processed-seaport-orders-anomaly> && !<{{ template "application.name" $ }}-opensea-websocket-events-anomaly>
+  composite: "<{{ template "application.name" $ }}-processed-seaport-orders-anomaly> && !<{{ template "application.name" $ }}-opensea-websocket-events-anomaly>"
   body: |-
     name: {{ .Values.environment }} - {{ title .Values.chain_name }} - Processed Seaport Orders Anomaly Composite
     type: composite
