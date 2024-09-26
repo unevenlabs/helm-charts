@@ -51,33 +51,6 @@ graph:
           url: ""
           # -- Data capabilities this node has
           features: [archive, traces]
-    zora:
-      # -- Enable this configuring graph-node with this chain
-      enabled: true
-      # -- The database shard to use for this chain
-      shard: primary
-      ## -- A list of JSON-RPC endpoints for this node
-      provider:
-        - # -- Label for the RPC endpoint
-          label: zora
-          # -- URL for JSON-RPC endpoint
-          url: ""
-          # -- Data capabilities this node has
-          features: [archive, traces]
-
-    abstract-testnet:
-      # -- Enable this configuring graph-node with this chain
-      enabled: true
-      # -- The database shard to use for this chain
-      shard: primary
-      ## -- A list of JSON-RPC endpoints for this node
-      provider:
-        - # -- Label for the RPC endpoint
-          label: abstract-testnet
-          # -- URL for JSON-RPC endpoint
-          url: ""
-          # -- Data capabilities this node has
-          features: [archive, traces]
 
   ipfsUrl: ""
 
