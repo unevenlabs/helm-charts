@@ -1,0 +1,269 @@
+# Default values for graph-node.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+global:
+  serviceAccount:
+    create: true
+
+replicaCount: 1
+
+image:
+  # -- Image for Graph Node
+  registry: "docker.io"
+  repository: graphprotocol/graph-node
+  pullPolicy: IfNotPresent
+  # -- Overrides the image tag
+  # @default -- Chart.appVersion
+  tag: ""
+
+# -- Pull secrets required to fetch the Image
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+## -- Graph Node
+##
+graph:
+  # -- PostgreSQL configuration
+  postgresql:
+    host: ""
+    port: "5432"
+    database: ""
+    username: ""
+    password: ""
+    poolSize: "30"
+
+  # -- Blockchain configuration for Graph Node
+  chains:
+    # -- Ethereum Mainnet
+    mainnet:
+      # -- Enable this configuring graph-node with this chain
+      enabled: false
+      # -- The database shard to use for this chain
+      shard: primary
+      ## -- A list of JSON-RPC endpoints for this node
+      provider:
+        - # -- Label for the RPC endpoint
+          label: eth-mainnet
+          # -- URL for JSON-RPC endpoint
+          url: ""
+          # -- Data capabilities this node has
+          features: [archive, traces]
+    zora:
+      # -- Enable this configuring graph-node with this chain
+      enabled: true
+      # -- The database shard to use for this chain
+      shard: primary
+      ## -- A list of JSON-RPC endpoints for this node
+      provider:
+        - # -- Label for the RPC endpoint
+          label: zora
+          # -- URL for JSON-RPC endpoint
+          url: ""
+          # -- Data capabilities this node has
+          features: [archive, traces]
+
+    abstract-testnet:
+      # -- Enable this configuring graph-node with this chain
+      enabled: true
+      # -- The database shard to use for this chain
+      shard: primary
+      ## -- A list of JSON-RPC endpoints for this node
+      provider:
+        - # -- Label for the RPC endpoint
+          label: abstract-testnet
+          # -- URL for JSON-RPC endpoint
+          url: ""
+          # -- Data capabilities this node has
+          features: [archive, traces]
+
+  ipfsUrl: ""
+
+  # -- Deployment rule configuration
+  deployment:
+    rule:
+      - shard: primary
+        indexers: "{{ include 'graph-node.indexersList' . }}"
+
+  # -- [Configuration for graph-node](https://github.com/graphprotocol/graph-node/blob/master/docs/config.md)
+  # @default -- See default template in [values.yaml](values.yaml)
+  configTemplate: |
+    # Store configuration
+    [store]
+      [store.primary]
+      connection = "postgresql://{{ $.Values.graph.postgresql.username }}:{{ $.Values.graph.postgresql.password }}@{{ $.Values.graph.postgresql.host }}:{{ $.Values.graph.postgresql.port }}/{{ $.Values.graph.postgresql.database }}"
+      pool_size = {{ $.Values.graph.postgresql.poolSize }}
+      weight = 1
+    # Chain configuration
+    {{- $patchedChains := dict "ingestor" (print (include "common.names.fullname" $) "-0" ) }}
+    {{- range $chainName, $chainValues := $.Values.graph.chains }}
+    {{- if $chainValues.enabled }}
+      {{- $_ := set $patchedChains $chainName (omit $chainValues "enabled") }}
+    {{- end }}
+    {{- end }}
+    {{ toToml (dict "chains" $patchedChains) }}
+    # Deployment rule configuration
+    [deployment]
+    [[deployment.rule]]
+    indexers = [ {{ include "graph-node.indexersList" . }} ]
+    shard = "primary"
+
+  # -- Additional CLI arguments to pass to Graph Node
+  extraArgs: []
+
+  # -- Additional container environment variables.
+  env:
+    # How often to poll Ethereum for new blocks (in ms)
+    ETHEREUM_POLLING_INTERVAL: "500"
+    # "instant" or "synced". Synced will only switch a named subgraph to a new deployment once it has synced,
+    # making the new deployment the "Pending" version
+    EXPERIMENTAL_SUBGRAPH_VERSION_SWITCHING_MODE: "synced"
+    # Number of Ethereum blocks to request in parallel.
+    # Also limits other parallel requests such such as trace_filter
+    ETHEREUM_BLOCK_BATCH_SIZE: "50"
+    # Maximum number of blocks to scan for triggers in each request
+    GRAPH_ETHEREUM_MAX_BLOCK_RANGE_SIZE: "1000"
+    # How many simultaneous connections to allow to the store.
+    # Due to implementation details, this value may not be strictly adhered to
+    STORE_CONNECTION_POOL_SIZE: "25"
+    GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: true
+    GRAPH_MAX_IPFS_FILE_BYTES: "1048576"
+    # Control log levels
+    # Options: debug, error, info, warn, or trace
+    GRAPH_LOG: "info"
+    GRAPH_GRAPHQL_DISABLE_BOOL_FILTERS: "false"
+    # Timeout for IPFS, which includes requests for manifest files and from mappings
+    GRAPH_IPFS_TIMEOUT: "300"
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: true
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+service:
+  type: ClusterIP
+  ports:
+    # Port for the GraphQL HTTP server
+    http: 8000
+    # Port for the GraphQL WebSocket server
+    websocket: 8001
+    # Port for the JSON-RPC admin server
+    jsonrpc: 8020
+    # Port for index status
+    indexStatus: 8030
+    # Port for Prometheus Exporter
+    metrics: 8040
+
+ingress:
+  enabled: false
+  className: ""
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+## -- Configure resource requests and limits.
+## http://kubernetes.io/docs/user-guide/compute-resources/
+##
+resources: {}
+
+## -- Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+##
+nodeSelector: {}
+
+## -- Tolerations for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+
+## -- Affinity for pod assignment
+## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+
+## -- used to assign priority to pods
+## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
+##
+priorityClassName: ""
+
+## -- IPFS Server
+##
+ipfs:
+  enabled: true
+
+## -- Prometheus Service Monitor
+## ref: https://github.com/coreos/prometheus-operator
+##      https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+##
+serviceMonitor:
+  # Create ServiceMonitor resource(s) for scraping metrics using PrometheusOperator
+  enabled: false
+  # The namespace in which the ServiceMonitor will be created
+  namespace: ""
+  # The interval at which metrics should be scraped
+  interval: 30s
+  # The timeout after which the scrape is ended
+  scrapeTimeout: ""
+  # Metrics RelabelConfigs to apply to samples before scraping.
+  relabellings: []
+  # Metrics RelabelConfigs to apply to samples before ingestion.
+  metricRelabelings: []
+  # Specify honorLabels parameter to add the scrape endpoint
+  honorLabels: false
+  # Additional labels that can be used so ServiceMonitor resource(s) can be discovered by Prometheus
+  additionalLabels: {}
+
+## -- Custom PrometheusRule to be defined
+## ref: https://github.com/coreos/prometheus-operator#customresourcedefinitions
+##
+prometheusRule:
+  # Create a custom prometheusRule Resource for scraping metrics using PrometheusOperator
+  enabled: false
+  # Create a default set of Alerts
+  default: true
+  # The namespace in which the prometheusRule will be created
+  namespace: ""
+  # Additional labels for the prometheusRule
+  additionalLabels: {}
+  # Custom Prometheus rules
+  rules: []
+
+# -- Readiness probe
+readinessProbe:
+  initialDelaySeconds: 60
+  timeoutSeconds: 1
+  periodSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+  httpGet:
+    path: /
+    port: http
+    scheme: HTTP
+
+# -- Liveness probe
+livenessProbe:
+  initialDelaySeconds: 60
+  timeoutSeconds: 1
+  periodSeconds: 10
+  failureThreshold: 3
+  successThreshold: 1
+  httpGet:
+    path: /
+    port: http
+    scheme: HTTP
