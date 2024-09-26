@@ -966,6 +966,33 @@ entries:
     version: 3.0.5
   - apiVersion: v2
     appVersion: v0.35.1
+    created: "2024-09-26T13:59:52.658142053Z"
+    dependencies:
+    - name: common
+      repository: https://charts.stakewise.io/
+      version: 1.x.x
+    - condition: ipfs.enabled
+      name: ipfs
+      repository: https://charts.stakewise.io/
+      version: 2.x.x
+    description: Graph Node indexes data from blockchains such as Ethereum and serves
+      it over GraphQL
+    digest: 17cf29ce5d725c1b3d7689b240d38dc2de880d6dcc5e7c43d4a80d4606239c74
+    home: https://thegraph.com/
+    icon: https://storage.googleapis.com/stakewise-charts/stakewise.png
+    keywords:
+    - graph-node
+    - GraphQL
+    - Ethereum
+    name: graph-node
+    sources:
+    - https://github.com/graphprotocol/graph-node
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/graph-node-3.0.5-2.tgz
+    version: 3.0.5-2
+  - apiVersion: v2
+    appVersion: v0.35.1
     created: "2024-09-26T11:32:50.173300802Z"
     dependencies:
     - name: common
@@ -2359,4 +2386,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/nifi-1.1.3-1.tgz
     version: 1.1.3-1
-generated: "2024-09-26T11:32:50.171386338Z"
+generated: "2024-09-26T13:59:52.656022307Z"
