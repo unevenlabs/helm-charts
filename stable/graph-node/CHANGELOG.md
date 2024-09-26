@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.3.5-1] - 2024-26-09
+## [3.0.5-1] - 2024-26-09
 ### Changed
 - Fork from https://github.com/stakewise/helm-charts/tree/main/charts/graph-node
 - Changed StatefulSet command
