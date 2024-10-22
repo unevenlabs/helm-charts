@@ -8,7 +8,7 @@ metadata:
   labels:
     Environment: {{ .Values.kibana.labels.Environment | default "dev" }}
 spec:
-  version: {{ .Chart.AppVersion }}
+  version: {{ .Values.version | default .Chart.AppVersion }}
   count: {{ .Values.kibana.spec.count }}
   http:
     tls:

@@ -10,7 +10,7 @@ metadata:
     Environment: {{ .labels.Environment | default "dev" }}
 spec:
   type: {{ .spec.type }}
-  version: {{ $.Chart.AppVersion }}
+  version: {{ $.Values.version | default $.Chart.AppVersion }}
   {{- if .spec.elasticsearchRef }}
   elasticsearchRef:
     {{- range $key, $value := .spec.elasticsearchRef }}

@@ -1,3 +1,7 @@
+# version: # default to appVersion
+
+# eckOperatorPre_2_14_0: false
+
 labels:
   Environment: dev
   Owner: INFRASTRUCTURE

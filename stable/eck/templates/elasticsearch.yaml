@@ -8,7 +8,7 @@ metadata:
   labels:
     Environment: {{ .Values.elasticsearch.labels.Environment | default "dev" }}
 spec:
-  version: {{ .Chart.AppVersion }}
+  version: {{ .Values.version | default .Chart.AppVersion }}
   {{- if .Values.elasticsearch.spec.volumeClaimDeletePolicy }}
   volumeClaimDeletePolicy: {{ .Values.elasticsearch.spec.volumeClaimDeletePolicy }}
   {{- end }}
@@ -32,10 +32,12 @@ spec:
         containers:
         - name: elasticsearch
           env:
+        {{- if $.Values.eckOperatorPre_2_14_0 }}
           - name: xpack.security.enabled
             value: "false"
           - name: READINESS_PROBE_PROTOCOL
             value: http
+        {{- end }}
         {{- if $.Values.elasticsearch.spec.awsRoleArn }}
           - name: AWS_WEB_IDENTITY_TOKEN_FILE
             value: "/usr/share/elasticsearch/config/repository-s3/aws-web-identity-token-file"
