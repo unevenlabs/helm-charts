@@ -20,6 +20,7 @@ datadogMonitors:
   block_sync_latency:
     enabled: true
     timeframe: 10
+    notify_no_data: true
   daily_volumes_jobs_error:
     enabled: true
   dune_data_export_failed:

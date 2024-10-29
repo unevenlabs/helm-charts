@@ -27,7 +27,7 @@ spec:
       critical: "60000"
     notifyAudit: false
     requireFullWindow: false
-    notifyNoData: true
+    notifyNoData: {{ .Values.datadogMonitors.block_sync_latency.notify_no_data }}
     renotifyInterval: 30
     includeTags: true
     # renotifyStatuses:
