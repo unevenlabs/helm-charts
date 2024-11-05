@@ -1,7 +1,7 @@
 apiVersion: v2
 name: indexer-datadog
 description: Indexer datadog
-version: 1.0.18
+version: 1.0.19
 keywords:
   - kubernetes
   - unevenlabs
