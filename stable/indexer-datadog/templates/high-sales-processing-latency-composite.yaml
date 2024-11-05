@@ -1,5 +1,5 @@
 {{- if .Values.datadogMonitors.high_sales_processing_latency_composite.enabled -}}
-{{- $interval := ternary "last_15m" "last_30m" (eq (int .Values.chain_tier) 1) -}}
+{{- $interval := ternary "last_5m" "last_30m" (eq (int .Values.chain_tier) 1) -}}
 {{- $deviations := ternary "5" "4" (eq (int .Values.chain_tier) 3) -}}
 apiVersion: datadoghq.com/v1alpha1
 kind: DatadogMonitor
