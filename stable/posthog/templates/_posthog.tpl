@@ -8,12 +8,25 @@
   {{- end -}}
 {{- end }}
 
+{{- define "posthog.posthogSaltKeys.existingSecret" }}
+  {{- if .Values.posthogSaltKeys.existingSecret -}}
+    {{- .Values.posthogSaltKeys.existingSecret -}}
+  {{- else -}}
+    {{- template "posthog.fullname" . -}}
+  {{- end -}}
+{{- end }}
+
 {{- define "snippet.posthog-env" }}
 - name: SECRET_KEY
   valueFrom:
     secretKeyRef:
       name: {{ template "posthog.posthogSecretKey.existingSecret" . }}
       key: {{ .Values.posthogSecretKey.existingSecretKey }}
+- name: ENCRYPTION_SALT_KEYS
+  valueFrom:
+    secretKeyRef:
+      name: {{ template "posthog.posthogSaltKeys.existingSecret" . }}
+      key: {{ .Values.posthogSaltKeys.existingSecretKey }}
 - name: SITE_URL
   value: {{ template "posthog.site.url" . }}
 - name: DEPLOYMENT

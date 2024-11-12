@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.47.0] - 2024-11-12
+### Changed
+- Adapt for Unevenlabs
+
 ## [30.46.0] - 2024-11-12
 ### Changed
 - Initial clone from https://github.com/PostHog/charts-clickhouse.git

@@ -1,12 +1,12 @@
 # -- Cloud service being deployed on (example: `aws`, `azure`, `do`, `gcp`, `other`).
-cloud:
+cloud: aws
 
 # -- Notification email for notifications to be sent to from the PostHog stack
 notificationEmail:
 
 # -- Site url specifies the canonical URL root the site can be accessed using.
 # This is used to e.g. generate shareable links to Dashboards.
-siteUrl:
+siteUrl: https://posthog.dev.reservoir.tools
 
 image:
   # -- PostHog image repository to use.
@@ -40,6 +40,14 @@ posthogSecretKey:
   existingSecret:
   # -- Specify the key within the secret from which SECRET_KEY should be taken.
   existingSecretKey: posthog-secret
+
+posthogSaltKeys:
+  # -- Specify that the key should be pulled from an existing secret key. By
+  # default the chart will generate a secret and create a Kubernetes Secret
+  # containing it.
+  existingSecret:
+  # -- Specify the key within the secret from which SECRET_KEY should be taken.
+  existingSecretKey: posthog-saltkeys
 
 # -- Environment variables to inject into every PostHog deployment.
 env: []
@@ -137,7 +145,7 @@ recordings:
 capture:
   ingress:
     enabled: false
-    service: 
+    service:
       name: capture
       port: 3000
 
@@ -233,15 +241,7 @@ web:
 
   # -- Additional env variables to inject into the web stack deployment.
   env:
-    # -- Set google oauth 2 key. Requires posthog ee license.
-    - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
-      value:
-    # -- Set google oauth 2 secret. Requires posthog ee license.
-    - name: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
-      value:
-    # -- Set google oauth 2 whitelisted domains users can log in from.
-    - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
-      value: "posthog.com"
+
 
   internalMetrics:
     # -- Deprecated: Whether to capture information on operation of posthog into posthog, exposed in /instance/status page
@@ -282,7 +282,7 @@ web:
 
   startupProbe:
     # -- The startup probe failure threshold
-    failureThreshold: 6
+    failureThreshold: 30
     # -- The startup probe initial delay seconds
     initialDelaySeconds: 0
     # -- The startup probe period seconds
@@ -1424,7 +1424,7 @@ ingress-nginx:
 ###
 postgresql:
   # -- Whether to deploy a PostgreSQL server to satisfy the applications requirements. To use an external PostgreSQL instance set this to `false` and configure the `externalPostgresql` parameters.
-  enabled: true
+  enabled: false
   # -- Name override for PostgreSQL app.
   nameOverride: posthog-postgresql
   # -- PostgreSQL database name.
@@ -1439,15 +1439,15 @@ postgresql:
 
 externalPostgresql:
   # -- External PostgreSQL service host.
-  postgresqlHost:
+  postgresqlHost: dev-sepolia.cjxqv4qgbfrk.us-east-1.rds.amazonaws.com
   # -- External PostgreSQL service port.
   postgresqlPort: 5432
   # -- External PostgreSQL service database name.
-  postgresqlDatabase:
+  postgresqlDatabase: posthog
   # -- External PostgreSQL service user.
-  postgresqlUsername:
+  postgresqlUsername: administrator
   # -- External PostgreSQL service password. Either this or `externalPostgresql.existingSecret` must be set.
-  postgresqlPassword:
+  postgresqlPassword: 5YIOkbxz0I1byNW853Nxcj1m
   # -- Name of an existing Kubernetes secret object containing the PostgreSQL password
   existingSecret:
   # -- Name of the key pointing to the password in your Kubernetes secret
@@ -1459,7 +1459,7 @@ externalPostgresql:
 ###
 ###
 
-_pgbouncer: &_pgbouncer 
+_pgbouncer: &_pgbouncer
 # -- Whether to deploy a PgBouncer service to satisfy the applications requirements.
   enabled: true
 
@@ -1668,6 +1668,14 @@ externalSessionRecordingRedis: {}
   # port: 6379
 
 
+
+externalRedis7:
+  # -- External Redis host to use.
+  host: "posthog-ocd.u2hia3.ng.0001.use1.cache.amazonaws.com"
+  # -- External Redis port to use.
+  port: 6379
+
+
 ###
 ###
 ### ---- KAFKA ----
@@ -1806,7 +1814,7 @@ clickhouse:
     # -- ClickHouse image repository.
     repository: clickhouse/clickhouse-server
     # -- ClickHouse image tag. Note: PostHog does not support all versions of ClickHouse. Please override the default only if you know what you are doing.
-    tag: "23.9.2.56"
+    tag: "24.8.5.115"
     # -- Image pull policy
     pullPolicy: IfNotPresent
     ## Optionally specify an array of imagePullSecrets.

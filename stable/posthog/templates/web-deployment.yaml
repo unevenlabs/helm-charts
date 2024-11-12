@@ -139,6 +139,8 @@ spec:
           value: '1'
         - name: IS_BEHIND_PROXY
           value: '1'
+        - name: TRUST_ALL_PROXIES
+          value: '1'
       {{- if eq .Values.web.secureCookies false }}
         - name: SECURE_COOKIES
           value: '0'

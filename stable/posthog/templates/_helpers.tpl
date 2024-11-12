@@ -104,6 +104,10 @@ Return the Redis host
 {{- end -}}
 {{- end -}}
 
+{{- define "posthog.redis7.host" -}}
+    {{- printf "%s" .Values.externalRedis7.host -}}
+{{- end -}}
+
 {{/*
 Return the Session Recording Redis host
 */}}
@@ -125,6 +129,10 @@ Return the Redis port
 {{- else -}}
     {{- .Values.externalRedis.port | quote -}}
 {{- end -}}
+{{- end -}}
+
+{{- define "posthog.redis7.port" -}}
+    {{- .Values.externalRedis7.port | quote -}}
 {{- end -}}
 
 
@@ -263,3 +271,12 @@ Create the name of the service account to use
   false
 {{- end -}}
 {{- end -}}
+
+
+{{- define "my-functions.randHex" -}}
+{{- $length := . }}
+{{- if or (not (kindIs "int" $length)) (le $length 0) }}
+{{- printf "my-functions.randHex expects a positive integer (%d passed)" $length | fail }}
+{{- end}}
+{{- printf "%x" (randAscii (divf $length 2 | ceil | int)) | trunc $length }}
+{{- end}}
