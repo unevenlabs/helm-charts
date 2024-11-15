@@ -251,6 +251,7 @@ web:
     # - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
     #   value: ""
 
+  # -- Additional env variables coming from secrets to inject into the web stack deployment.
   envFromSecret: []
 
   internalMetrics:
