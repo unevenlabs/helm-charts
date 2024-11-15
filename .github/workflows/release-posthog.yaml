@@ -19,4 +19,4 @@ jobs:
         uses: ./.github/actions/helm-gh-pages
         with:
           token: ${{ secrets.CR_TOKEN }}
-          charts_dir: stable/kafka-ui
+          charts_dir: stable/posthog
