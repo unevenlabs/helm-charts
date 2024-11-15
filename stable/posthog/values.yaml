@@ -241,7 +241,17 @@ web:
 
   # -- Additional env variables to inject into the web stack deployment.
   env:
+    # # -- Set google oauth 2 key. Requires posthog ee license.
+    # - name: SOCIAL_AUTH_GOOGLE_OAUTH2_KEY
+    #   value: ""
+    # # -- Set google oauth 2 secret. Requires posthog ee license.
+    # - name: SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET
+    #   value: ""
+    # # -- Set google oauth 2 whitelisted domains users can log in from.
+    # - name: SOCIAL_AUTH_GOOGLE_OAUTH2_WHITELISTED_DOMAINS
+    #   value: ""
 
+  envFromSecret: []
 
   internalMetrics:
     # -- Deprecated: Whether to capture information on operation of posthog into posthog, exposed in /instance/status page
@@ -1333,7 +1343,7 @@ cert-manager:
 ###
 ingress:
   # -- Enable ingress controller resource
-  enabled: true
+  enabled: false
   # -- Ingress handler type. Defaults to `nginx` if nginx is enabled and to `clb` on gcp.
   type:
   # -- URL to address your PostHog installation. You will need to set up DNS after installation
@@ -1424,30 +1434,33 @@ ingress-nginx:
 ###
 postgresql:
   # -- Whether to deploy a PostgreSQL server to satisfy the applications requirements. To use an external PostgreSQL instance set this to `false` and configure the `externalPostgresql` parameters.
-  enabled: false
+  enabled: true
   # -- Name override for PostgreSQL app.
   nameOverride: posthog-postgresql
+  teamId: posthog
   # -- PostgreSQL database name.
   postgresqlDatabase: posthog
   # -- PostgreSQL database password.
+  postgresqlUsername: posthog
   postgresqlPassword: postgres
+  numberOfInstances: 1
   persistence:
     # -- Enable persistence using PVC.
     enabled: true
     # -- PVC Storage Request for PostgreSQL volume.
-    size: 10Gi
+    size: 50Gi
 
 externalPostgresql:
   # -- External PostgreSQL service host.
-  postgresqlHost: dev-sepolia.cjxqv4qgbfrk.us-east-1.rds.amazonaws.com
+  postgresqlHost:
   # -- External PostgreSQL service port.
   postgresqlPort: 5432
   # -- External PostgreSQL service database name.
   postgresqlDatabase: posthog
   # -- External PostgreSQL service user.
-  postgresqlUsername: administrator
+  postgresqlUsername:
   # -- External PostgreSQL service password. Either this or `externalPostgresql.existingSecret` must be set.
-  postgresqlPassword: 5YIOkbxz0I1byNW853Nxcj1m
+  postgresqlPassword:
   # -- Name of an existing Kubernetes secret object containing the PostgreSQL password
   existingSecret:
   # -- Name of the key pointing to the password in your Kubernetes secret
@@ -1648,6 +1661,9 @@ redis:
       ## allkeys-lru: evict keys by trying to remove the less recently used (LRU) keys first, in order
       ## to make space for the new data added
       - "--maxmemory-policy allkeys-lru"
+    additionalConfig: |-
+      maxmemory 400mb
+      maxmemory-policy allkeys-lru
 
 externalRedis:
   # -- External Redis host to use.
@@ -1667,11 +1683,27 @@ externalSessionRecordingRedis: {}
   # -- External Redis port to use.
   # port: 6379
 
+redisCdp:
+  enabled: true
+
+  nameOverride: "posthog-redis-cdp"
+
+  fullnameOverride: ""
+
+  architecture: standalone
+
+  master:
+    persistence:
+      enabled: true
+      size: 5Gi
+    additionalConfig: |-
+      maxmemory 400mb
+      maxmemory-policy allkeys-lru
 
 
-externalRedis7:
+externalRedisCdp:
   # -- External Redis host to use.
-  host: "posthog-ocd.u2hia3.ng.0001.use1.cache.amazonaws.com"
+  host: ""
   # -- External Redis port to use.
   port: 6379
 
@@ -1703,10 +1735,34 @@ kafka:
     enabled: true
     # -- PVC Storage Request for Kafka data volume.
     size: 20Gi
+    class: ebs-gp3-3000-125
+
+  service:
+    port: 9092
+
+  resources:
+    requests:
+      memory: 1Gi
+      cpu: "0.5"
+    limits:
+      memory: 2Gi
+      cpu: "1"
 
   zookeeper:
     # -- Switch to enable or disable the ZooKeeper helm chart. !!! Please DO NOT override this (this chart installs Zookeeper separately) !!!
     enabled: false
+    resources:
+      requests:
+        memory: 1Gi
+        cpu: "0.5"
+      limits:
+        memory: 2Gi
+        cpu: "1"
+    persistence:
+      enabled: true
+      size: 10Gi
+      class: ebs-gp3-3000-125
+
 
   externalZookeeper:
     # -- List of external zookeeper servers to use.
@@ -1773,6 +1829,10 @@ zookeeper:
     # prometheus.io/path: /metrics
     # prometheus.io/port: "9141"
 
+  persistence:
+    storageClass: ebs-gp3-3000-125
+    size: 10Gi
+
 ###
 ###
 ### ---- CLICKHOUSE ----
@@ -1790,12 +1850,12 @@ clickhouse:
   # -- Clickhouse user
   user: admin
   # -- Clickhouse password
-  password: a1f31e03-c88e-4ca6-a2df-ad49183d15d9
+  password:
   # -- Clickhouse existing secret name that needs to be in the namespace where
   # posthog is deployed into. Will not use the above password value if set
-  existingSecret: ""
+  existingSecret: "clickhouse-credentials"
   # -- Key in the existingSecret containing the password value
-  existingSecretPasswordKey: ""
+  existingSecretPasswordKey: "password"
   # -- Whether to use TLS connection connecting to ClickHouse
   secure: false
   # -- Whether to verify TLS certificate on connection to ClickHouse
@@ -1873,10 +1933,10 @@ clickhouse:
     #    If undefined (the default) or set to `null`, no storageClassName spec is
     #    set, choosing the default provisioner.
     #
-    storageClass: null
+    storageClass: ebs-gp3-3000-125
 
     # -- Persistent Volume size
-    size: 20Gi
+    size: 1000Gi
 
   ## -- Clickhouse user profile configuration.
   ## You can use this to override profile settings, for example `default/max_memory_usage: 40000000000`
@@ -3418,3 +3478,6 @@ clusterDomain: cluster.local
 # Whether to set a topologySpreadConstraint on all deployments
 # to balance pods between availability zones and nodes
 includeDefaultTopologySpreadConstraints: false
+
+virtualservice:
+  host: posthog.reservoir.tools

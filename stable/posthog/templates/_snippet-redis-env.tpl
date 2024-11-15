@@ -24,13 +24,13 @@
   value: {{ include "posthog.sessionRecordingRedis.port" . }}
 {{- end }}
 
-{{/* Common Redis7 ENV variables */}}
-{{- define "snippet.redis7-env" }}
+{{/* Common RedisCdp ENV variables */}}
+{{- define "snippet.redisCdp-env" }}
 
 - name: CDP_REDIS_HOST
-  value: {{ include "posthog.redis7.host" . }}
+  value: {{ include "posthog.redisCdp.host" . }}
 
 - name: CDP_REDIS_PORT
-  value: {{ include "posthog.redis7.port" . }}
+  value: {{ include "posthog.redisCdp.port" . }}
 
 {{- end }}

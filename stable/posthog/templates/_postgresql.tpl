@@ -67,7 +67,7 @@ Set postgres secret
 {{- .Values.externalPostgresql.existingSecret | quote -}}
 {{- else -}}
 {{- if .Values.postgresql.enabled -}}
-{{- template "posthog.postgresql.fullname" . -}}
+{{ printf "%s.%s.credentials.postgresql.acid.zalan.do" .Values.postgresql.teamId .Values.postgresql.nameOverride }}
 {{- else -}}
 {{- printf "%s-external" (include "posthog.fullname" .) -}}
 {{- end -}}
@@ -81,7 +81,7 @@ Set postgres secret password key
 {{- if and (not .Values.postgresql.enabled) .Values.externalPostgresql.existingSecretPasswordKey }}
 {{- .Values.externalPostgresql.existingSecretPasswordKey | quote -}}
 {{- else -}}
-"postgresql-password"
+"password"
 {{- end -}}
 {{- end -}}
 
@@ -90,7 +90,7 @@ Set postgres host
 */}}
 {{- define "posthog.postgresql.host" -}}
 {{- if .Values.postgresql.enabled -}}
-{{- template "posthog.postgresql.fullname" . -}}
+{{- .Values.postgresql.nameOverride -}}
 {{- else -}}
 {{- required "externalPostgresql.postgresqlHost is required if not postgresql.enabled" .Values.externalPostgresql.postgresqlHost | quote }}
 {{- end -}}
@@ -112,7 +112,7 @@ Set postgres username
 */}}
 {{- define "posthog.postgresql.username" -}}
 {{- if .Values.postgresql.enabled -}}
-"postgres"
+{{- .Values.postgresql.postgresqlUsername | quote -}}
 {{- else -}}
 {{- .Values.externalPostgresql.postgresqlUsername | quote -}}
 {{- end -}}

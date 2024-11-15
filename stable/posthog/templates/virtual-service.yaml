@@ -6,7 +6,7 @@ spec:
   gateways:
   - default/default-gateway
   hosts:
-  - posthog.dev.reservoir.tools
+  - {{ .Values.virtualservice.host }}
   http:
   - match:
     - uri:

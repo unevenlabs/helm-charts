@@ -123,8 +123,8 @@ spec:
         # Redis env variables
         {{- include "snippet.redis-env" .root | nindent 8 }}
 
-        # Redis7 env variables
-        {{- include "snippet.redis7-env" .root | indent 8 }}
+        # RedisCdp env variables
+        {{- include "snippet.redisCdp-env" .root | indent 8 }}
 
         # Session Recording Redis env variables
         {{- include "snippet.session-recording-redis-env" .root | nindent 8 }}

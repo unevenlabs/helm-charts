@@ -181,7 +181,11 @@ spec:
 {{- if .Values.web.env }}
 {{ toYaml .Values.web.env | indent 8 }}
 {{- end }}
-
+        {{- range .Values.web.envFromSecret }}
+        envFrom:
+          - secretRef:
+              name: {{ . }}
+        {{- end }}
         {{- include "snippet.web-deployments.lifecycle" . | nindent 8 }}
 
         livenessProbe:

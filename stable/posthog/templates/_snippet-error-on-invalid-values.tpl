@@ -74,12 +74,6 @@
     ) nil -}}
 
   {{- else if .Values.postgresql.postgresqlUsername }}
-    {{- if ne .Values.postgresql.postgresqlUsername "postgres" }}
-      {{- required (printf (include "snippet.error-on-invalid-values-template" .)
-        "postgresql.postgresqlUsername has been removed"
-        "https://posthog.com/docs/self-host/deploy/upgrade-notes#upgrading-from-13xx"
-      ) nil -}}
-    {{- end -}}
 
     {{- if .Values.clickhouse.useNodeSelector }}
       {{- required (printf (include "snippet.error-on-invalid-values-template" .)

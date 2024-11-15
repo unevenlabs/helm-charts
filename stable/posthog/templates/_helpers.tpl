@@ -66,7 +66,7 @@ Set the posthog web image
 Set zookeeper host
 */}}
 {{- define "posthog.zookeeper.host" -}}
-{{- include "posthog.zookeeper.fullname" . -}}
+{{- include "posthog.zookeeper.fullname" . -}}-client
 {{- end -}}
 
 {{/*
@@ -104,10 +104,6 @@ Return the Redis host
 {{- end -}}
 {{- end -}}
 
-{{- define "posthog.redis7.host" -}}
-    {{- printf "%s" .Values.externalRedis7.host -}}
-{{- end -}}
-
 {{/*
 Return the Session Recording Redis host
 */}}
@@ -130,11 +126,6 @@ Return the Redis port
     {{- .Values.externalRedis.port | quote -}}
 {{- end -}}
 {{- end -}}
-
-{{- define "posthog.redis7.port" -}}
-    {{- .Values.externalRedis7.port | quote -}}
-{{- end -}}
-
 
 {{/*
 Return the Session Recording Redis port
@@ -196,6 +187,44 @@ Return whether Redis uses password authentication or not
     {{- true -}}
 {{- end -}}
 {{- end -}}
+
+
+{{/*
+Return the Redis fullname
+*/}}
+{{- define "posthog.redisCdp.fullname" -}}
+{{- if .Values.redisCdp.fullnameOverride -}}
+{{- .Values.redisCdp.fullnameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else if .Values.redisCdp.nameOverride -}}
+{{- printf "%s-%s" .Release.Name .Values.redisCdp.nameOverride | trunc 63 | trimSuffix "-" -}}
+{{- else -}}
+{{- printf "%s-%s" (include "posthog.fullname" .) "redis-cdp" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Return the Redis host
+*/}}
+{{- define "posthog.redisCdp.host" -}}
+{{- if .Values.redisCdp.enabled }}
+    {{- printf "%s-master" (include "posthog.redisCdp.fullname" .) -}}
+{{- else -}}
+    {{- printf "%s" .Values.externalRedisCdp.host -}}
+{{- end -}}
+{{- end -}}
+
+
+{{/*
+Return the Redis port
+*/}}
+{{- define "posthog.redisCdp.port" -}}
+{{- if .Values.redisCdp.enabled }}
+    {{- printf "6379" | quote -}}
+{{- else -}}
+    {{- .Values.externalRedis.port | quote -}}
+{{- end -}}
+{{- end -}}
+
 
 {{/*
 Set site url. Either use siteUrl if set, or if ingress is enabled, use the

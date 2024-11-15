@@ -14,7 +14,7 @@
 {{/* Return the Kafka hosts (brokers) as a comma separated list */}}
 {{- define "posthog.kafka.brokers"}}
 {{- if .Values.kafka.enabled -}}
-{{- printf "%s:%d" (include "posthog.kafka.fullname" .) (.Values.kafka.service.port | int) }}
+{{- printf "%s-kafka-bootstrap:%d" (include "posthog.kafka.fullname" .) (.Values.kafka.service.port | int) }}
 {{- else -}}
 {{ join "," .Values.externalKafka.brokers | quote }}
 {{- end }}
@@ -23,7 +23,7 @@
 {{/* Return the Kafka hosts (brokers) as a comma separated list */}}
 {{- define "posthog.sessionRecordingKafka.brokers"}}
 {{- if .Values.kafka.enabled -}}
-{{- printf "%s:%d" (include "posthog.kafka.fullname" .) (.Values.kafka.service.port | int) }}
+{{- printf "%s-kafka-bootstrap:%d" (include "posthog.kafka.fullname" .) (.Values.kafka.service.port | int) }}
 {{- else -}}
 {{ join "," .Values.externalSessionRecordingKafka.brokers | quote }}
 {{- end }}

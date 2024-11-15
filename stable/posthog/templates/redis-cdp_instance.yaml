@@ -1,0 +1,40 @@
+{{- if .Values.redisCdp.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Values.redisCdp.nameOverride }}-external-config
+data:
+  redis-additional.conf: |-
+    {{ .Values.redisCdp.master.additionalConfig | nindent 4 }}
+---
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: Redis
+metadata:
+  name:  {{ printf "%s" (include "posthog.redisCdp.host" .) }}
+
+spec:
+  redisConfig:
+    additionalRedisConfig: {{ .Values.redisCdp.nameOverride }}-external-config
+
+  kubernetesConfig:
+    image: "quay.io/opstree/redis:v7.0.15"
+    imagePullPolicy: "IfNotPresent"
+
+  redisExporter:
+    enabled: false
+    image: "quay.io/opstree/redis-exporter:v1.44.0"
+    imagePullPolicy: "IfNotPresent"
+
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+        - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.redisCdp.master.persistence.size }}
+
+  podSecurityContext:
+    fsGroup: 1000
+    runAsUser: 1000
+{{- end }}
