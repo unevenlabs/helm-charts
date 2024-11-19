@@ -34,7 +34,7 @@ spec:
     notifyAudit: false
     requireFullWindow: false
     notifyNoData: true
-    renotifyInterval: 30
+    renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
     includeTags: true
     newGroupDelay: 60
     # renotifyStatuses:

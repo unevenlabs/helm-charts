@@ -26,7 +26,7 @@ spec:
     notifyAudit: false
     requireFullWindow: false
     notifyNoData: false
-    renotifyInterval: 30
+    renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
     includeTags: true
     escalationMessage: "@pagerduty-indexer"
     # renotifyStatuses:

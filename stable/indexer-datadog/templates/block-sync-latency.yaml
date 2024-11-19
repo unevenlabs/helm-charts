@@ -28,7 +28,7 @@ spec:
     notifyAudit: false
     requireFullWindow: false
     notifyNoData: {{ .Values.datadogMonitors.block_sync_latency.notify_no_data }}
-    renotifyInterval: 30
+    renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
     includeTags: true
     # renotifyStatuses:
     #   - alert

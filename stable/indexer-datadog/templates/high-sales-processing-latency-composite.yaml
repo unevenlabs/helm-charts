@@ -27,7 +27,7 @@ spec:
     requireFullWindow: true
     notifyNoData: false
     noDataTimeframe: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
-    renotifyInterval: 30
+    renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
     includeTags: true
     # renotifyStatuses:
     #   - alert
@@ -104,7 +104,7 @@ data:
       requireFullWindow: false
       notifyNoData: false
       includeTags: true
-      renotifyInterval: 30
+      renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
       # renotifyStatuses:
       #   - alert
       #   - no data
