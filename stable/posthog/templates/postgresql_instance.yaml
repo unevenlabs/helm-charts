@@ -1,0 +1,32 @@
+{{- if .Values.postgresql.enabled }}
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: {{ .Values.postgresql.nameOverride }}
+spec:
+  teamId: {{ .Values.postgresql.teamId }}
+  volume:
+    size: {{ .Values.postgresql.persistence.size }}
+  numberOfInstances: {{ .Values.postgresql.numberOfInstances }}
+  users:
+    {{ .Values.postgresql.postgresqlUsername }}:
+    - superuser
+    - createdb
+  databases:
+    {{ .Values.postgresql.postgresqlDatabase }}: {{ .Values.postgresql.postgresqlUsername }}
+  preparedDatabases:
+  postgresql:
+    version: "16"
+  patroni:
+    pg_hba:
+      - local   all             all                             trust
+      - hostssl all             +zalandos    127.0.0.1/32       pam
+      - host    all             all          127.0.0.1/32       md5
+      - hostssl all             +zalandos    ::1/128            pam
+      - host    all             all          ::1/128            md5
+      - local   replication     standby                         trust
+      - hostssl replication     standby      all                md5
+      - hostssl all             +zalandos    all                pam
+      - hostssl all             all          all                md5
+      - host    all             all          all                md5
+{{- end }}

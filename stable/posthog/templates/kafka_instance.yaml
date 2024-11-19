@@ -1,0 +1,52 @@
+{{- if .Values.kafka.enabled }}
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: {{ printf "%s" (include "posthog.kafka.fullname" .) }}
+spec:
+  kafka:
+    version: 3.4.0
+    replicas: 1
+    {{- if .Values.kafka.resources }}
+    resources: {{ toYaml .Values.kafka.resources | nindent 6 }}
+    {{- end }}
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    jmxOptions: {}
+    config:
+      num.partitions: {{ .Values.kafka.numPartitions }}
+      offsets.topic.replication.factor: 1
+      transaction.state.log.replication.factor: 1
+      transaction.state.log.min.isr: 1
+      default.replication.factor: 1
+      min.insync.replicas: 1
+      inter.broker.protocol.version: "3.4"
+    storage:
+      type: jbod
+      volumes:
+        - id: 0
+          type: persistent-claim
+          size: {{ .Values.kafka.persistence.size }}
+          class: {{ .Values.kafka.persistence.class }}
+          deleteClaim: false
+  zookeeper:
+    replicas: 1
+    resources: {{ toYaml .Values.kafka.zookeeper.resources | nindent 6 }}
+    jmxOptions: {}
+    storage:
+      type: persistent-claim
+      size: {{ .Values.kafka.zookeeper.persistence.size }}
+      class: {{ .Values.kafka.zookeeper.persistence.class }}
+      deleteClaim: false
+  entityOperator:
+    topicOperator: {}
+    userOperator: {}
+
+{{- end }}

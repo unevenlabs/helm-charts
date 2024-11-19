@@ -1,0 +1,23 @@
+{{- if .Values.zookeeper.enabled }}
+apiVersion: zookeeper.pravega.io/v1beta1
+kind: ZookeeperCluster
+metadata:
+  name: {{ printf "%s" (include "posthog.zookeeper.fullname" .) }}
+  labels:
+    app: zookeeper-operator
+spec:
+  replicas: {{ .Values.zookeeper.replicaCount }}
+  image:
+    repository: pravega/zookeeper
+    tag: 0.2.15
+  labels:
+    app: zookeeper-operator
+  storageType: persistence
+  persistence:
+    reclaimPolicy: Delete
+    spec:
+      storageClassName: {{ .Values.zookeeper.persistence.storageClass }}
+      resources:
+        requests:
+          storage: {{ .Values.zookeeper.persistence.size }}
+{{- end }}

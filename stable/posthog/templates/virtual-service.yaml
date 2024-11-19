@@ -1,0 +1,50 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: {{ template "posthog.fullname" . }}
+spec:
+  gateways:
+  - default/default-gateway
+  hosts:
+  - {{ .Values.virtualservice.host }}
+  http:
+  - match:
+    - uri:
+        prefix: /batch
+    - uri:
+        prefix: /capture/
+    - uri:
+        exact: /capture
+    - uri:
+        prefix: /decide/
+    - uri:
+        exact: /decide
+    - uri:
+        prefix: /e/
+    - uri:
+        exact: /e
+    - uri:
+        prefix: /engage/
+    - uri:
+        exact: /engage
+    - uri:
+        prefix: /track/
+    - uri:
+        exact: /track
+    - uri:
+        prefix: /s/
+    - uri:
+        exact: /s
+    route:
+    - destination:
+        host: posthog-events
+        port:
+          number: 8000
+  - match:
+    - uri:
+        prefix: /
+    route:
+    - destination:
+        host: posthog-web
+        port:
+          number: 8000
