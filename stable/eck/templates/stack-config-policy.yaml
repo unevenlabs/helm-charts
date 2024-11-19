@@ -1,0 +1,14 @@
+{{- if .Values.stackConfigPolicies }}
+{{- range .Values.stackConfigPolicies }}
+---
+apiVersion: stackconfigpolicy.k8s.elastic.co/v1alpha1
+kind: StackConfigPolicy
+metadata:
+  name: {{ if .name }}{{ .name }}{{ else }}{{ $.Release.Name }}{{ end }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    Environment: {{ $.Values.labels.Environment | default "dev" }}
+spec: {{ toYaml . | nindent 2 }}
+
+{{- end }}
+{{- end }}
