@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.3.1] - 2024-11-20
+### Changed
+- Fix StackConfigPolicies values.yaml
+
 ## [2.3.0] - 2024-11-19
 ### Changed
 - Add StackConfigPolicies support
