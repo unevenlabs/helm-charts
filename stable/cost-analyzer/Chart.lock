@@ -1,6 +1,6 @@
 dependencies:
 - name: cost-analyzer
   repository: oci://public.ecr.aws/kubecost
-  version: 1.103.4
-digest: sha256:93ef2f77817908617716922322760d4d0056a8fda12c0ad272efe50b4acdc23d
-generated: "2023-06-01T15:46:16.461657655+02:00"
+  version: 2.4.3
+digest: sha256:f40acfb1685ff9fa91fc9be91bc320462f9248ca324c61cc669c66cefd300472
+generated: "2024-12-05T10:58:31.31415396+01:00"

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.3-1] - 2024-12-05
+### Changed
+- Bump version to 2.4.3
+
 ## [1.103.4-4] - 2023-06-01
 ### Changed
 - Fix authorization policy selector

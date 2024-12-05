@@ -2,8 +2,8 @@ apiVersion: v2
 name: cost-analyzer
 description: cost-analyzer
 type: application
-version: 1.103.4-4
+version: 2.4.3-1
 dependencies:
   - name: cost-analyzer
-    version: 1.103.4
+    version: 2.4.3
     repository: oci://public.ecr.aws/kubecost
