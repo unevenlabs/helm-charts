@@ -2028,6 +2028,8 @@ clickhouse:
   defaultSettings:
     default_database: "posthog"
     format_schema_path: /etc/clickhouse-server/config.d/
+    user_defined_executable_functions_config: config.d/*_function.xml
+    user_scripts_path: /var/lib/clickhouse/user_scripts
 
   ## -- specify additional user configs for ClickHouse. This will be added to
   ## the users.xml configuration. See

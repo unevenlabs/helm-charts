@@ -50,7 +50,7 @@ spec:
           string created_at = 7;
           string elements_chain = 8;
         }
-      users.d/user_defined_function.xml: |-
+      config.d/user_defined_function.xml: |-
 {{ $.Files.Get "clickhouse/user_defined_function.xml" | indent 8 }}
 
     zookeeper:
