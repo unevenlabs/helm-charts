@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.48.0] - 2024-12-06
+### Changed
+- Added properties-defs-rs deployment
+
 ## [30.47.0] - 2024-11-12
 ### Changed
 - Adapt for Unevenlabs

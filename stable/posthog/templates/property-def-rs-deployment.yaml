@@ -1,0 +1,119 @@
+{{- if .Values.propertyDefsRs.enabled -}}
+{{- range .Values.propertyDefsRs.consumers }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "posthog.fullname" $ }}-property-defs-rs-{{ .name }}
+  labels: {{- include "_snippet-metadata-labels-common" $ | nindent 4 }}
+  annotations: {{- include "_snippet-metadata-annotations-common" $ | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+        app: {{ template "posthog.fullname" $ }}
+        release: "{{ $.Release.Name }}"
+        role: property-defs-rs-{{ .name }}
+  {{- if not $.Values.propertyDefsRs.hpa.enabled }}
+  replicas: {{ $.Values.propertyDefsRs.replicacount }}
+  {{- end }}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: {{ $.Values.propertyDefsRs.rollout.maxSurge }}
+      maxUnavailable: {{ $.Values.propertyDefsRs.rollout.maxUnavailable }}
+
+  template:
+    metadata:
+      annotations:
+        checksum/secrets.yaml: {{ include (print $.Template.BasePath "/secrets.yaml") $ | sha256sum }}
+      {{- if $.Values.propertyDefsRs.podAnnotations }}
+{{ toYaml $.Values.propertyDefsRs.podAnnotations | indent 8 }}
+      {{- end }}
+      labels:
+        app: {{ template "posthog.fullname" $ }}
+        release: "{{ $.Release.Name }}"
+        role: property-defs-rs-{{ .name }}
+        {{- if (eq (default $.Values.image.tag "none") "latest") }}
+        date: "{{ now | unixEpoch }}"
+        {{- end }}
+        {{- if $.Values.propertyDefsRs.podLabels }}
+{{ toYaml $.Values.propertyDefsRs.podLabels | indent 8 }}
+        {{- end }}
+    spec:
+      serviceAccountName: {{ template "posthog.serviceAccountName" $ }}
+      {{- include "_snippet-topologySpreadConstraints" $ | nindent 6 }}
+
+      {{- if $.Values.propertyDefsRs.affinity }}
+      affinity:
+{{ toYaml $.Values.propertyDefsRs.affinity | indent 8 }}
+      {{- end }}
+
+      {{- if $.Values.propertyDefsRs.nodeSelector }}
+      nodeSelector:
+{{ toYaml $.Values.propertyDefsRs.nodeSelector | indent 8 }}
+      {{- end }}
+
+      {{- if $.Values.propertyDefsRs.tolerations }}
+      tolerations:
+{{ toYaml $.Values.propertyDefsRs.tolerations | indent 8 }}
+      {{- end }}
+
+      {{- if $.Values.propertyDefsRs.schedulerName }}
+      schedulerName: "{{ $.Values.propertyDefsRs.schedulerName }}"
+      {{- end }}
+
+      {{- if $.Values.propertyDefsRs.priorityClassName }}
+      priorityClassName: "{{ $.Values.propertyDefsRs.priorityClassName }}"
+      {{- end }}
+
+      {{- if $.Values.image.imagePullSecrets }}
+      imagePullSecrets:
+{{ toYaml $.Values.image.imagePullSecrets | indent 8 }}
+      {{- end }}
+
+      # I do not know for sure if the old one has been used anywhere, so do both :(
+      {{- if $.Values.image.pullSecrets }}
+      imagePullSecrets:
+        {{- range $.Values.image.pullSecrets }}
+        - name: {{ . }}
+        {{- end }}
+      {{- end }}
+
+      {{- if $.Values.propertyDefsRs.podSecurityContext.enabled }}
+      securityContext: {{- omit $.Values.propertyDefsRs.podSecurityContext "enabled" | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: {{ $.Chart.Name }}-property-defs-rs
+        image: {{ $.Values.propertyDefsRs.image.repository }}:{{ $.Values.propertyDefsRs.image.tag }}
+        imagePullPolicy: {{ $.Values.image.pullPolicy }}
+        command:
+          - /usr/local/bin/property-defs-rs
+        env:
+        # Kafka env variables
+        {{- include "snippet.kafka-env" $ | indent 8 }}
+
+        {{- include "snippet.postgresqlurl-env" $ | nindent 8 }}
+        - name: SKIP_WRITES
+          value: "false"
+        - name: SKIP_READS
+          value: "false"
+        - name: FILTER_MODE
+          value: "opt-out"
+
+{{- if $.Values.env }}
+{{ toYaml $.Values.env | indent 8 }}
+{{- end }}
+{{- if $.Values.propertyDefsRs.env }}
+{{ toYaml $.Values.propertyDefsRs.env | indent 8 }}
+{{- end }}
+        resources:
+{{ toYaml $.Values.propertyDefsRs.resources | indent 12 }}
+        {{- if $.Values.propertyDefsRs.securityContext.enabled }}
+        securityContext: {{- omit $.Values.propertyDefsRs.securityContext "enabled" | toYaml | nindent 12 }}
+        {{- end }}
+      initContainers:
+      {{- include "_snippet-initContainers-wait-for-service-dependencies" $ | indent 8 }}
+      {{- include "_snippet-initContainers-wait-for-migrations" $ | indent 8 }}
+{{- end }}
+{{- end }}

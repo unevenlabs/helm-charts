@@ -23,6 +23,16 @@
 {{ end -}}
 {{- end }}
 
+{{- define "snippet.postgresqlurl-env" }}
+- name: DATABASE_URL
+  value: {{ printf "postgres://%s@%s:%s/%s" (include "posthog.postgresql.username" . | trimAll "\"") (include "posthog.postgresql.host" . | trimAll "\"") (include "posthog.postgresql.port" . ) (include "posthog.postgresql.database" . | trimAll "\"") }}
+- name: PGPASSWORD
+  valueFrom:
+    secretKeyRef:
+      name: {{ include "posthog.postgresql.secretName" . }}
+      key: {{ include "posthog.postgresql.secretPasswordKey" . }}
+{{- end }}
+
 {{/* ENV used by migrate job for connecting to postgresql */}}
 {{- define "snippet.postgresql-migrate-env" }}
 # Connect directly to postgres (without pgbouncer) to avoid statement_timeout for longer-running queries
