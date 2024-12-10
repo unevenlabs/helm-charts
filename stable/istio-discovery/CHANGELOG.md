@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.3-6] - 2024-12-10
+### Changed
+- Make Prometheus storage configurable
+
 ## [1.19.3-5] - 2023-12-22
 ### Changed
 - Added Sidecar to control sidecar istio-proxy memory usage

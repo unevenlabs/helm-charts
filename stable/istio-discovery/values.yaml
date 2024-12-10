@@ -517,4 +517,8 @@ proxyProtocol: false
 
 envoyAccessLogging: false
 
-prometheus: false
+prometheus:
+  enabled: false
+  persistence:
+    storage: 1500Gi
+    storageClassName: ebs-gp3-6000-250

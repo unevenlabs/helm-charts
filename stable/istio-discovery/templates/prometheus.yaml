@@ -1,4 +1,4 @@
-{{- if .Values.prometheus }}
+{{- if .Values.prometheus.enabled }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
@@ -523,6 +523,6 @@ spec:
   - ReadWriteOnce
   resources:
     requests:
-      storage: 1500Gi
-  storageClassName: ebs-gp3-6000-250
+      storage: {{ .Values.prometheus.persistence.storage }}
+  storageClassName: {{ .Values.prometheus.persistence.storageClassName }}
 {{- end }}
