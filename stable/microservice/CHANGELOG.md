@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.12.0] - 2024-12-18
+### Changed
+- Use last horizontal pod autoscaler api
+
 ## [1.11.1] - 2024-07-19
 ### Changed
 - Fix deployments restarts upon configmap changes
