@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.7.10-1] - 2024-12-20
+###Changed
+- Bump to version 7.7.10. Downloaded https://github.com/argoproj/argo-helm/releases/download/argo-cd-7.7.10/argo-cd-7.7.10.tgz
+- Re-apply AuthorizationPolicy and VirtualService
+
 ## [7.3.9-1] - 2024-07-22
 ###Changed
 - Bump to version 7.3.9. Downloaded https://github.com/argoproj/argo-helm/releases/download/argo-cd-7.3.9/argo-cd-7.3.9.tgz
