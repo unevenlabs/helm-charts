@@ -466,6 +466,20 @@ entries:
     - https://unevenlabs.github.io/helm-charts/argocd-apps-0.0.9.tgz
     version: 0.0.9
   base:
+  - apiVersion: v2
+    appVersion: 1.24.2
+    created: "2024-12-24T10:30:39.31024828Z"
+    description: Helm chart for deploying Istio cluster resources and CRDs
+    digest: ab17e0f72e93833506ec3a136291a02fbc2a853b980b725a4aeedb6254f20900
+    icon: https://istio.io/latest/favicons/android-192x192.png
+    keywords:
+    - istio
+    name: base
+    sources:
+    - https://github.com/istio/istio
+    urls:
+    - https://unevenlabs.github.io/helm-charts/base-1.24.2-1.tgz
+    version: 1.24.2-1
   - apiVersion: v1
     appVersion: 1.19.3
     created: "2023-10-31T17:28:17.850058442Z"
@@ -3260,4 +3274,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/posthog-30.46.0.tgz
     version: 30.46.0
-generated: "2024-12-24T10:24:53.684423152Z"
+generated: "2024-12-24T10:30:39.307742542Z"
