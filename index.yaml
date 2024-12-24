@@ -871,6 +871,22 @@ entries:
     version: 0.0.18
   gateway:
   - apiVersion: v2
+    appVersion: 1.24.2
+    created: "2024-12-24T10:24:53.685334547Z"
+    description: Helm chart for deploying Istio gateways
+    digest: 921468cc9eaf568f8db695ac4351905fae32ecf1e6c3fa9d2e6768efeb016827
+    icon: https://istio.io/latest/favicons/android-192x192.png
+    keywords:
+    - istio
+    - gateways
+    name: gateway
+    sources:
+    - https://github.com/istio/istio
+    type: application
+    urls:
+    - https://unevenlabs.github.io/helm-charts/gateway-1.24.2-1.tgz
+    version: 1.24.2-1
+  - apiVersion: v2
     appVersion: 1.19.3
     created: "2023-10-31T17:35:10.940981781Z"
     description: Helm chart for deploying Istio gateways
@@ -3244,4 +3260,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/posthog-30.46.0.tgz
     version: 30.46.0
-generated: "2024-12-20T13:03:55.596498712Z"
+generated: "2024-12-24T10:24:53.684423152Z"
