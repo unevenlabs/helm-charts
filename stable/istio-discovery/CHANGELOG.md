@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.2-1] - 2024-12-20
+### Changed
+- Fork of offical istio release 1.24.2. Downloaded from https://istio-release.storage.googleapis.com/charts/istiod-1.24.2.tgz
+- Re-apply previous changes
+
 ## [1.19.3-6] - 2024-12-10
 ### Changed
 - Make Prometheus storage configurable
