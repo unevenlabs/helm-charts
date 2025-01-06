@@ -10,7 +10,7 @@ metadata:
 spec:
   name: {{ .Values.environment }} - {{ title .Values.chain_name }} - {{`{{`}}rabbitmq_vhost.name{{`}}`}} {{`{{`}}rabbitmq_queue.name{{`}}`}} RabbitMQ Large Queues Monitor
   type: query alert
-  query: max(last_30m):top(max:rabbitmq.queue.messages_ready{host:prod-applications, rabbitmq_vhost:{{ .Values.chain_name }}} by {rabbitmq_vhost,rabbitmq_queue}, 50, 'max', 'desc') > 150000
+  query: max(last_5m):top(max:rabbitmq.queue.messages_ready{host:prod-applications, rabbitmq_vhost:{{ .Values.chain_name }}} by {rabbitmq_vhost,rabbitmq_queue}, 50, 'max', 'desc') > 150000
   message: |-
     {{`{{`}}rabbitmq_vhost.name{{`}}`}} - {{`{{`}}rabbitmq_queue.name{{`}}`}} is buffering with {{`{{`}}value{{`}}`}} messages ready to be consumed
     Check the queue for errors or any backfill in case it's buffering
