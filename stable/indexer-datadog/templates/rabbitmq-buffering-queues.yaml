@@ -29,6 +29,8 @@ spec:
     requireFullWindow: false
     notifyNoData: false
     renotifyInterval: 30
+    escalationMessage: "@pagerduty-indexer"
+    renotifyOccurrences: 1
     includeTags: true
     newGroupDelay: 60
 

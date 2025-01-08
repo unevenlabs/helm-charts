@@ -28,7 +28,7 @@ spec:
     onMissingData: default
     includeTags: true
     escalationMessage: "@pagerduty-indexer"
-    renotifyInterval: {{ ternary 10 30 (eq (int .Values.chain_tier) 1) }}
+    renotifyInterval: {{ ternary 10 (ternary 30 90 (eq (int .Values.chain_tier) 2)) (eq (int .Values.chain_tier) 1) }}
     # renotifyStatuses:
     #   - alert
     #   - no data
