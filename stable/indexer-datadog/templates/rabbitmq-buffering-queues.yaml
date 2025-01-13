@@ -15,7 +15,7 @@ spec:
     {{`{{`}}rabbitmq_vhost.name{{`}}`}} - {{`{{`}}rabbitmq_queue.name{{`}}`}} is buffering with {{`{{`}}value{{`}}`}} messages ready to be consumed
     Check the queue for errors or any backfill in case it's buffering
 
-    @slack-alerts @backend@unevenlabs.com
+    @slack-alerts
 
     {{`{{`}}#is_recovery{{`}}`}}
     @pagerduty-indexer
