@@ -39,6 +39,8 @@ elasticsearch:
         #               operator: "Exists"
         #             - key: "cpu-heavy"
         #               operator: "Exists"
+        # nodeSelector:
+        #   topology.kubernetes.io/zone: us-east-1a
         resources:
           limits:
             cpu: 2

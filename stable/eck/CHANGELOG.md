@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [2.4.0] - 2025-01-23
+### Changed
+- Add nodeSelector
+
 ## [2.3.1] - 2024-11-20
 ### Changed
 - Fix StackConfigPolicies values.yaml
