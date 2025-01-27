@@ -223,6 +223,8 @@ persistentVolumeClaims:
 service:
   enabled: true
 
+  type:
+
   additionalLabels:
     # expose: "true"
 

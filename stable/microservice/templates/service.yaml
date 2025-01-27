@@ -16,6 +16,9 @@ metadata:
 {{ toYaml .Values.service.annotations | indent 4 }}
 {{- end }}
 spec:
+{{- if .Values.service.type }}
+  type: {{ .Values.service.type }}
+{{- end }}
   selector:
 {{ include "application.labels.selector" . | indent 4 }}
 {{- if .Values.deployment.podLabels }}
