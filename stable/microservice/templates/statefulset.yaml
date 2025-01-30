@@ -33,9 +33,9 @@ spec:
 {{- if .Values.opa.enabled }}
         opa-injection: "enabled"
 {{- end }}
-{{- if or (.Values.vault.enabled) (.Values.statefulSet.additionalPodAnnotations) }}
       annotations:
-{{- end }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/vault-configmap: {{ include (print $.Template.BasePath "/vault-configmap.yaml") . | sha256sum }}
 {{- if .Values.vault.enabled }}
 {{ include "vault.annotations" (list . .Values.vault) | indent 8 }}
 {{- end }}
@@ -121,9 +121,8 @@ spec:
       {{- end }}
       {{- if .Values.statefulSet.volumeMounts }}
         volumeMounts:
-        {{- range .Values.statefulSet.volumeMounts }}
-        - mountPath: {{ .mountPath }}
-          name: {{ .name }}
+        {{- if .Values.statefulSet.volumeMounts }}
+{{ toYaml .Values.statefulSet.volumeMounts | indent 8 }}
         {{- end }}
       {{- end }}
         resources:

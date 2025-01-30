@@ -740,12 +740,9 @@ statefulSet:
   #   persistentVolumeClaim:
   #     claimName: claim-name
 
-  # Mount path for Volumes
-  mountPath: /tmp
-  #  - mountPath: /tmp
-  #    name: price-stream-agg-data
-  # - mountPath: /path
-  #   name: volume-name
+  volumeMounts:
+    # - mountPath: /path
+    #   name: volume-name
 
   # Taint tolerations for nodes
   tolerations:
