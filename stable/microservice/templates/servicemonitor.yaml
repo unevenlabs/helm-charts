@@ -26,5 +26,9 @@ spec:
     - {{ .Release.Namespace }}
   endpoints:
 {{ toYaml .Values.serviceMonitor.endpoints | indent 4 }}
+{{- if .Values.serviceMonitor.targetLabels }}
+  targetLabels:
+{{ toYaml .Values.serviceMonitor.targetLabels | indent 4 }}
+{{- end }}
 {{- end }}
 {{- end }}

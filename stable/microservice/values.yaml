@@ -438,6 +438,12 @@ serviceMonitor:
       path: /actuator/prometheus
       port: http
 
+  # defines the labels which are transferred from the
+  # associated Kubernetes `Service` object onto the ingested metrics.
+  targetLabels:
+    - application
+    - provider
+
 # autoscaling is used for horizonal pod autoscaling
 autoscaling:
   # enabled is a boolean flag for enabling or disabling autoscaling
