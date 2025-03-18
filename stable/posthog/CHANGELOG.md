@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.50.0] - 2024-18-03
+### Changed
+- Make virtualservices a list
+
 ## [30.49.0] - 2024-12-06
 ### Changed
 - Added clickhouse user_defined_function.xml taken from https://github.com/PostHog/posthog/blob/master/docker/clickhouse/user_defined_function.xml

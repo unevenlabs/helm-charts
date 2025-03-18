@@ -3536,4 +3536,6 @@ clusterDomain: cluster.local
 includeDefaultTopologySpreadConstraints: false
 
 virtualservice:
-  host: posthog.reservoir.tools
+  hosts:
+    - posthog.reservoir.tools
+    - api-p.reservoir.tools

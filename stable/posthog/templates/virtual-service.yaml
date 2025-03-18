@@ -6,7 +6,9 @@ spec:
   gateways:
   - default/default-gateway
   hosts:
-  - {{ .Values.virtualservice.host }}
+{{- range .Values.virtualservice.hosts }}
+    - {{ . | quote }}
+{{- end }}
   http:
   - match:
     - uri:
