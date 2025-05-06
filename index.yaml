@@ -3615,4 +3615,25 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/posthog-30.46.0.tgz
     version: 30.46.0
-generated: "2025-04-21T13:18:47.122496191Z"
+  retool:
+  - apiVersion: v2
+    appVersion: 1.0.0
+    created: "2025-05-06T15:03:21.600428576Z"
+    dependencies:
+    - condition: retool.enabled
+      name: retool
+      repository: https://charts.retool.com
+      version: 6.4.10
+    description: Retool at Unevenlabs
+    digest: 19a20f131cbb2b654c1f2c16fbfd2bf2ce96b24d8208a13950212da83114c153
+    keywords:
+    - Retool
+    - Unevenlabs
+    maintainers:
+    - email: filipe@unevenlabs.com
+      name: Filipe
+    name: retool
+    urls:
+    - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
+    version: 1.0.0
+generated: "2025-05-06T15:03:21.591540712Z"
