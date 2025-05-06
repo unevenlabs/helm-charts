@@ -1,6 +1,18 @@
 retool:
   enabled: true
 
+  ingress:
+    enabled: false
+
+  postgresql:
+    enabled: false
+
+  workflows:
+    enabled: false
+
+  retool-temporal-services-helm:
+    enabled: false
+
 virtualService:
   enabled: true
   gateways: ["default/default-gateway"]
