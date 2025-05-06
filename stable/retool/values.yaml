@@ -1,0 +1,13 @@
+retool:
+  enabled: true
+
+virtualService:
+  enabled: true
+  gateways: ["default/default-gateway"]
+  annotations: {}
+  hosts: []
+  whiteListed:
+    ips: []
+
+service:
+  port: 3000
