@@ -1,6 +1,12 @@
 retool:
   enabled: true
 
+  config:
+    encryptionKey: "replaceme"
+
+  image:
+    tag: "3.114.22-stable"
+
   ingress:
     enabled: false
 
