@@ -167,7 +167,7 @@ spec:
       {{- if and .Values.rbac.deployment.enabled .Values.rbac.serviceAccount.enabled }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
-        {{- else }}
+      {{- else }}
       serviceAccountName: {{ template "application.name" . }}
       {{- end }}
       {{- end }}
