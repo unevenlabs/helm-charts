@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.18.0] - 2025-09-20
+### Changed
+- Add dataSource to volumeClaimTemplates
+
 ## [1.17.0] - 2025-08-21
 ### Changed
 - Add service account to jobs

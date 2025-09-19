@@ -173,6 +173,10 @@ spec:
         resources:
           requests:
             storage: {{ .spec.resources.requests.storage }}
+        {{- if .spec.dataSource }}
+        dataSource:
+{{ toYaml .spec.dataSource | indent 10 }}
+        {{- end}}
     {{- end }}
   {{- end }}
 {{- end }}
