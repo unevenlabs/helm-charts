@@ -56,7 +56,7 @@ vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/agent-pre-populate-only: "true"
 vault.hashicorp.com/role: {{ $vault.role | quote }}
 {{- range $path := $vault.secretsPath }}
-  {{- $name := replace "/" "-" $path }}
+  {{- $name := sha1sum $path | trunc 16 }}
 vault.hashicorp.com/agent-inject-secret-{{ $name }}: {{ $path | quote }}
 vault.hashicorp.com/agent-inject-template-{{ $name }}: |
   {{ "{{- with secret \"" }}{{ $path }}{{ "\" -}}" }}
