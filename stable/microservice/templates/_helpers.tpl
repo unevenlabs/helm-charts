@@ -63,6 +63,6 @@ vault.hashicorp.com/agent-inject-template-{{ $name }}: |
   {{- range $env := $secret.envs }}
   {{ "export " }}{{ $env.key }}{{ "=\"{{ .Data.data." }}{{ $env.value }}{{ " }}\"" }}
   {{- end }}
-  {{ "{{- end }}" }}"
+  {{ "{{- end }}" }}
 {{- end }}
 {{- end }}
