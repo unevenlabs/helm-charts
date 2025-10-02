@@ -61,7 +61,7 @@ vault.hashicorp.com/agent-inject-secret-{{ $name }}: {{ $secret.path | quote }}
 vault.hashicorp.com/agent-inject-template-{{ $name }}: |
   {{ "{{- with secret \"" }}{{ $secret.path }}{{ "\" -}}" }}
   {{- range $env := $secret.envs }}
-  {{ $env.key }}{{ "={{ .Data.data." }}{{ $env.value }}{{ " }}" }}"
+  {{ "export " }}{{ $env.key }}{{ "=\"{{ .Data.data." }}{{ $env.value }}{{ " }}\"" }}
   {{- end }}
   {{ "{{- end }}" }}"
 {{- end }}
