@@ -638,9 +638,17 @@ jobs:
 vault:
   enabled: false
   role: "development"
-  secretsPath:
-    - "secrets/solver-common-mainnets/default"
-    - "secrets/solver-wallet-mainnets/default"
+  secrets:
+    - path: "secrets/solver-common-mainnets/default"
+      envs:
+        - key: ADMIN_API
+          value: ADMIN_API
+        - key: API_KEY
+          value: API_KEY
+    - path: "secrets/solver-wallet-mainnets/default"
+      envs:
+        - key: RELAY_ADMIN_API
+          value: ADMIN_API
 
 # Enable opa-sidecar injection
 opa:

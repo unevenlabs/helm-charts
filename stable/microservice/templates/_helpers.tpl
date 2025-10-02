@@ -55,14 +55,14 @@ Usage:
 vault.hashicorp.com/agent-inject: "true"
 vault.hashicorp.com/agent-pre-populate-only: "true"
 vault.hashicorp.com/role: {{ $vault.role | quote }}
-{{- range $path := $vault.secretsPath }}
-  {{- $name := sha1sum $path | trunc 16 }}
-vault.hashicorp.com/agent-inject-secret-{{ $name }}: {{ $path | quote }}
+{{- range $secret := $vault.secrets }}
+  {{- $name := sha1sum $secret.path | trunc 16 }}
+vault.hashicorp.com/agent-inject-secret-{{ $name }}: {{ $secret.path | quote }}
 vault.hashicorp.com/agent-inject-template-{{ $name }}: |
-  {{ "{{- with secret \"" }}{{ $path }}{{ "\" -}}" }}
-  {{ "{{ range $k, $v := .Data.data }}" }}
-  {{ "export {{ $k }}=\"{{ $v }}\"" }}
-  {{ "{{ end }}" }}
-  {{ "{{- end -}}" }}
+  {{ "{{- with secret \"" }}{{ $secret.path }}{{ "\" -}}" }}
+  {{- range $env := $secret.envs }}
+  {{ $env.key }}{{ "={{ .Data.data." }}{{ $env.value }}{{ " }}" }}"
+  {{- end }}
+  {{ "{{- end }}" }}"
 {{- end }}
 {{- end }}

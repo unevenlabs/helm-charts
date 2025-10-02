@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.19.2] - 2025-10-02
+### Changed
+- Change Vault template
+
 ## [1.19.1] - 2025-10-02
 ### Changed
 - Change Vault template
