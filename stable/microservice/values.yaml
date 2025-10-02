@@ -638,28 +638,9 @@ jobs:
 vault:
   enabled: false
   role: "development"
-  path: "k8s-applications"
-  secretsFile:
-    enabled: false
-    # restartCommand: "restart" # Command that will be called when the last file is loaded and is usually used to restart the container
-    additionalLabels:
-      # key: value
-    annotations:
-      # key: value
-    files:
-    # - mountPath: "/keys/custom-content-key.json"
-    #   secretPath: "unevenlabs/test/app/keys"
-    #   contents: # This can be used instead of the secretKey to map secrets individually
-    #     - name: "username"
-    #       value: .Data.username
-    #     - name: "password"
-    #       value: .Data.password
-    #     - name: "endpoint"
-    #       value: .Data.endpoint
-    #   command: "echo 'Test command'" # Will trigger the command as soon as this file has been deployed
-    # - mountPath: "/keys/key-1.json"
-    #   secretPath: "unevenlabs/test/app/keys"
-    #   secretKey: "KEY1"
+  secretsPath:
+    - "secrets/solver-common-mainnets/default"
+    - "secrets/solver-wallet-mainnets/default"
 
 # Enable opa-sidecar injection
 opa:

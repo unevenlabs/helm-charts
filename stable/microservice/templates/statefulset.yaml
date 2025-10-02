@@ -35,7 +35,6 @@ spec:
 {{- end }}
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
-        checksum/vault-configmap: {{ include (print $.Template.BasePath "/vault-configmap.yaml") . | sha256sum }}
 {{- if .Values.vault.enabled }}
 {{ include "vault.annotations" (list . .Values.vault) | indent 8 }}
 {{- end }}

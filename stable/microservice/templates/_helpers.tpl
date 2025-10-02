@@ -51,16 +51,18 @@ Usage:
 {{- end }}
 
 {{- define "vault.annotations" -}}
-{{- $ := index $ 0 -}}
 {{- $vault := index . 1 -}}
-vault.security.banzaicloud.io/vault-addr: "http://vault.vault:8200"
-{{- if $vault.role }}
-vault.security.banzaicloud.io/vault-role: {{ $vault.role }}
-{{- end }}
-{{- if $vault.path }}
-vault.security.banzaicloud.io/vault-path: {{ $vault.path }}
-{{- end }}
-{{- if $vault.secretsFile.enabled }}
-vault.security.banzaicloud.io/vault-agent-configmap: {{ template "application.name" $ }}-vault-secret-files
+vault.hashicorp.com/agent-inject: "true"
+vault.hashicorp.com/agent-pre-populate-only: "true"
+vault.hashicorp.com/role: {{ $vault.role | quote }}
+{{- range $path := $vault.secretsPath }}
+  {{- $name := replace "/" "-" $path }}
+vault.hashicorp.com/agent-inject-secret-{{ $name }}: {{ $path | quote }}
+vault.hashicorp.com/agent-inject-template-{{ $name }}: |
+  {{ "{{- with secret \"" }}{{ $path }}{{ "\" -}}" }}
+  {{ "{{ range $k, $v := .Data.data }}" }}
+  {{ "export {{ $k }}=\"{{ $v }}\"" }}
+  {{ "{{ end }}" }}
+  {{ "{{- end -}}" }}
 {{- end }}
 {{- end }}
