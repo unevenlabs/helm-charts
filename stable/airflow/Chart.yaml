@@ -1,0 +1,16 @@
+name: apache-airflow
+apiVersion: v2
+appVersion: 3.0.2
+version: 1.18.0
+description: Apache Airflow at Unevenlabs
+keywords:
+  - Apache Airflow
+  - Unevenlabs
+maintainers:
+  - email: filipe@unevenlabs.com
+    name: Filipe
+dependencies:
+  - name: airflow
+    version: 1.18.0
+    repository: https://airflow.apache.org
+    condition: airflow.enabled
