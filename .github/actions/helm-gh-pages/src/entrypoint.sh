@@ -40,7 +40,7 @@ REPO_URL=""
 
 main() {
   if [[ -z "$HELM_VERSION" ]]; then
-      HELM_VERSION="3.8.0"
+      HELM_VERSION="3.19.3"
   fi
 
   if [[ -z "$CHARTS_DIR" ]]; then
@@ -74,9 +74,9 @@ main() {
   if [[ -z "$REPO_URL" ]]; then
       if [[ -z "$ENTERPRISE_URL" ]]; then
           REPO_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${OWNER}/${REPOSITORY}"
-      else 
+      else
           REPO_URL="https://x-access-token:${GITHUB_TOKEN}@${ENTERPRISE_URL}/${REPOSITORY}"
-      fi 
+      fi
   fi
 
   if [[ -z "$COMMIT_USERNAME" ]]; then
