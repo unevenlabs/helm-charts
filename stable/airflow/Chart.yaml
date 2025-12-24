@@ -4,7 +4,8 @@ appVersion: 3.0.2
 version: 1.18.0
 description: Apache Airflow at Unevenlabs
 keywords:
-  - Apache Airflow
+  - Apache
+  - Airflow
   - Unevenlabs
 maintainers:
   - email: filipe@unevenlabs.com
