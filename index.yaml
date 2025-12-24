@@ -193,6 +193,27 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/airbyte-0.48.8-1.tgz
     version: 0.48.8-1
+  airflow:
+  - apiVersion: v2
+    appVersion: 3.0.2
+    created: "2025-12-24T16:00:44.207995644Z"
+    dependencies:
+    - condition: airflow.enabled
+      name: airflow
+      repository: https://airflow.apache.org
+      version: 1.18.0
+    description: Apache Airflow at Unevenlabs
+    digest: ed86b8a2a91d57296bde69add7c8b761d5d1fe30bd443f44eb2ec17cb0a21ed4
+    keywords:
+    - Apache Airflow
+    - Unevenlabs
+    maintainers:
+    - email: filipe@unevenlabs.com
+      name: Filipe
+    name: airflow
+    urls:
+    - https://unevenlabs.github.io/helm-charts/airflow-1.18.0.tgz
+    version: 1.18.0
   akhq:
   - apiVersion: v1
     appVersion: 0.23.0
@@ -3804,4 +3825,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
     version: 1.0.0
-generated: "2025-10-02T15:07:02.967714254Z"
+generated: "2025-12-24T16:00:44.194837048Z"
