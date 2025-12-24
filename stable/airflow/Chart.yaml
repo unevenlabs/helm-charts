@@ -1,4 +1,4 @@
-name: apache-airflow
+name: airflow
 apiVersion: v2
 appVersion: 3.0.2
 version: 1.18.0
