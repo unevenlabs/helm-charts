@@ -16,7 +16,7 @@ spec:
         prefix: /
     route:
     - destination:
-        host: {{ include "airflow.fullname" . }}
+        host: {{ include "airflow.fullname" . }}-api-server
         port:
           number: {{ .Values.service.port }}
       weight: 100

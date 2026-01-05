@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [1.0.0] - 2025-12-24
+## [1.18.0-1] - 2025-01-05
+### Changed
+- Fix virtualservice
+
+## [1.18.0] - 2025-12-24
 ### Changed
 - Create helm wrapper for upstream Apache Airflow helm chart
 - Added virtualservice
