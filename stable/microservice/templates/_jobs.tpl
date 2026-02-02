@@ -96,7 +96,7 @@ spec:
   volumes:
 {{ toYaml . | indent 4 }}
   {{- end }}
-  {{- if $.Values.rbac.serviceAccount.enabled }}
+  {{- if $.Values.rbac.jobs.enabled }}
   {{- if $.Values.rbac.serviceAccount.name }}
   serviceAccountName: {{ $.Values.rbac.serviceAccount.name }}
   {{- else }}

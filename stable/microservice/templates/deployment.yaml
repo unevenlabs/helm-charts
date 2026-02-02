@@ -163,7 +163,7 @@ spec:
 {{ include "application.tplvalues.render" ( dict "value" .Values.deployment.volumes "context" $ ) | indent 6 }}
         {{- end }}
       {{- end }}
-      {{- if and .Values.rbac.deployment.enabled .Values.rbac.serviceAccount.enabled }}
+      {{- if .Values.rbac.deployment.enabled }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
       {{- else }}

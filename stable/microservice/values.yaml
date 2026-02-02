@@ -247,6 +247,9 @@ rbac:
   statefulSet:
     enabled: false
 
+  jobs:
+    enabled: false
+
   # Service Account to use by pods
   serviceAccount:
     enabled: false

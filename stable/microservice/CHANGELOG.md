@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.20.0] - 2026-02-02
+### Changed
+- Decouple service account creation from Deployment/statefulSet/Jobs
+
 ## [1.19.4] - 2025-10-02
 ### Changed
 - Change Vault template

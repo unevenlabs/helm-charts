@@ -144,10 +144,10 @@ spec:
 {{ include "application.tplvalues.render" ( dict "value" .Values.statefulSet.volumes "context" $ ) | indent 6 }}
         {{- end }}
       {{- end }}
-      {{- if and .Values.rbac.statefulSet.enabled .Values.rbac.serviceAccount.enabled }}
+      {{- if .Values.rbac.statefulSet.enabled }}
       {{- if .Values.rbac.serviceAccount.name }}
       serviceAccountName: {{ .Values.rbac.serviceAccount.name }}
-        {{- else }}
+      {{- else }}
       serviceAccountName: {{ template "application.name" . }}
       {{- end }}
       {{- end }}
