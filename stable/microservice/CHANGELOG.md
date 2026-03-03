@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.21.0] - 2026-03-03
+### Changed
+- Allow `serviceAccount.enabled` to accept both boolean and string values
+
 ## [1.20.0] - 2026-02-02
 ### Changed
 - Decouple service account creation from Deployment/statefulSet/Jobs
