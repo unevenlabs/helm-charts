@@ -2128,6 +2128,25 @@ entries:
     version: 0.6.0-1
   microservice:
   - apiVersion: v2
+    created: "2026-03-03T12:07:05.67651551Z"
+    description: Generic helm chart for all kind of services
+    digest: d6789cd26722eb2cca58926597b9f274a871059f2745ae66c4e1f104b20d6754
+    home: https://github.com/unevenlabs/helm-charts/tree/main/stable/microservice
+    keywords:
+    - node
+    - java
+    - dotnet
+    - kubernetes
+    - unevenlabs
+    - microservice
+    maintainers:
+    - email: devops@unevenlabs.com
+      name: DevOps
+    name: microservice
+    urls:
+    - https://unevenlabs.github.io/helm-charts/microservice-1.21.0.tgz
+    version: 1.21.0
+  - apiVersion: v2
     created: "2026-02-02T10:34:08.885320628Z"
     description: Generic helm chart for all kind of services
     digest: b736d85ecc00eac60895975003500e2aa1ddf76e5feeaa2879eb55ed70c5f338
@@ -3864,4 +3883,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
     version: 1.0.0
-generated: "2026-02-02T10:34:08.882646543Z"
+generated: "2026-03-03T12:07:05.67457312Z"
