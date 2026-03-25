@@ -52,6 +52,10 @@ spec:
         }
       config.d/user_defined_function.xml: |-
 {{ $.Files.Get "clickhouse/user_defined_function.xml" | indent 8 }}
+      {{- range $name, $content := .Values.clickhouse.configFiles }}
+      {{ $name }}: |
+        {{- $content | nindent 8 }}
+      {{- end }}
 
     zookeeper:
       nodes:

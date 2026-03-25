@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.51.0] - 2026-25-03
+### Changed
+- Add support to pass config file to Clickhouse
+
 ## [30.50.0] - 2024-18-03
 ### Changed
 - Make virtualservices a list

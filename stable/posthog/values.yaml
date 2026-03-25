@@ -2031,6 +2031,19 @@ clickhouse:
     user_defined_executable_functions_config: config.d/*_function.xml
     user_scripts_path: /var/lib/clickhouse/user_scripts
 
+  ## -- Additional config files to inject into the ClickHouse `configuration.files` section.
+  ## These are passed to the ClickHouseInstallation CR and mounted by the operator.
+  ## Keys are file paths (e.g. `config.d/s3.xml`), values are the file contents.
+  ## Example:
+  ##   configFiles:
+  ##     config.d/s3.xml: |
+  ##       <clickhouse>
+  ##         <s3>
+  ##           <use_environment_credentials>true</use_environment_credentials>
+  ##         </s3>
+  ##       </clickhouse>
+  configFiles: {}
+
   ## -- specify additional user configs for ClickHouse. This will be added to
   ## the users.xml configuration. See
   ## https://github.com/Altinity/clickhouse-operator for details.
