@@ -98,6 +98,17 @@ Return the ClickHouse secret key
 {{- end -}}
 
 {{/*
+Return the ClickHouse ServiceAccount name
+*/}}
+{{- define "posthog.clickhouse.serviceAccountName" -}}
+{{- if .Values.clickhouse.serviceAccount.name -}}
+    {{- .Values.clickhouse.serviceAccount.name -}}
+{{- else -}}
+    {{- printf "%s-clickhouse" (include "posthog.clickhouse.fullname" .) -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
 Return the ClickHouse image
 */}}
 {{- define "posthog.clickhouse.image" -}}

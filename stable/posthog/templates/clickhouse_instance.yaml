@@ -91,6 +91,10 @@ spec:
           securityContext: {{- omit .Values.clickhouse.securityContext "enabled" | toYaml | nindent 12 }}
           {{- end }}
 
+          {{- if .Values.clickhouse.serviceAccount.create }}
+          serviceAccountName: {{ template "posthog.clickhouse.serviceAccountName" . }}
+          {{- end }}
+
           {{- if .Values.clickhouse.image.pullSecrets }}
           imagePullSecrets:
             {{- range .Values.clickhouse.image.pullSecrets }}

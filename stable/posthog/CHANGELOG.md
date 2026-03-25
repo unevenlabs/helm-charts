@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [30.52.0] - 2026-25-03
+### Changed
+- Add support to create a custom service account for Clickhouse
+
 ## [30.51.0] - 2026-25-03
 ### Changed
 - Add support to pass config file to Clickhouse

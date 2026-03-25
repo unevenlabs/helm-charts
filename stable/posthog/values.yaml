@@ -2049,6 +2049,22 @@ clickhouse:
   ## https://github.com/Altinity/clickhouse-operator for details.
   additionalUsersConfig:
 
+  ## -- ServiceAccount for ClickHouse pods.
+  ## Useful for IRSA (IAM Roles for Service Accounts) on EKS.
+  ## Example:
+  ##   serviceAccount:
+  ##     create: true
+  ##     name: datawarehouse-irsa-iam
+  ##     annotations:
+  ##       eks.amazonaws.com/role-arn: arn:aws:iam::123456789012:role/my-role
+  serviceAccount:
+    # -- Whether to create a ServiceAccount for ClickHouse pods
+    create: false
+    # -- Name of the ServiceAccount. If not set and create is true, a name is generated.
+    name: ""
+    # -- Annotations to add to the ServiceAccount (e.g. IRSA role ARN)
+    annotations: {}
+
   ## -- ClickHouse pod(s) annotation.
   podAnnotations:
     # Uncomment those lines if you want Prometheus server to scrape ClickHouse pods metrics.
