@@ -6,6 +6,8 @@ argo-cd:
 # Custom values for the Istio VirtualService and AuthorizationPolicy templates.
 # These are not part of the upstream chart.
 server:
+  # -- Must match argo-cd.server.name; used by argo-cd.server.fullname helper when called from parent chart context
+  name: server
   # -- Port used by the VirtualService destination (must match argo-cd.server.service.servicePortHttp)
   service:
     servicePortHttp: 80
