@@ -553,6 +553,32 @@ entries:
   argocd-apps:
   - annotations:
       artifacthub.io/changes: |
+        - kind: changed
+          description: Switch from full fork to upstream dependency
+    apiVersion: v2
+    created: "2026-04-08T16:19:27.397310633Z"
+    dependencies:
+    - name: argocd-apps
+      repository: https://argoproj.github.io/argo-helm
+      version: 2.0.4
+    description: Wrapper chart for argocd-apps, managing Argo CD Applications and
+      Projects
+    digest: 1637d8eebcce45c9dd582d5a82b8643e954cf0508395e9462eaf7de4ab7f0a60
+    home: https://github.com/argoproj/argo-helm
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    keywords:
+    - argoproj
+    - argocd
+    - gitops
+    maintainers:
+    - name: argoproj
+      url: https://argoproj.github.io/
+    name: argocd-apps
+    urls:
+    - https://unevenlabs.github.io/helm-charts/argocd-apps-2.0.4-1.tgz
+    version: 2.0.4-1
+  - annotations:
+      artifacthub.io/changes: |
         - kind: added
           description: Multiple sources for Application and ApplicationSet
     apiVersion: v2
@@ -4092,4 +4118,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
     version: 1.0.0
-generated: "2026-04-08T16:15:26.986952752Z"
+generated: "2026-04-08T16:19:27.396569943Z"
