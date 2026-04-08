@@ -1,9 +1,9 @@
 annotations:
   artifacthub.io/changes: |
-    - kind: added
-      description: Multiple sources for Application and ApplicationSet
+    - kind: changed
+      description: Switch from full fork to upstream dependency
 apiVersion: v2
-description: A Helm chart for managing additional Argo CD Applications and Projects
+description: Wrapper chart for argocd-apps, managing Argo CD Applications and Projects
 home: https://github.com/argoproj/argo-helm
 icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
 keywords:
@@ -14,5 +14,8 @@ maintainers:
   - name: argoproj
     url: https://argoproj.github.io/
 name: argocd-apps
-type: application
-version: 0.0.9
+dependencies:
+- name: argocd-apps
+  version: "2.0.4"
+  repository: "https://argoproj.github.io/argo-helm"
+version: 2.0.4-1
