@@ -78,6 +78,19 @@ spec:
         port:
           number: {{ $virtualService.destination.portNumber }}
       weight: 100
+    {{- if and (eq $protocol "http") $virtualService.retries }}
+    retries:
+      attempts: {{ $virtualService.retries.attempts }}
+      {{- if $virtualService.retries.perTryTimeout }}
+      perTryTimeout: {{ $virtualService.retries.perTryTimeout }}
+      {{- end }}
+      {{- if $virtualService.retries.retryOn }}
+      retryOn: {{ $virtualService.retries.retryOn }}
+      {{- end }}
+      {{- if $virtualService.retries.retryRemoteLocalities }}
+      retryRemoteLocalities: {{ $virtualService.retries.retryRemoteLocalities }}
+      {{- end }}
+    {{- end }}
     {{- if eq $protocol "http" }}
     {{- if $virtualService.headers }}
     headers:

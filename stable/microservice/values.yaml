@@ -371,6 +371,21 @@ virtualService:
   #       remove:
   #         - thud
 
+  #   # Retry policy for HTTP requests. Overrides the cluster-wide default policy of:
+  #   #   attempts: 2, retryOn: "connect-failure,refused-stream,unavailable,cancelled"
+  #   # To also retry on connection resets (e.g. Istio 503 upstream_reset_before_response_started),
+  #   # add "reset" to retryOn.
+  #   retries:
+  #     # Number of retries for a given request
+  #     attempts: 2
+  #     # Timeout per retry attempt
+  #     perTryTimeout: 5s
+  #     # Conditions under which to retry (comma-separated).
+  #     # See https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on
+  #     retryOn: connect-failure,refused-stream,unavailable,cancelled,reset
+  #     # Whether to retry on different localities
+  #     retryRemoteLocalities: false
+
   #   # Cross-origin resource sharing for service
   #   corsPolicy:
   #     # Allowed origins
