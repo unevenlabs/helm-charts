@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.17-1] - 2026-04-08
+###Changed
+- Bump to version 9.4.17.
+- Change helm chart to wrapper
+
 ## [7.8.27-1] - 2025-04-21
 ###Changed
 - Bump to version 7.8.27. Downloaded https://github.com/argoproj/argo-helm/releases/download/argo-cd-7.8.27/argo-cd-7.8.27.tgz
