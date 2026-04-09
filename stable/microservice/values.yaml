@@ -1069,3 +1069,10 @@ scrapeConfigs:
   #           chain: ethereum
   #         targets:
   #           - localhost:5052
+
+# ArgoCD Sync hook — fires on every ArgoCD sync and POSTs to the given URL.
+# Intended for triggering e2e test suites after staging deployments.
+syncHook:
+  enabled: false
+  # url: http://relay-e2e-route-tests.platform.svc.cluster.local/run
+  url: ""
