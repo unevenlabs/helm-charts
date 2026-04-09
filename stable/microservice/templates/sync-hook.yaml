@@ -1,0 +1,29 @@
+{{- if and .Values.syncHook .Values.syncHook.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ template "application.name" . }}-sync-hook
+  namespace: {{ template "application.namespace" . }}
+  labels:
+{{ include "application.labels.unevenlabs" . | indent 4 }}
+{{ include "application.labels.chart" . | indent 4 }}
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+spec:
+  ttlSecondsAfterFinished: 120
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: trigger
+          image: curlimages/curl:8
+          command:
+            - curl
+            - -sf
+            - -X
+            - POST
+            - {{ .Values.syncHook.url | quote }}
+{{- end }}
