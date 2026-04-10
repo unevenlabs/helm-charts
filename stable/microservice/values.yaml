@@ -1076,3 +1076,4 @@ syncHook:
   enabled: false
   # url: http://relay-e2e-route-tests.platform.svc.cluster.local/run
   url: ""
+  image: curlimages/curl:8.19.0

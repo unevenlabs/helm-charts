@@ -19,7 +19,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: trigger
-          image: curlimages/curl:8
+          image: {{ .Values.syncHook.image }}
           command:
             - curl
             - -sf

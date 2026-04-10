@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.23.1] - 2026-04-10
+### Added
+- Fix `syncHook` image
+
 ## [1.23.0] - 2026-04-09
 ### Added
 - Add `syncHook` — renders an ArgoCD Sync hook Job that POSTs to a configurable URL on every sync
