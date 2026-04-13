@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.24.0] - 2026-04-13
+### Added
+- Add `extraObjects` — renders arbitrary Kubernetes manifests alongside chart resources; supports Go template expressions via `tpl`
+
 ## [1.23.1] - 2026-04-10
 ### Added
 - Fix `syncHook` image
