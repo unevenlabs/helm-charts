@@ -265,6 +265,38 @@ entries:
           description: Switch from full fork to upstream dependency; keep only custom VirtualService and AuthorizationPolicy templates
     apiVersion: v2
     appVersion: v3.3.6
+    created: "2026-04-13T09:54:47.392306764Z"
+    dependencies:
+    - condition: argo-cd.enabled
+      name: argo-cd
+      repository: https://argoproj.github.io/argo-helm
+      version: 9.4.17
+    description: Wrapper chart for Argo CD adding Istio VirtualService and AuthorizationPolicy
+      resources.
+    digest: f44fe163c5162b1c38f5ce4d6491f254f7a79285edb15b49757acee8163ff225
+    home: https://github.com/argoproj/argo-helm
+    icon: https://argo-cd.readthedocs.io/en/stable/assets/logo.png
+    keywords:
+    - argoproj
+    - argocd
+    - gitops
+    kubeVersion: '>=1.25.0-0'
+    maintainers:
+    - name: argoproj
+      url: https://argoproj.github.io/
+    name: argo-cd
+    sources:
+    - https://github.com/argoproj/argo-helm/tree/main/charts/argo-cd
+    - https://github.com/argoproj/argo-cd
+    urls:
+    - https://unevenlabs.github.io/helm-charts/argo-cd-9.4.17-5.tgz
+    version: 9.4.17-5
+  - annotations:
+      artifacthub.io/changes: |
+        - kind: changed
+          description: Switch from full fork to upstream dependency; keep only custom VirtualService and AuthorizationPolicy templates
+    apiVersion: v2
+    appVersion: v3.3.6
     created: "2026-04-13T09:22:00.344512053Z"
     dependencies:
     - condition: argo-cd.enabled
@@ -4252,4 +4284,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
     version: 1.0.0
-generated: "2026-04-13T09:22:00.33145517Z"
+generated: "2026-04-13T09:54:47.37925451Z"
