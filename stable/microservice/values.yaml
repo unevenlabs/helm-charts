@@ -1048,6 +1048,26 @@ datadogMonitors:
   #       thresholds:
   #         critical: "50"
 
+# Extra arbitrary Kubernetes objects to render alongside the chart resources.
+# Each entry is a full resource manifest; Go template expressions are supported.
+# Example:
+# extraObjects:
+#   - apiVersion: networking.istio.io/v1beta1
+#     kind: Sidecar
+#     metadata:
+#       name: my-app-visibility
+#       namespace: my-namespace
+#     spec:
+#       workloadSelector:
+#         labels:
+#           app: my-app
+#       egress:
+#       - hosts:
+#         - "./*"
+#         - "istio-system/*"
+#         - "other-namespace/*"
+extraObjects: []
+
 scrapeConfigs:
   # - name: geth
   #   spec:
