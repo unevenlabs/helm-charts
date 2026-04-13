@@ -58,6 +58,12 @@ spec:
 {{- range .Values.server.virtualService.internal.whiteListed.ips }}
           - {{ . | quote }}
 {{- end }}
+    to:
+    - operation:
+        hosts:
+{{- range .Values.server.virtualService.internal.hosts }}
+          - {{ . | quote }}
+{{- end }}
 {{- if .Values.server.virtualService.internal.whiteListed.principals }}
   - from:
     - source:
@@ -65,12 +71,6 @@ spec:
 {{- range .Values.server.virtualService.internal.whiteListed.principals }}
           - {{ . | quote }}
 {{- end }}
-{{- end }}
-    to:
-    - operation:
-        hosts:
-{{- range .Values.server.virtualService.internal.hosts }}
-          - {{ . | quote }}
 {{- end }}
 {{- end }}
 {{- end }}

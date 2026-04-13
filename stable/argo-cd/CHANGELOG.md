@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [9.4.17-5] - 2026-04-13
+###Changed
+- Fix principals support in AuthorizationPolicy
+
 ## [9.4.17-4] - 2026-04-13
 ###Changed
 - Add principals support in AuthorizationPolicy
