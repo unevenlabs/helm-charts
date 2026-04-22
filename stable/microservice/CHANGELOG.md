@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.25.0] - 2026-04-22
+### Fixed
+- Strip digest suffix from `appVersion` label so digest-pinned image tags (`0.52.0@sha256:...`) produce valid Kubernetes label values
+
 ## [1.24.0] - 2026-04-13
 ### Added
 - Add `extraObjects` — renders arbitrary Kubernetes manifests alongside chart resources; supports Go template expressions via `tpl`

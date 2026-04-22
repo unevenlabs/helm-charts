@@ -13,7 +13,7 @@ app: {{ template "application.name" . }}
 {{- define "application.labels.unevenlabs" -}}
 {{ template "application.labels.selector" . }}
 {{- if .Values.deployment.enabled }}
-appVersion: "{{ .Values.deployment.image.tag }}"
+appVersion: "{{ .Values.deployment.image.tag | regexReplaceAll "@.*" "" | trunc 63 }}"
 {{- end }}
 {{- end -}}
 
