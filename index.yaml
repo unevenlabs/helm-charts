@@ -195,6 +195,26 @@ entries:
     version: 0.48.8-1
   airflow:
   - apiVersion: v2
+    appVersion: 3.1.8
+    created: "2026-04-24T15:20:22.410502116Z"
+    dependencies:
+    - condition: airflow.enabled
+      name: airflow
+      repository: https://airflow.apache.org
+      version: 1.20.0
+    description: Apache Airflow at Unevenlabs
+    digest: 661ab257a26236cc84350e64bfcf8da749ffb3fd308e971359abe418054fff92
+    keywords:
+    - Apache Airflow
+    - Unevenlabs
+    maintainers:
+    - email: filipe@unevenlabs.com
+      name: Filipe
+    name: airflow
+    urls:
+    - https://unevenlabs.github.io/helm-charts/airflow-1.20.0-1.tgz
+    version: 1.20.0-1
+  - apiVersion: v2
     appVersion: 3.0.2
     created: "2025-12-24T16:00:44.207995644Z"
     dependencies:
@@ -4322,4 +4342,4 @@ entries:
     urls:
     - https://unevenlabs.github.io/helm-charts/retool-1.0.0.tgz
     version: 1.0.0
-generated: "2026-04-22T16:44:37.323353741Z"
+generated: "2026-04-24T15:20:22.395973453Z"
