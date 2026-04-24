@@ -1,7 +1,7 @@
 name: airflow
 apiVersion: v2
-appVersion: 3.0.2
-version: 1.18.0-1
+appVersion: 3.1.8
+version: 1.20.0-1
 description: Apache Airflow at Unevenlabs
 keywords:
   - Apache Airflow
@@ -11,6 +11,6 @@ maintainers:
     name: Filipe
 dependencies:
   - name: airflow
-    version: 1.18.0
+    version: 1.20.0
     repository: https://airflow.apache.org
     condition: airflow.enabled

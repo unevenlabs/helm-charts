@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.20.0-1] - 2026-04-24
+### Changed
+- Bump upstream Airflow Helm chart to 1.20.0 (Airflow 3.1.8)
+
 ## [1.18.0-1] - 2025-01-05
 ### Changed
 - Fix virtualservice
